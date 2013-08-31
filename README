@@ -29,6 +29,7 @@ libsoc currently only supports GPIO through the sysfs interface.
 
 Future ideas are:
 
+- GPIO Interrupts
 - I2C
 - SPIDEV
 - PWM
