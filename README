@@ -1,0 +1,51 @@
+What is libsoc?
+------------------------------------------------------------------------
+
+libsoc is a C library to interface with common peripherals found in 
+System on Chips through generic Linux Kernel interfaces.
+
+It is aimed at new Linux users, and intends to be a stepping stone to 
+enable a user to get started quickly. It is optimised for reliability 
+rather than speed. While the library should be fast, no guarantees are 
+made on it's determinism and it should not be used in time critical 
+routines.
+
+Why libsoc?
+------------------------------------------------------------------------
+
+libsoc was born due to the influx of new embedded Linux boards becoming 
+available cheap, and to hobbyists. There are currently numerous 
+libraries that do interfacing with common SoC peripherals, but they all 
+tend to be centred around a particular board or SoC. This leads to board 
+specific hacks and in some cases direct bypassing of the Linux Kernel.
+
+libsoc aims to be generic and compatible with any SoC that has drivers 
+exposing the correct interfaces for the defined peripheral. 
+
+What peripherals does it support?
+------------------------------------------------------------------------
+
+libsoc currently only supports GPIO through the sysfs interface.
+
+Future ideas are:
+
+- I2C
+- SPIDEV
+- PWM
+- A/D Converters
+
+Does libsoc support the SoC on my board?
+------------------------------------------------------------------------
+
+The real question here is, do your SoC drivers use the generic Linux 
+Kernel interfaces to expose functionality to userspace. If the answer is
+yes, then libsoc supports your board!
+
+Can I help?
+------------------------------------------------------------------------
+
+libsoc is Open Source Software and as such you are welcome to browse the 
+code and either add features, or fix bugs. Please submit pull requests, 
+and bugs to http://www.github.com/jackmitch/libsoc. If you have any 
+comments or questions, I can be contacted by email at the address 
+jack_at_embed_dot_me_dot_uk.

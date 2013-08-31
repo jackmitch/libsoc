@@ -1,0 +1,13 @@
+AC_INIT([libsoc], [0.1])
+AM_INIT_AUTOMAKE()
+
+AC_CONFIG_SRCDIR([lib/gpio.c])
+
+AC_CANONICAL_SYSTEM
+AC_PROG_CC
+AM_PROG_CC_C_O
+
+LT_INIT
+
+AC_CONFIG_FILES(Makefile lib/Makefile)
+AC_OUTPUT
