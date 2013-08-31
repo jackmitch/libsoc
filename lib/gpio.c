@@ -16,8 +16,6 @@ const char gpio_direction_strings[2][STR_BUF] = {"in", "out"};
 
 int debug = 0;
 
-#define DEBUG 1
-
 void libsoc_gpio_set_debug(int level)
 {
   #ifdef DEBUG
