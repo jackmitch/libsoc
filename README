@@ -41,6 +41,12 @@ The real question here is, do your SoC drivers use the generic Linux
 Kernel interfaces to expose functionality to userspace. If the answer is
 yes, then libsoc supports your board!
 
+How is libsoc licenced?
+------------------------------------------------------------------------
+
+libsoc is licenced under the LGPLv2.1, please see the COPYING files for
+futher details.
+
 Can I help?
 ------------------------------------------------------------------------
 
