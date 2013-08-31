@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <stdarg.h>
 
-#include "gpio.h"
+#include "libsoc_gpio.h"
 
 #define STR_BUF 256
 #define MAX_GPIO 255
