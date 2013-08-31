@@ -24,17 +24,31 @@ int main(void)
   // Set direction to OUTPUT
   libsoc_gpio_set_direction(test_gpio, OUTPUT);
   
-  
   // Check the direction
-  libsoc_gpio_get_direction(test_gpio);
+  if (libsoc_gpio_get_direction(test_gpio) != OUTPUT)
+  {
+    printf("Failed to set direction to OUTPUT\n");
+    goto fail;
+  }
   
   int i;
   
   // Set level HIGH then LOw and check inbetween each call
   libsoc_gpio_set_level(test_gpio, HIGH);
-  libsoc_gpio_get_level(test_gpio);
+  
+  if (libsoc_gpio_get_level(test_gpio) != HIGH)
+  {
+    printf("Failed setting gpio level HIGH\n");
+    goto fail;
+  }
+  
   libsoc_gpio_set_level(test_gpio, LOW);
-  libsoc_gpio_get_level(test_gpio);
+  
+  if (libsoc_gpio_get_level(test_gpio) != LOW)
+  {
+    printf("Failed setting gpio level LOW\n");
+    goto fail;
+  }
   
   // Toggle the GPIO 1000 times as fast as it can go
   for (i=0; i<1000; i++)
@@ -46,8 +60,12 @@ int main(void)
   // Set direction to INPUT
   libsoc_gpio_set_direction(test_gpio, INPUT);
   
-  // Ensure direction set to INPUT
-  libsoc_gpio_get_direction(test_gpio);
+  // Check the direction
+  if (libsoc_gpio_get_direction(test_gpio) != INPUT)
+  {
+    printf("Failed to set direction to INPUT\n");
+    goto fail;
+  }
   
   // Check GPIO input level
   libsoc_gpio_get_level(test_gpio);
