@@ -18,8 +18,9 @@ typedef struct
 
 typedef enum
 {
+  DIRECTION_ERROR = -1,
   INPUT = 0,
-  OUTPUT = 1
+  OUTPUT = 1,
 } gpio_direction;
 
 /**
@@ -29,8 +30,9 @@ typedef enum
 
 typedef enum
 {
+  LEVEL_ERROR = -1,
+  LOW = 0,
   HIGH = 1,
-  LOW = 0
 } gpio_level;
 
 /**

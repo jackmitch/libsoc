@@ -50,7 +50,14 @@ inline void libsoc_gpio_debug(const char* func, unsigned int gpio, char* format,
     vfprintf(stderr, format, args);
     va_end(args);
     
-    fprintf(stderr, " (%d, %s)", gpio, func);
+    if (gpio >= 0)
+    {
+      fprintf(stderr, " (%d, %s)", gpio, func);
+    }
+    else
+    {
+      fprintf(stderr, " (NULL, %s)", func);
+    }
     
     fprintf(stderr, "\n");
   }
@@ -125,17 +132,24 @@ int libsoc_gpio_free(gpio* gpio)
   char tmp_str[STR_BUF];
   int fd;
   
-  libsoc_gpio_debug(__func__, gpio->gpio, "freeing gpio");
-  
   if (gpio == NULL)
   {
-    libsoc_gpio_debug(__func__, gpio->gpio, "GPIO WAS NULL");
+    libsoc_gpio_debug(__func__, -1, "invalid gpio pointer");
     return EXIT_FAILURE;
   }
+  
+  libsoc_gpio_debug(__func__, gpio->gpio, "freeing gpio");
   
   close(gpio->value_fd);
   
   fd = open("/sys/class/gpio/unexport", O_SYNC | O_WRONLY);
+  
+  if (fd < 0)
+  {
+    libsoc_gpio_debug(__func__, gpio->gpio, "opening sysfs unexport failed");
+    perror("libsoc-gpio-debug");
+    return EXIT_FAILURE;
+  }
   
   sprintf(tmp_str, "%d", gpio->gpio);
   
@@ -161,11 +175,24 @@ int libsoc_gpio_set_direction(gpio* current_gpio, gpio_direction direction)
   int fd;
   char path[STR_BUF];
   
+  if (current_gpio == NULL)
+  {
+    libsoc_gpio_debug(__func__, -1, "invalid gpio pointer");
+    return EXIT_FAILURE;
+  }
+  
   libsoc_gpio_debug(__func__, current_gpio->gpio, "setting direction");
   
   sprintf(path, "/sys/class/gpio/gpio%d/direction", current_gpio->gpio);
   
   fd = open(path, O_SYNC | O_WRONLY);
+  
+  if (fd < 0)
+  {
+    libsoc_gpio_debug(__func__, current_gpio->gpio, "opening sysfs direction failed");
+    perror("libsoc-gpio-debug");
+    return EXIT_FAILURE;
+  }
   
   write(fd, gpio_direction_strings[direction], STR_BUF);
   
@@ -179,11 +206,24 @@ gpio_direction libsoc_gpio_get_direction(gpio* current_gpio)
   int fd;
   char tmp_str[STR_BUF];
   
+  if (current_gpio == NULL)
+  {
+    libsoc_gpio_debug(__func__, -1, "invalid gpio pointer");
+    return DIRECTION_ERROR;
+  }
+  
   libsoc_gpio_debug(__func__, current_gpio->gpio, "reading direction");
   
   sprintf(tmp_str, "/sys/class/gpio/gpio%d/direction", current_gpio->gpio);
   
   fd = open(tmp_str, O_RDONLY);
+  
+  if (fd < 0)
+  {
+    libsoc_gpio_debug(__func__, current_gpio->gpio, "opening sysfs direction failed");
+    perror("libsoc-gpio-debug");
+    return DIRECTION_ERROR;
+  }
   
   lseek(fd, 0, SEEK_SET);
   
@@ -207,9 +247,15 @@ gpio_direction libsoc_gpio_get_direction(gpio* current_gpio)
 
 int libsoc_gpio_set_level(gpio* current_gpio, gpio_level level)
 {
-  write(current_gpio->value_fd, gpio_level_strings[level], 1);
+  if (current_gpio == NULL)
+  {
+    libsoc_gpio_debug(__func__, -1, "invalid gpio pointer");
+    return EXIT_FAILURE;
+  }
   
-  //libsoc_gpio_debug(__func__, current_gpio->gpio, "set level as %d", level);
+  libsoc_gpio_debug(__func__, current_gpio->gpio, "set level as %d", level);
+  
+  write(current_gpio->value_fd, gpio_level_strings[level], 1);
   
   return EXIT_SUCCESS;
 }
@@ -218,6 +264,12 @@ gpio_level libsoc_gpio_get_level(gpio* current_gpio)
 {
   char level[STR_BUF];
   int ret;
+  
+  if (current_gpio == NULL)
+  {
+    libsoc_gpio_debug(__func__, -1, "invalid gpio pointer");
+    return LEVEL_ERROR;
+  }
   
   libsoc_gpio_debug(__func__, current_gpio->gpio, "reading level");
   
@@ -229,6 +281,7 @@ gpio_level libsoc_gpio_get_level(gpio* current_gpio)
   {
     libsoc_gpio_debug(__func__, current_gpio->gpio, "level read failed");
     perror("libgpio");
+    return LEVEL_ERROR;
   }
   
   if (strncmp(level, "0", 1) <= 0)
@@ -241,6 +294,4 @@ gpio_level libsoc_gpio_get_level(gpio* current_gpio)
     libsoc_gpio_debug(__func__, current_gpio->gpio, "got level as high");
     return HIGH;
   }
-  
-  return EXIT_SUCCESS;
 }
