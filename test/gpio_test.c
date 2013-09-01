@@ -50,12 +50,16 @@ int main(void)
     goto fail;
   }
   
+  libsoc_gpio_set_debug(0);
+  
   // Toggle the GPIO 1000 times as fast as it can go
   for (i=0; i<1000; i++)
   {
     libsoc_gpio_set_level(test_gpio, HIGH);
     libsoc_gpio_set_level(test_gpio, LOW);
   }
+  
+  libsoc_gpio_set_debug(1);
   
   // Set direction to INPUT
   libsoc_gpio_set_direction(test_gpio, INPUT);

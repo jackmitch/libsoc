@@ -31,7 +31,7 @@ void libsoc_gpio_set_debug(int level)
   
   #else
   
-    printf("libsoc-gpio: warning debug support missing!\n");
+  printf("libsoc-gpio: warning debug support missing!\n");
     
   #endif
 }
