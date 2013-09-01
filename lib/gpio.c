@@ -73,7 +73,7 @@ gpio* libsoc_gpio_request(unsigned int gpio_id)
   
   libsoc_gpio_debug(__func__, gpio_id, "requested gpio");
   
-  if (gpio_id > 255)
+  if (gpio_id > 255 || gpio_id < 0)
   {
     libsoc_gpio_debug(__func__, gpio_id, "gpio out of range (0-255)");
     return NULL;
