@@ -37,9 +37,8 @@ typedef enum
 
 /**
  * \enum gpio_edge
- * \brief defined values for rising/falling gpio edge
+ * \brief defined values for rising/falling/none gpio edge
  */
-
 
 typedef enum
 {
