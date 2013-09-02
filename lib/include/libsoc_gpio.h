@@ -36,6 +36,20 @@ typedef enum
 } gpio_level;
 
 /**
+ * \enum gpio_edge
+ * \brief defined values for rising/falling gpio edge
+ */
+
+
+typedef enum
+{
+  EDGE_ERROR = -1,
+  RISING = 0,
+  FALLING = 1,
+  NONE = 2,
+} gpio_edge;
+
+/**
  * \fn gpio* libsoc_gpio_request(unsigned int gpio_id)
  * \brief request a gpio to use
  * \param unsigned int gpio_id - the id of the gpio you wish to request
@@ -100,3 +114,23 @@ gpio_level libsoc_gpio_get_level(gpio* current_gpio);
  */
 
 void libsoc_gpio_set_debug(int level);
+
+/**
+ * \fn gpio_edge libsoc_gpio_get_edge(gpio* current_gpio)
+ * \brief gets the current gpio edge value
+ * \param gpio* current_gpio - pointer to gpio struct on which to get the edge
+ * \return gpio_edge, RISING or FALLING
+ */
+
+gpio_edge libsoc_gpio_get_edge(gpio* current_gpio);
+
+/**
+ * \fn int libsoc_gpio_set_edge(gpio* current_gpio, gpio_edge edge)
+ * \brief sets the edge value of a gpio for interrupt generation
+ * \param gpio* current_gpio - the gpio for which you wish to set the edge
+ * \param gpio_edge edge - enumerated edge value, RISING, FALLING or NONE
+ * \return EXIT_SUCCESS or EXIT FAILURE
+ */
+
+int libsoc_gpio_set_edge(gpio* current_gpio, gpio_edge edge);
+

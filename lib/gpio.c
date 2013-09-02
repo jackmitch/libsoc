@@ -13,6 +13,7 @@
 
 const char gpio_level_strings[2][STR_BUF] = {"0", "1"};
 const char gpio_direction_strings[2][STR_BUF] = {"in", "out"};
+const char gpio_edge_strings[3][STR_BUF] = {"rising", "falling", "none"};
 
 int debug = 0;
 
@@ -241,8 +242,6 @@ gpio_direction libsoc_gpio_get_direction(gpio* current_gpio)
     libsoc_gpio_debug(__func__, current_gpio->gpio, "got direction as output");
     return OUTPUT;
   }
-  
-  return EXIT_SUCCESS;
 }
 
 int libsoc_gpio_set_level(gpio* current_gpio, gpio_level level)
@@ -295,3 +294,82 @@ gpio_level libsoc_gpio_get_level(gpio* current_gpio)
     return HIGH;
   }
 }
+
+int libsoc_gpio_set_edge(gpio* current_gpio, gpio_edge edge)
+{
+  int fd;
+  char path[STR_BUF];
+  
+  if (current_gpio == NULL)
+  {
+    libsoc_gpio_debug(__func__, -1, "invalid gpio pointer");
+    return EXIT_FAILURE;
+  }
+  
+  libsoc_gpio_debug(__func__, current_gpio->gpio, "setting edge to %s", gpio_edge_strings[edge]);
+  
+  sprintf(path, "/sys/class/gpio/gpio%d/edge", current_gpio->gpio);
+  
+  fd = open(path, O_SYNC | O_WRONLY);
+  
+  if (fd < 0)
+  {
+    libsoc_gpio_debug(__func__, current_gpio->gpio, "opening sysfs edge failed");
+    perror("libsoc-gpio-debug");
+    return EXIT_FAILURE;
+  }
+  
+  write(fd, gpio_edge_strings[edge], STR_BUF);
+  
+  close(fd);
+  
+  return EXIT_SUCCESS;
+}
+
+gpio_edge libsoc_gpio_get_edge(gpio* current_gpio)
+{
+  int fd;
+  char tmp_str[STR_BUF];
+  
+  if (current_gpio == NULL)
+  {
+    libsoc_gpio_debug(__func__, -1, "invalid gpio pointer");
+    return EDGE_ERROR;
+  }
+  
+  libsoc_gpio_debug(__func__, current_gpio->gpio, "reading edge");
+  
+  sprintf(tmp_str, "/sys/class/gpio/gpio%d/edge", current_gpio->gpio);
+  
+  fd = open(tmp_str, O_RDONLY);
+  
+  if (fd < 0)
+  {
+    libsoc_gpio_debug(__func__, current_gpio->gpio, "opening sysfs edge failed");
+    perror("libsoc-gpio-debug");
+    return EDGE_ERROR;
+  }
+  
+  lseek(fd, 0, SEEK_SET);
+  
+  read(fd, tmp_str, STR_BUF);
+  
+  close(fd);
+  
+  if (strncmp(tmp_str, "r", 1) == 0)
+  {
+    libsoc_gpio_debug(__func__, current_gpio->gpio, "got edge as rising");
+    return RISING;
+  }
+  else if (strncmp(tmp_str, "f", 1) == 0)
+  {
+    libsoc_gpio_debug(__func__, current_gpio->gpio, "got edge as falling");
+    return FALLING;
+  }
+  else
+  {
+    libsoc_gpio_debug(__func__, current_gpio->gpio, "got edge as none");
+    return NONE;
+  }
+}
+

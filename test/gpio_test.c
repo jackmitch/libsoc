@@ -74,6 +74,36 @@ int main(void)
   // Check GPIO input level
   libsoc_gpio_get_level(test_gpio);
   
+  // Change edge
+  libsoc_gpio_set_edge(test_gpio, RISING);
+  
+  // Check Edge
+  if (libsoc_gpio_get_edge(test_gpio) != RISING)
+  {
+    printf("Failed to set edge to RISING\n");
+    goto fail;
+  }
+  
+  // Change edge
+  libsoc_gpio_set_edge(test_gpio, FALLING);
+  
+  // Check Edge
+  if (libsoc_gpio_get_edge(test_gpio) != FALLING)
+  {
+    printf("Failed to set edge to FALLING\n");
+    goto fail;
+  }
+  
+  // Change edge
+  libsoc_gpio_set_edge(test_gpio, NONE);
+  
+  // Check Edge
+  if (libsoc_gpio_get_edge(test_gpio) != NONE)
+  {
+    printf("Failed to set edge to NONE\n");
+    goto fail;
+  }
+  
   fail:
   
   // If gpio_request was successful
