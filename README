@@ -25,11 +25,11 @@ exposing the correct interfaces for the defined peripheral.
 What peripherals does it support?
 ------------------------------------------------------------------------
 
-libsoc currently only supports GPIO through the sysfs interface.
+libsoc currently only supports GPIO and GPIO blocking interrupts through 
+the sysfs interface.
 
 Future ideas are:
 
-- GPIO Interrupts
 - I2C
 - SPIDEV
 - PWM
