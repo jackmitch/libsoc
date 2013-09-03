@@ -1,6 +1,13 @@
-31/08/13
+in development
 --------
 
-libgpio 0.1 released
+- GPIO Interrupt Support
+-- Blocking interrupts
+
+- Improved error and debug handling
+
+31/08/13
+--------
+libsoc 0.1 released
 
 - basic sysfs GPIO support

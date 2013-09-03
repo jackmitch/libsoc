@@ -1,7 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "libsoc_gpio.h"
+
+/**
+ * 
+ * This gpio_test is intended to be run on beaglebone white hardware
+ * and uses pins P9_42(gpio7) and P9_27 (gpio115) connected together.
+ *
+ */
 
 int main(void)
 {
@@ -102,6 +110,61 @@ int main(void)
   {
     printf("Failed to set edge to NONE\n");
     goto fail;
+  }
+  
+  libsoc_gpio_set_edge(test_gpio, FALLING);
+  
+  pid_t childPID;
+
+  childPID = fork();
+
+  if(childPID >= 0) // fork was successful
+  {
+    if (childPID == 0)
+    {
+      sleep(1);
+      
+      gpio* test_interrupt_gpio;
+    
+      test_interrupt_gpio = libsoc_gpio_request(115);
+
+      // Ensure gpio was successfully requested
+      if (test_interrupt_gpio == NULL)
+      {
+        goto fail;
+      }
+      
+      // Set direction to OUTPUT
+      libsoc_gpio_set_direction(test_interrupt_gpio, OUTPUT);
+      
+      libsoc_gpio_set_level(test_interrupt_gpio, HIGH);
+      libsoc_gpio_set_level(test_interrupt_gpio, LOW);
+      
+      if (test_interrupt_gpio)
+      {
+        // Free gpio request memory
+        libsoc_gpio_free(test_interrupt_gpio);
+      }
+      
+      exit(0);
+    }
+    
+  }
+  else // fork failed
+  {
+    printf("Fork failed\n");
+    return 1;
+  }
+  
+  int ret = libsoc_gpio_wait_interrupt(test_gpio, 10000);
+  
+  if (ret == EXIT_SUCCESS)
+  {
+    printf("Interrupt caught!\n");
+  }
+  else
+  {
+    printf("No interrupt triggered!\n"); 
   }
   
   fail:

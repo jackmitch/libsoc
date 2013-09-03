@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <stdarg.h>
+#include <poll.h>
 
 #include "libsoc_gpio.h"
 
@@ -371,5 +372,61 @@ gpio_edge libsoc_gpio_get_edge(gpio* current_gpio)
     libsoc_gpio_debug(__func__, current_gpio->gpio, "got edge as none");
     return NONE;
   }
+}
+
+int libsoc_gpio_wait_interrupt(gpio* gpio, int timeout)
+{
+  if (gpio == NULL)
+  {
+    libsoc_gpio_debug(__func__, -1, "invalid gpio pointer");
+    return EDGE_ERROR;
+  }
+  
+  if (libsoc_gpio_get_direction(gpio) != INPUT)
+  {
+    libsoc_gpio_debug(__func__, gpio->gpio, "gpio is not set as input");
+    return EXIT_FAILURE;
+  }
+  
+  gpio_edge test_edge = libsoc_gpio_get_edge(gpio);
+  
+  if ( test_edge == EDGE_ERROR || test_edge == NONE)
+  {
+    libsoc_gpio_debug(__func__, gpio->gpio, "edge must be FALLING or RISING");
+    return EXIT_FAILURE;
+  }
+  
+  struct pollfd pfd[1];
+
+  pfd[0].fd = gpio->value_fd;
+  pfd[0].events = POLLPRI;
+  pfd[0].revents = 0;
+
+  // Initial read to fix immediate double read bug
+  //read(fd[0], buffer, sizeof(buffer));
+  //lseek(fd[0], 0, 0);
+
+  int ready = poll(pfd, 1, timeout);
+  
+  int ret;
+  
+  switch (ready)
+  {
+    case -1:
+      libsoc_gpio_debug(__func__, gpio->gpio, "poll failed");
+      perror("libsoc-gpio-debug");
+      break;
+      
+    case 0:
+      ret = EXIT_FAILURE;
+      break;
+    
+    default:
+      ret = EXIT_SUCCESS;
+      break;
+  }
+  
+  return ret;
+  
 }
 

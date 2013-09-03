@@ -133,3 +133,16 @@ gpio_edge libsoc_gpio_get_edge(gpio* current_gpio);
 
 int libsoc_gpio_set_edge(gpio* current_gpio, gpio_edge edge);
 
+/**
+ * \fn int libsoc_gpio_wait_interrupt(gpio* gpio, int timeout)
+ * \brief takes a gpio and waits for length of timeout or until an
+ *  interrupt occurs. Will return EXIT_SUCCESS on interrupt or 
+ *  EXIT_FAILURE on error or timeout.
+ * \param gpio*  gpio - the gpio for which you want to wait on interrupt
+ * \param int timeout - the max length of time to wait for interrupt in 
+ *  milliseconds
+ * \return EXIT_SUCCESS on interrupt caught, EXIT_FAILURE on error or 
+ *  interrupt missed
+ */
+
+int libsoc_gpio_wait_interrupt(gpio* gpio, int timeout);
