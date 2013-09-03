@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 #include "libsoc_gpio.h"
 
@@ -171,6 +172,10 @@ int main(void)
   {
     printf("No interrupt triggered!\n"); 
   }
+  
+  int status;
+  
+  wait(&status);
   
   fail:
   
