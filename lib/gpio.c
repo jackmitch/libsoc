@@ -402,10 +402,6 @@ int libsoc_gpio_wait_interrupt(gpio* gpio, int timeout)
   pfd[0].events = POLLPRI;
   pfd[0].revents = 0;
 
-  // Initial read to fix immediate double read bug
-  //read(fd[0], buffer, sizeof(buffer));
-  //lseek(fd[0], 0, 0);
-
   int ready = poll(pfd, 1, timeout);
   
   int ret;
