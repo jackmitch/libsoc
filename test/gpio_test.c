@@ -112,50 +112,55 @@ int main(void)
     goto fail;
   }
   
-  libsoc_gpio_set_edge(test_gpio, FALLING);
-  
   pid_t childPID;
 
+  // Fork the process so the parent process can wait for the interrupt 
+  // on gpio7 and the child process can generate the interrupt from
+  // gpio115
+  
   childPID = fork();
 
-  if(childPID >= 0) // fork was successful
+  if(childPID >= 0)
   {
     if (childPID == 0)
     {
+      // Allow time to setup the interrupt
       sleep(1);
       
       gpio* test_interrupt_gpio;
     
+      // Request new gpio
       test_interrupt_gpio = libsoc_gpio_request(115);
 
       // Ensure gpio was successfully requested
-      if (test_interrupt_gpio == NULL)
+      if (test_interrupt_gpio != NULL)
       {
-        goto fail;
-      }
-      
-      // Set direction to OUTPUT
-      libsoc_gpio_set_direction(test_interrupt_gpio, OUTPUT);
-      
-      libsoc_gpio_set_level(test_interrupt_gpio, HIGH);
-      libsoc_gpio_set_level(test_interrupt_gpio, LOW);
-      
-      if (test_interrupt_gpio)
-      {
+        // Set direction to OUTPUT
+        libsoc_gpio_set_direction(test_interrupt_gpio, OUTPUT);
+        
+        // Create a falling interrupt
+        libsoc_gpio_set_level(test_interrupt_gpio, HIGH);
+        libsoc_gpio_set_level(test_interrupt_gpio, LOW);
+        
         // Free gpio request memory
         libsoc_gpio_free(test_interrupt_gpio);
+        
+        exit(EXIT_SUCCESS);
       }
       
-      exit(0);
+      exit(EXIT_FAILURE);
     }
     
   }
-  else // fork failed
+  else
   {
-    printf("Fork failed\n");
-    return 1;
+    printf("Fork failed, interrupt won't be triggered\n");
   }
   
+  // Set the edge to falling in order to test interrupts
+  libsoc_gpio_set_edge(test_gpio, FALLING);
+  
+  // Wait 10 seconds for falling interrupt to occur on gpio7
   int ret = libsoc_gpio_wait_interrupt(test_gpio, 10000);
   
   if (ret == EXIT_SUCCESS)
