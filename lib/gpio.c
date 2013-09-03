@@ -411,6 +411,7 @@ int libsoc_gpio_wait_interrupt(gpio* gpio, int timeout)
     case -1:
       libsoc_gpio_debug(__func__, gpio->gpio, "poll failed");
       perror("libsoc-gpio-debug");
+      ret = EXIT_FAILURE;
       break;
       
     case 0:
