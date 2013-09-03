@@ -1,9 +1,8 @@
-in development
+03/09/13
 --------
+libsoc 0.2 released
 
-- GPIO Interrupt Support
--- Blocking interrupts
-
+- GPIO blocking interrupt support
 - Improved error and debug handling
 
 31/08/13
