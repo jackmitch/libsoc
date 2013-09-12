@@ -5,6 +5,10 @@
 #include <fcntl.h>
 #include <stdarg.h>
 #include <poll.h>
+#include <pthread.h>
+#include <errno.h>
+#include <signal.h>
+#include <time.h>
 
 #include "libsoc_gpio.h"
 
@@ -420,3 +424,110 @@ int libsoc_gpio_wait_interrupt(gpio* gpio, int timeout)
   
 }
 
+struct gpio_callback
+{
+  gpio* gpio;
+  int (*callback_fn)(void*);
+  void* callback_arg;
+  int ready;
+};
+
+void* __libsoc_new_interrupt_callback_thread(void* void_gpio_callback)
+{
+  struct gpio_callback* gpio_callback = void_gpio_callback;
+  
+  struct pollfd pfd[1];
+
+  pfd[0].fd = gpio_callback->gpio->value_fd;
+  pfd[0].events = POLLPRI;
+  pfd[0].revents = 0;
+
+  char buffer[1];
+  int ret, ready;
+  
+  // Read data for clean initial poll
+  read(pfd[0].fd, buffer, 1);
+  
+  gpio_callback->ready = 1;
+  
+  // There is an issue here when I believe a couple of interrupts are 
+  // missed in the test case, and they occur between ready = 1 and the 
+  // start of the poll. Any suggestions would be welcomed...
+
+  while(1)
+  {
+    ready = poll(pfd, 1, -1);
+    
+    switch (ready)
+    {      
+      case 1:
+
+        if (pfd[0].revents & POLLPRI)
+        {
+          libsoc_gpio_debug(__func__, gpio_callback->gpio->gpio, "caught interrupt");
+          gpio_callback->callback_fn(gpio_callback->callback_arg);
+          
+          // Read data to clear poll event
+          read(pfd[0].fd, buffer, sizeof(buffer));
+        }
+        break;
+      
+      default:
+        break;
+    }
+  }
+}
+
+int libsoc_gpio_callback_interrupt(gpio* gpio, int (*callback_fn)(void*), void* arg)
+{
+  pthread_t *poll_thread = malloc(sizeof(pthread_t));
+  pthread_attr_t pthread_attr;
+  
+  pthread_attr_init(&pthread_attr);
+  pthread_attr_setschedpolicy(&pthread_attr, SCHED_FIFO);
+  
+  struct gpio_callback *new_gpio_callback;
+  
+  libsoc_gpio_debug(__func__, gpio->gpio, "creating new callback");
+  
+  new_gpio_callback = malloc(sizeof(struct gpio_callback));
+  
+  new_gpio_callback->gpio = gpio;
+  new_gpio_callback->callback_fn = callback_fn;
+  new_gpio_callback->callback_arg = arg;
+  
+  gpio->callback_thread = poll_thread;
+  
+  new_gpio_callback->ready = 0;
+  
+  int ret = pthread_create(poll_thread, NULL, __libsoc_new_interrupt_callback_thread, new_gpio_callback);
+  
+  libsoc_gpio_debug(__func__, gpio->gpio, "return: %d", ret);
+  
+  if (ret == 0)
+  {    
+    // Wait for thread to be initialised and ready
+    while (new_gpio_callback->ready != 1)
+    {
+      usleep(1000);
+    }
+  }
+  
+  return EXIT_SUCCESS;
+}
+
+int libsoc_gpio_callback_interrupt_cancel(gpio* gpio)
+{
+  if (gpio->callback_thread == NULL)
+  {
+    libsoc_gpio_debug(__func__, gpio->gpio, "callback thread was NULL");
+  }
+  
+  pthread_cancel(*gpio->callback_thread);
+  
+  pthread_join(*gpio->callback_thread, NULL);
+  
+  free (gpio->callback_thread);
+  
+  libsoc_gpio_debug(__func__, gpio->gpio, "callback thread was stopped");
+}

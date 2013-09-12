@@ -18,6 +18,18 @@
  #define GPIO_OUTPUT  115
  #define GPIO_INPUT   7
 
+static int interrupt_count = 0;
+
+int callback_test(void* arg)
+{
+  int* tmp_count = (int*) arg;
+  
+  *tmp_count = *tmp_count + 1;
+  
+  return EXIT_SUCCESS;
+}
+
+
 int main(void)
 {
   // Create both gpio pointers
@@ -170,12 +182,41 @@ int main(void)
   }
   else
   {
-    printf("No interrupt triggered!\n"); 
+    printf("Interrupt missed!\n"); 
   }
   
   int status;
   
   wait(&status);
+  
+  
+  // Setup callback
+  libsoc_gpio_callback_interrupt(gpio_input, &callback_test, (void*) &interrupt_count);
+  
+  // Turn off debug
+  libsoc_gpio_set_debug(0);
+  
+  printf("Setting off interrupt generation...\n"); 
+  
+  // Toggle the GPIO to generate interrupts
+  for (i=0; i<10000; i++)
+  {
+    libsoc_gpio_set_level(gpio_output, HIGH);
+    libsoc_gpio_set_level(gpio_output, LOW);
+    
+    // Let the other thread get a look in otherwise interrupt success is
+    // ~85%, with usleep(1) success is always (to-date) %100 success
+    // with no other load.
+    usleep(1);
+  }
+  
+  // Turn debug back on
+  libsoc_gpio_set_debug(1);
+  
+  printf("Caught %d of 10000 interrupts\n", interrupt_count); 
+  
+  // Cancel the callback on interrupt
+  libsoc_gpio_callback_interrupt_cancel(gpio_input);
   
   fail:
   

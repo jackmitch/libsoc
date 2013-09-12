@@ -9,6 +9,7 @@ typedef struct
 {
   unsigned int gpio;
   int value_fd;
+  pthread_t *callback_thread;
 } gpio;
 
 /**
@@ -146,3 +147,26 @@ int libsoc_gpio_set_edge(gpio* current_gpio, gpio_edge edge);
  */
 
 int libsoc_gpio_wait_interrupt(gpio* gpio, int timeout);
+
+/**
+ * \fn int libsoc_gpio_callback_interrupt(gpio* gpio, int (*callback_fn)(unsigned int))
+ * \brief takes a gpio and a callback function, when an interrupt occurs
+ *  on the edge previously specified, the callback function is called
+ * \param gpio* gpio - the gpio for which you want the interrupt to 
+ *  trigger the callback function
+ * \param int (*callback_fn)(void*) - the function you wish to call with
+ *  a void* pointer to a possible value you may wish to use in the callback.
+ * \param void* arg - pointer to data you wish to use in the callback function
+ * \return EXIT_SUCCESS or EXIT_FAILURE
+ */
+
+int libsoc_gpio_callback_interrupt(gpio* gpio, int (*callback_fn)(void*), void* arg);
+
+/**
+ * \fn int libsoc_gpio_callback_interrupt_cancel(gpio* gpio)
+ * \brief cancel a callback on a gpio interrupt
+ * \param gpio* gpio - gpio with a valid callback enabled
+ * \return EXIT_SUCCESS or EXIT_FAILURE
+ */
+
+int libsoc_gpio_callback_interrupt_cancel(gpio* gpio);

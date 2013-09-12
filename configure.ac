@@ -9,6 +9,8 @@ AM_PROG_CC_C_O
 
 LT_INIT
 
+AC_SEARCH_LIBS([pthread_create, pthread_cancel],[pthread], , AC_MSG_WARN(["ERROR: Could not find pthread library"]))
+
 AC_ARG_ENABLE([debug],
     AS_HELP_STRING([--enable-debug], [Enable the debug code]))
 
