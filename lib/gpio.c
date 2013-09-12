@@ -7,8 +7,6 @@
 #include <poll.h>
 #include <pthread.h>
 #include <errno.h>
-#include <signal.h>
-#include <time.h>
 
 #include "libsoc_gpio.h"
 
