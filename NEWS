@@ -1,3 +1,8 @@
+Current Development
+--------------
+
+- Non-blocking GPIO interrupts
+
 03/09/13
 --------
 libsoc 0.2 released
