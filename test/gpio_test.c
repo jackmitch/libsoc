@@ -20,17 +20,17 @@
 
 int main(void)
 {
-  // Create new gpio pointer
+  // Create both gpio pointers
   gpio *gpio_output, *gpio_input;
 
   // Enable debug output
   libsoc_gpio_set_debug(1);
 
-  // Request GPIO 7
+  // Request gpios
   gpio_output = libsoc_gpio_request(GPIO_OUTPUT);
   gpio_input = libsoc_gpio_request(GPIO_INPUT);
 
-  // Ensure gpio was successfully requested
+  // Ensure both gpio were successfully requested
   if (gpio_output == NULL || gpio_input == NULL)
   {
     goto fail;
@@ -46,6 +46,7 @@ int main(void)
     goto fail;
   }
   
+  // Set direction to INPUT
   libsoc_gpio_set_direction(gpio_input, INPUT);
   
   // Check the direction
@@ -55,9 +56,7 @@ int main(void)
     goto fail;
   }
   
-  int i;
-  
-  // Set level HIGH then LOW and check inbetween each call
+  // Set level HIGH and check level in software and hardware
   libsoc_gpio_set_level(gpio_output, HIGH);
   
   if (libsoc_gpio_get_level(gpio_output) != HIGH)
@@ -72,6 +71,7 @@ int main(void)
     goto fail;
   }
   
+  // Set level LOW and check level in software and hardware
   libsoc_gpio_set_level(gpio_output, LOW);
   
   if (libsoc_gpio_get_level(gpio_output) != LOW)
@@ -86,7 +86,10 @@ int main(void)
     goto fail;
   }
   
+  // Turn off debug printing for fast toggle
   libsoc_gpio_set_debug(0);
+  
+  int i;
   
   // Toggle the GPIO 1000 times as fast as it can go
   for (i=0; i<1000; i++)
@@ -95,9 +98,10 @@ int main(void)
     libsoc_gpio_set_level(gpio_output, LOW);
   }
   
+  // Turn debug back on
   libsoc_gpio_set_debug(1);
   
-  // Change edge
+  // Set edge to RISING
   libsoc_gpio_set_edge(gpio_input, RISING);
   
   // Check Edge
@@ -107,7 +111,7 @@ int main(void)
     goto fail;
   }
   
-  // Change edge
+  // Set edge to FALLING
   libsoc_gpio_set_edge(gpio_input, FALLING);
   
   // Check Edge
@@ -117,7 +121,7 @@ int main(void)
     goto fail;
   }
   
-  // Change edge
+  // Set edge to NONE
   libsoc_gpio_set_edge(gpio_input, NONE);
   
   // Check Edge
@@ -130,8 +134,8 @@ int main(void)
   pid_t childPID;
 
   // Fork the process so the parent process can wait for the interrupt 
-  // on gpio7 and the child process can generate the interrupt from
-  // gpio115
+  // on GPIO_INPUT and the child process can generate the interrupt from
+  // GPIO_OUTPUT
   
   childPID = fork();
 
@@ -157,7 +161,7 @@ int main(void)
   // Set the edge to falling in order to test interrupts
   libsoc_gpio_set_edge(gpio_input, FALLING);
   
-  // Wait 10 seconds for falling interrupt to occur on gpio7
+  // Wait 10 seconds for falling interrupt to occur on GPIO_INPUT
   int ret = libsoc_gpio_wait_interrupt(gpio_input, 10000);
   
   if (ret == EXIT_SUCCESS)
