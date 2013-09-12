@@ -1,4 +1,22 @@
 /**
+ * \struct gpio_callback
+ * \brief representation of an interrupt callback
+ * \param int (*callback_fn)(void*) - the function to callback on interrupt
+ * \param void *callback_arg - the argument to pass to the callback function
+ * \param pthread_t *thread - the pthread struct on which the poll and
+ *  callback function runs
+ * \param int ready - signal when the pthread is ready to accept interrupts
+ */
+
+struct gpio_callback
+{
+  int (*callback_fn)(void*);
+  void *callback_arg;
+  pthread_t *thread;
+  int ready;
+};
+
+/**
  * \struct gpio
  * \brief representation of a single requested gpio
  * \param unsigned int gpio gpio id
@@ -9,7 +27,7 @@ typedef struct
 {
   unsigned int gpio;
   int value_fd;
-  pthread_t *callback_thread;
+  struct gpio_callback *callback;
 } gpio;
 
 /**
