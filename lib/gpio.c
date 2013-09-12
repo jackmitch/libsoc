@@ -9,8 +9,7 @@
 #include "libsoc_gpio.h"
 
 #define STR_BUF 256
-#define MAX_GPIO 255
-#define NO_GPIO 999
+#define MAX_GPIO_ID 255
 
 const char gpio_level_strings[2][STR_BUF] = {"0", "1"};
 const char gpio_direction_strings[2][STR_BUF] = {"in", "out"};
@@ -75,7 +74,7 @@ gpio* libsoc_gpio_request(unsigned int gpio_id)
   
   libsoc_gpio_debug(__func__, gpio_id, "requested gpio");
   
-  if (gpio_id > 255 || gpio_id < 0)
+  if (gpio_id > MAX_GPIO_ID || gpio_id < 0)
   {
     libsoc_gpio_debug(__func__, gpio_id, "gpio out of range (0-255)");
     return NULL;
