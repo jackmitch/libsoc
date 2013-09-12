@@ -494,8 +494,6 @@ int libsoc_gpio_callback_interrupt(gpio* gpio, int (*callback_fn)(void*), void* 
   
   int ret = pthread_create(poll_thread, NULL, __libsoc_new_interrupt_callback_thread, gpio);
   
-  libsoc_gpio_debug(__func__, gpio->gpio, "return: %d", ret);
-  
   if (ret == 0)
   {    
     // Wait for thread to be initialised and ready
@@ -503,6 +501,13 @@ int libsoc_gpio_callback_interrupt(gpio* gpio, int (*callback_fn)(void*), void* 
     {
       usleep(50);
     }
+  }
+  else
+  {
+    free(gpio->callback->thread);
+    free(gpio->callback);
+    
+    return EXIT_FAILURE;
   }
   
   return EXIT_SUCCESS;
