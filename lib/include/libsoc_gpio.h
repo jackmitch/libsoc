@@ -118,7 +118,7 @@ void libsoc_gpio_set_debug(int level);
  * \fn gpio_edge libsoc_gpio_get_edge(gpio* current_gpio)
  * \brief gets the current gpio edge value
  * \param gpio* current_gpio - pointer to gpio struct on which to get the edge
- * \return gpio_edge, RISING or FALLING
+ * \return gpio_edge, RISING, FALLING or NONE
  */
 
 gpio_edge libsoc_gpio_get_edge(gpio* current_gpio);
