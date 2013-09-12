@@ -182,7 +182,7 @@ int libsoc_gpio_set_direction(gpio* current_gpio, gpio_direction direction)
     return EXIT_FAILURE;
   }
   
-  libsoc_gpio_debug(__func__, current_gpio->gpio, "setting direction");
+  libsoc_gpio_debug(__func__, current_gpio->gpio, "setting direction to %s", gpio_direction_strings[direction]);
   
   sprintf(path, "/sys/class/gpio/gpio%d/direction", current_gpio->gpio);
   
@@ -213,8 +213,6 @@ gpio_direction libsoc_gpio_get_direction(gpio* current_gpio)
     return DIRECTION_ERROR;
   }
   
-  libsoc_gpio_debug(__func__, current_gpio->gpio, "reading direction");
-  
   sprintf(tmp_str, "/sys/class/gpio/gpio%d/direction", current_gpio->gpio);
   
   fd = open(tmp_str, O_RDONLY);
@@ -234,12 +232,12 @@ gpio_direction libsoc_gpio_get_direction(gpio* current_gpio)
   
   if (strncmp(tmp_str, "in", 2) <= 0)
   {
-    libsoc_gpio_debug(__func__, current_gpio->gpio, "got direction as input");
+    libsoc_gpio_debug(__func__, current_gpio->gpio, "read direction as input");
     return INPUT;
   }
   else
   {
-    libsoc_gpio_debug(__func__, current_gpio->gpio, "got direction as output");
+    libsoc_gpio_debug(__func__, current_gpio->gpio, "read direction as output");
     return OUTPUT;
   }
 }
@@ -252,7 +250,7 @@ int libsoc_gpio_set_level(gpio* current_gpio, gpio_level level)
     return EXIT_FAILURE;
   }
   
-  libsoc_gpio_debug(__func__, current_gpio->gpio, "set level as %d", level);
+  libsoc_gpio_debug(__func__, current_gpio->gpio, "setting level to %d", level);
   
   write(current_gpio->value_fd, gpio_level_strings[level], 1);
   
@@ -270,8 +268,6 @@ gpio_level libsoc_gpio_get_level(gpio* current_gpio)
     return LEVEL_ERROR;
   }
   
-  libsoc_gpio_debug(__func__, current_gpio->gpio, "reading level");
-  
   lseek(current_gpio->value_fd, 0, SEEK_SET);
   
   ret = read(current_gpio->value_fd, level, STR_BUF);
@@ -285,12 +281,12 @@ gpio_level libsoc_gpio_get_level(gpio* current_gpio)
   
   if (strncmp(level, "0", 1) <= 0)
   {
-    libsoc_gpio_debug(__func__, current_gpio->gpio, "got level as low");
+    libsoc_gpio_debug(__func__, current_gpio->gpio, "read level as low");
     return LOW;
   }
   else
   {
-    libsoc_gpio_debug(__func__, current_gpio->gpio, "got level as high");
+    libsoc_gpio_debug(__func__, current_gpio->gpio, "read level as high");
     return HIGH;
   }
 }
@@ -337,8 +333,6 @@ gpio_edge libsoc_gpio_get_edge(gpio* current_gpio)
     return EDGE_ERROR;
   }
   
-  libsoc_gpio_debug(__func__, current_gpio->gpio, "reading edge");
-  
   sprintf(tmp_str, "/sys/class/gpio/gpio%d/edge", current_gpio->gpio);
   
   fd = open(tmp_str, O_RDONLY);
@@ -358,17 +352,17 @@ gpio_edge libsoc_gpio_get_edge(gpio* current_gpio)
   
   if (strncmp(tmp_str, "r", 1) == 0)
   {
-    libsoc_gpio_debug(__func__, current_gpio->gpio, "got edge as rising");
+    libsoc_gpio_debug(__func__, current_gpio->gpio, "read edge as rising");
     return RISING;
   }
   else if (strncmp(tmp_str, "f", 1) == 0)
   {
-    libsoc_gpio_debug(__func__, current_gpio->gpio, "got edge as falling");
+    libsoc_gpio_debug(__func__, current_gpio->gpio, "read edge as falling");
     return FALLING;
   }
   else
   {
-    libsoc_gpio_debug(__func__, current_gpio->gpio, "got edge as none");
+    libsoc_gpio_debug(__func__, current_gpio->gpio, "read edge as none");
     return NONE;
   }
 }
