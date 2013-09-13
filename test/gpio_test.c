@@ -39,8 +39,8 @@ int main(void)
   libsoc_gpio_set_debug(1);
 
   // Request gpios
-  gpio_output = libsoc_gpio_request(GPIO_OUTPUT);
-  gpio_input = libsoc_gpio_request(GPIO_INPUT);
+  gpio_output = libsoc_gpio_request(GPIO_OUTPUT, LS_SHARED);
+  gpio_input = libsoc_gpio_request(GPIO_INPUT, LS_SHARED);
 
   // Ensure both gpio were successfully requested
   if (gpio_output == NULL || gpio_input == NULL)
@@ -205,8 +205,7 @@ int main(void)
     libsoc_gpio_set_level(gpio_output, LOW);
     
     // Let the other thread get a look in otherwise interrupt success is
-    // ~85%, with usleep(1) success is always (to-date) %100 success
-    // with no other load.
+    // ~85%, with usleep(1) success is nearly always %100  with no other load.
     usleep(1);
   }
   

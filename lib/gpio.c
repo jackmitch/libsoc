@@ -68,11 +68,19 @@ inline void libsoc_gpio_debug(const char* func, unsigned int gpio, char* format,
   #endif
 }
 
-gpio* libsoc_gpio_request(unsigned int gpio_id)
+gpio* libsoc_gpio_request(unsigned int gpio_id, int mode)
 {
   gpio* new_gpio;
   int fd, ret;
   char tmp_str[STR_BUF];
+  int shared = 0;
+  
+  if (mode != LS_SHARED && mode != LS_GREEDY && mode != LS_WEAK)
+  {
+    libsoc_gpio_debug(__func__, gpio_id, "mode was not set, or invalid,"
+      " setting mode to LS_SHARED");
+    mode = LS_SHARED;
+  }
   
   libsoc_gpio_debug(__func__, gpio_id, "requested gpio");
   
@@ -82,35 +90,64 @@ gpio* libsoc_gpio_request(unsigned int gpio_id)
     return NULL;
   }
   
-  fd = open("/sys/class/gpio/export", O_SYNC | O_WRONLY);
+  sprintf(tmp_str, "/sys/class/gpio/gpio%d/value", gpio_id);
   
-  if (fd < 0)
+  if (access(tmp_str, F_OK ) != -1)
   {
-    libsoc_gpio_debug(__func__, gpio_id, "opening sysfs export failed");
-    perror("libsoc-gpio-debug");
-    return NULL;
+    libsoc_gpio_debug(__func__, gpio_id, "GPIO already exported");
+    
+    switch(mode)
+    {
+      case LS_WEAK:
+      {
+        return NULL;
+        break;
+      }
+        
+      case LS_SHARED:
+      {
+        shared = 1;
+        break;
+      }
+        
+      default:
+      {
+        break;
+      }
+    }
   }
-  
-  sprintf(tmp_str, "%d", gpio_id);
-  
-  ret = write(fd, tmp_str, STR_BUF);
-  
-  if (ret == 0 || ret < 0)
+  else
   {
-    libsoc_gpio_debug(__func__, gpio_id, "write to export failed");
-    perror("libsoc-gpio-debug");
-    return NULL;
-  }
-  
-  close(fd);
-  
-  sprintf(tmp_str, "/sys/class/gpio/gpio%d", gpio_id);
-  
-  if (access(tmp_str, F_OK ) == -1)
-  {
-    libsoc_gpio_debug(__func__, gpio_id, "ACCESS FAIL\n");
-    perror("libsoc-gpio-debug");
-    return NULL;
+    fd = open("/sys/class/gpio/export", O_SYNC | O_WRONLY);
+    
+    if (fd < 0)
+    {
+      libsoc_gpio_debug(__func__, gpio_id, "opening sysfs export failed");
+      perror("libsoc-gpio-debug");
+      return NULL;
+    }
+    
+    sprintf(tmp_str, "%d", gpio_id);
+    
+    ret = write(fd, tmp_str, STR_BUF);
+    
+    if (ret == 0 || ret < 0)
+    {
+      libsoc_gpio_debug(__func__, gpio_id, "write to export failed");
+      perror("libsoc-gpio-debug");
+      return NULL;
+    }
+    
+    close(fd);
+    
+    sprintf(tmp_str, "/sys/class/gpio/gpio%d", gpio_id);
+    
+    if (access(tmp_str, F_OK ) == -1)
+    {
+      libsoc_gpio_debug(__func__, gpio_id, "gpio did not export correctly");
+      perror("libsoc-gpio-debug");
+      return NULL;
+    }
   }
   
   new_gpio = malloc(sizeof(gpio));
@@ -123,9 +160,12 @@ gpio* libsoc_gpio_request(unsigned int gpio_id)
   {
     libsoc_gpio_debug(__func__, gpio_id, "opening gpio value failed");
     perror("libsoc-gpio-debug");
+    free(new_gpio);
+    return NULL;
   }
   
   new_gpio->gpio = gpio_id;
+  new_gpio->shared = shared;
   
   return new_gpio;
 }
@@ -143,7 +183,20 @@ int libsoc_gpio_free(gpio* gpio)
   
   libsoc_gpio_debug(__func__, gpio->gpio, "freeing gpio");
   
+  if (gpio->callback != NULL)
+  {
+    printf("Freeing callback!\n");
+    // Turn off the callback if there is one enabled
+    libsoc_gpio_callback_interrupt_cancel(gpio);
+  }
+  
   close(gpio->value_fd);
+  
+  if (gpio->shared == 1)
+  {
+    free(gpio);
+    return EXIT_SUCCESS;
+  }
   
   fd = open("/sys/class/gpio/unexport", O_SYNC | O_WRONLY);
   
@@ -524,6 +577,8 @@ int libsoc_gpio_callback_interrupt_cancel(gpio* gpio)
   
   free(gpio->callback->thread);
   free(gpio->callback);
+  
+  gpio->callback = NULL;
   
   libsoc_gpio_debug(__func__, gpio->gpio, "callback thread was stopped");
 }

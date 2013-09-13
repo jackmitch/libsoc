@@ -21,6 +21,10 @@ struct gpio_callback
  * \brief representation of a single requested gpio
  * \param unsigned int gpio gpio id
  * \param int value_fd file descriptor to gpio value file
+ * \param struct gpio_callback *callback - struct used to store interrupt
+ *  callback data
+ * \param int shared - set if the request flag was shared and the GPIO was
+ *  exported on request
  */
 
 typedef struct 
@@ -28,6 +32,7 @@ typedef struct
   unsigned int gpio;
   int value_fd;
   struct gpio_callback *callback;
+  int shared;
 } gpio;
 
 /**
@@ -71,11 +76,30 @@ typedef enum
  * \fn gpio* libsoc_gpio_request(unsigned int gpio_id)
  * \brief request a gpio to use
  * \param unsigned int gpio_id - the id of the gpio you wish to request
+ * \param unsigned int mode - mode for opening GPIO
  * \return pointer to gpio* on success NULL on fail
  * 
  */
 
-gpio* libsoc_gpio_request(unsigned int gpio_id);
+/**
+ * Valid Modes for libsoc_gpio_request
+ * 
+ * LS_SHARED - if the gpio is already exported then it will not unexport
+ *             the GPIO on free. If it is not exported, then it will
+ *             unexport on free.
+ * 
+ * LS_GREEDY - will succeed if the GPIO is already exported, but will 
+ *             always unexport the GPIO on free.
+ * 
+ * LS_WEAK   - will fail if GPIO is already exported, will always unexport
+ *             on free.
+ */
+
+#define LS_SHARED 0x01
+#define LS_GREEDY 0x02
+#define LS_WEAK   0x04
+
+gpio* libsoc_gpio_request(unsigned int gpio_id, int mode);
 
 /**
  * \fn int libsoc_gpio_free(gpio* gpio)
