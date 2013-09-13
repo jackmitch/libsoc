@@ -8,12 +8,11 @@
  * \param int ready - signal when the pthread is ready to accept interrupts
  */
 
-struct gpio_callback
-{
-  int (*callback_fn)(void*);
-  void *callback_arg;
-  pthread_t *thread;
-  int ready;
+struct gpio_callback {
+	int (*callback_fn) (void *);
+	void *callback_arg;
+	pthread_t *thread;
+	int ready;
 };
 
 /**
@@ -27,12 +26,11 @@ struct gpio_callback
  *  exported on request
  */
 
-typedef struct 
-{
-  unsigned int gpio;
-  int value_fd;
-  struct gpio_callback *callback;
-  int shared;
+typedef struct {
+	unsigned int gpio;
+	int value_fd;
+	struct gpio_callback *callback;
+	int shared;
 } gpio;
 
 /**
@@ -40,11 +38,10 @@ typedef struct
  * \brief defined values for input/output direction
  */
 
-typedef enum
-{
-  DIRECTION_ERROR = -1,
-  INPUT = 0,
-  OUTPUT = 1,
+typedef enum {
+	DIRECTION_ERROR = -1,
+	INPUT = 0,
+	OUTPUT = 1,
 } gpio_direction;
 
 /**
@@ -52,11 +49,10 @@ typedef enum
  * \brief defined values for high/low gpio level
  */
 
-typedef enum
-{
-  LEVEL_ERROR = -1,
-  LOW = 0,
-  HIGH = 1,
+typedef enum {
+	LEVEL_ERROR = -1,
+	LOW = 0,
+	HIGH = 1,
 } gpio_level;
 
 /**
@@ -64,12 +60,11 @@ typedef enum
  * \brief defined values for rising/falling/none gpio edge
  */
 
-typedef enum
-{
-  EDGE_ERROR = -1,
-  RISING = 0,
-  FALLING = 1,
-  NONE = 2,
+typedef enum {
+	EDGE_ERROR = -1,
+	RISING = 0,
+	FALLING = 1,
+	NONE = 2,
 } gpio_edge;
 
 /**
@@ -99,7 +94,7 @@ typedef enum
 #define LS_GREEDY 0x02
 #define LS_WEAK   0x04
 
-gpio* libsoc_gpio_request(unsigned int gpio_id, int mode);
+gpio *libsoc_gpio_request(unsigned int gpio_id, int mode);
 
 /**
  * \fn int libsoc_gpio_free(gpio* gpio)
@@ -108,7 +103,7 @@ gpio* libsoc_gpio_request(unsigned int gpio_id, int mode);
  * \return EXIT_SUCCESS or EXIT_FAILURE 
  */
 
-int libsoc_gpio_free(gpio* gpio);
+int libsoc_gpio_free(gpio * gpio);
 
 /**
  * \fn int libsoc_gpio_set_direction(gpio* current_gpio, gpio_direction direction)
@@ -118,7 +113,7 @@ int libsoc_gpio_free(gpio* gpio);
  * \return EXIT_SUCCESS or EXIT_FAILURE
  */
 
-int libsoc_gpio_set_direction(gpio* current_gpio, gpio_direction direction);
+int libsoc_gpio_set_direction(gpio * current_gpio, gpio_direction direction);
 
 /**
  * \fn gpio_direction libsoc_gpio_get_direction(gpio* current_gpio)
@@ -127,7 +122,7 @@ int libsoc_gpio_set_direction(gpio* current_gpio, gpio_direction direction);
  * \return current GPIO direction, INPUT or OUTPUT
  */
 
-gpio_direction libsoc_gpio_get_direction(gpio* current_gpio);
+gpio_direction libsoc_gpio_get_direction(gpio * current_gpio);
 
 /**
  * \fn in libsoc_gpio_set_level(gpio* current_gpio, gpio_level level)
@@ -137,7 +132,7 @@ gpio_direction libsoc_gpio_get_direction(gpio* current_gpio);
  * \return EXIT_SUCCES or EXIT_FAILURE
  */
 
-int libsoc_gpio_set_level(gpio* current_gpio, gpio_level level);
+int libsoc_gpio_set_level(gpio * current_gpio, gpio_level level);
 
 /**
  * \fn gpio_level libsoc_gpio_get_level(gpio* current_gpio)
@@ -146,7 +141,7 @@ int libsoc_gpio_set_level(gpio* current_gpio, gpio_level level);
  * \return gpio_level, HIGH or LOW
  */
 
-gpio_level libsoc_gpio_get_level(gpio* current_gpio);
+gpio_level libsoc_gpio_get_level(gpio * current_gpio);
 
 /**
  * \fn void libsoc_gpio_set_debug 
@@ -164,7 +159,7 @@ void libsoc_gpio_set_debug(int level);
  * \return gpio_edge, RISING, FALLING or NONE
  */
 
-gpio_edge libsoc_gpio_get_edge(gpio* current_gpio);
+gpio_edge libsoc_gpio_get_edge(gpio * current_gpio);
 
 /**
  * \fn int libsoc_gpio_set_edge(gpio* current_gpio, gpio_edge edge)
@@ -174,7 +169,7 @@ gpio_edge libsoc_gpio_get_edge(gpio* current_gpio);
  * \return EXIT_SUCCESS or EXIT FAILURE
  */
 
-int libsoc_gpio_set_edge(gpio* current_gpio, gpio_edge edge);
+int libsoc_gpio_set_edge(gpio * current_gpio, gpio_edge edge);
 
 /**
  * \fn int libsoc_gpio_wait_interrupt(gpio* gpio, int timeout)
@@ -188,7 +183,7 @@ int libsoc_gpio_set_edge(gpio* current_gpio, gpio_edge edge);
  *  interrupt missed
  */
 
-int libsoc_gpio_wait_interrupt(gpio* gpio, int timeout);
+int libsoc_gpio_wait_interrupt(gpio * gpio, int timeout);
 
 /**
  * \fn int libsoc_gpio_callback_interrupt(gpio* gpio, int (*callback_fn)(void*), void* arg)
@@ -202,7 +197,8 @@ int libsoc_gpio_wait_interrupt(gpio* gpio, int timeout);
  * \return EXIT_SUCCESS or EXIT_FAILURE
  */
 
-int libsoc_gpio_callback_interrupt(gpio* gpio, int (*callback_fn)(void*), void* arg);
+int libsoc_gpio_callback_interrupt(gpio * gpio, int (*callback_fn) (void *),
+				   void *arg);
 
 /**
  * \fn int libsoc_gpio_callback_interrupt_cancel(gpio* gpio)
@@ -211,4 +207,4 @@ int libsoc_gpio_callback_interrupt(gpio* gpio, int (*callback_fn)(void*), void* 
  * \return EXIT_SUCCESS or EXIT_FAILURE
  */
 
-int libsoc_gpio_callback_interrupt_cancel(gpio* gpio);
+int libsoc_gpio_callback_interrupt_cancel(gpio * gpio);
