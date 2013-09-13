@@ -64,6 +64,12 @@ included to setup the build. Exact steps:
 --enable-debug : enables the debug code, allows for better debugging,
                  but also slows down the code path. Leave disabled for 
                  fastest operation
+                 
+Dependencies
+------------------------------------------------------------------------
+
+- pthreads
+- libgcc
 
 How do I use libsoc?
 ------------------------------------------------------------------------
