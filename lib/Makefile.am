@@ -6,6 +6,6 @@ libsoc_la_CPPFLAGS = -I${top_srcdir}/lib/include
 
 ## interface : source : age
 
-libsoc_la_LDFLAGS = -version-info 1:0:1
+libsoc_la_LDFLAGS = -version-info 2:0:0
 
 

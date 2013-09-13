@@ -191,7 +191,7 @@ int libsoc_gpio_set_edge(gpio* current_gpio, gpio_edge edge);
 int libsoc_gpio_wait_interrupt(gpio* gpio, int timeout);
 
 /**
- * \fn int libsoc_gpio_callback_interrupt(gpio* gpio, int (*callback_fn)(unsigned int))
+ * \fn int libsoc_gpio_callback_interrupt(gpio* gpio, int (*callback_fn)(void*), void* arg)
  * \brief takes a gpio and a callback function, when an interrupt occurs
  *  on the edge previously specified, the callback function is called
  * \param gpio* gpio - the gpio for which you want the interrupt to 

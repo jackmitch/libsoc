@@ -1,17 +1,71 @@
-Current Development
+13/09/13 - 0.3
 --------------
 
 - Non-blocking GPIO interrupts
 
-03/09/13
---------
-libsoc 0.2 released
+  /**
+   * \fn int libsoc_gpio_callback_interrupt(gpio* gpio, int (*callback_fn)(void*), void* arg)
+   * \brief takes a gpio and a callback function, when an interrupt occurs
+   *  on the edge previously specified, the callback function is called
+   * \param gpio* gpio - the gpio for which you want the interrupt to 
+   *  trigger the callback function
+   * \param int (*callback_fn)(void*) - the function you wish to call with
+   *  a void* pointer to a possible value you may wish to use in the callback.
+   * \param void* arg - pointer to data you wish to use in the callback function
+   * \return EXIT_SUCCESS or EXIT_FAILURE
+   */
+
+  int libsoc_gpio_callback_interrupt(gpio* gpio, int (*callback_fn)(void*), void* arg);
+  
+  /**
+   * \fn int libsoc_gpio_callback_interrupt_cancel(gpio* gpio)
+   * \brief cancel a callback on a gpio interrupt
+   * \param gpio* gpio - gpio with a valid callback enabled
+   * \return EXIT_SUCCESS or EXIT_FAILURE
+   */
+
+  int libsoc_gpio_callback_interrupt_cancel(gpio* gpio);
+
+- Added modes to gpio_request
+ 
+  gpio* libsoc_gpio_request(unsigned int gpio_id, int mode);
+
+  /**
+  * Valid Modes for libsoc_gpio_request
+  * 
+  * LS_SHARED - if the gpio is already exported then it will not unexport
+  *             the GPIO on free. If it is not exported, then it will
+  *             unexport on free.
+  * 
+  * LS_GREEDY - will succeed if the GPIO is already exported, but will 
+  *             always unexport the GPIO on free.
+  * 
+  * LS_WEAK   - will fail if GPIO is already exported, will always unexport
+  *             on free.
+  */
+  
+03/09/13 - 0.2
+--------------
 
 - GPIO blocking interrupt support
+
+  /**
+   * \fn int libsoc_gpio_wait_interrupt(gpio* gpio, int timeout)
+   * \brief takes a gpio and waits for length of timeout or until an
+   *  interrupt occurs. Will return EXIT_SUCCESS on interrupt or 
+   *  EXIT_FAILURE on error or timeout.
+   * \param gpio*  gpio - the gpio for which you want to wait on interrupt
+   * \param int timeout - the max length of time to wait for interrupt in 
+   *  milliseconds
+   * \return EXIT_SUCCESS on interrupt caught, EXIT_FAILURE on error or 
+   *  interrupt missed
+   */
+
+  int libsoc_gpio_wait_interrupt(gpio* gpio, int timeout);
+
 - Improved error and debug handling
 
-31/08/13
---------
-libsoc 0.1 released
+31/08/13 - 0.1
+--------------
 
 - basic sysfs GPIO support
