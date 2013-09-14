@@ -25,4 +25,4 @@ lib/libsoc_la-gpio.o
 ltmain.sh
 missing
 test/gpio_test
-
+libtool
