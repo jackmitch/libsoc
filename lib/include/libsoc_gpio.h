@@ -68,16 +68,7 @@ typedef enum {
 } gpio_edge;
 
 /**
- * \fn gpio* libsoc_gpio_request(unsigned int gpio_id)
- * \brief request a gpio to use
- * \param unsigned int gpio_id - the id of the gpio you wish to request
- * \param unsigned int mode - mode for opening GPIO
- * \return pointer to gpio* on success NULL on fail
- * 
- */
-
-/**
- * Valid Modes for libsoc_gpio_request
+ * \enum gpio_mode  
  * 
  * LS_SHARED - if the gpio is already exported then it will not unexport
  *             the GPIO on free. If it is not exported, then it will
@@ -90,11 +81,22 @@ typedef enum {
  *             on free.
  */
 
-#define LS_SHARED 0x01
-#define LS_GREEDY 0x02
-#define LS_WEAK   0x04
+enum gpio_mode {
+	LS_SHARED,
+	LS_GREEDY,
+	LS_WEAK,
+};
 
-gpio *libsoc_gpio_request(unsigned int gpio_id, int mode);
+/**
+ * \fn gpio* libsoc_gpio_request(unsigned int gpio_id)
+ * \brief request a gpio to use
+ * \param unsigned int gpio_id - the id of the gpio you wish to request
+ * \param unsigned int mode - mode for opening GPIO
+ * \return pointer to gpio* on success NULL on fail
+ * 
+ */
+
+gpio *libsoc_gpio_request(unsigned int gpio_id, enum gpio_mode mode);
 
 /**
  * \fn int libsoc_gpio_free(gpio* gpio)
