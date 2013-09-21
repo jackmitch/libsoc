@@ -11,5 +11,10 @@
     - sysfs_valid
   
 - SPI Support
+  - See file SPI
+
 - I2C Support
+  - See file I2C
+
 - ADC Support
+  - See file ADC
