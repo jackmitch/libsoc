@@ -1,0 +1,3 @@
+Ordered MicroChip 25LC640-I/P 64K EEPROM to do SPI development and testing
+
+Unit tests will be against the 64K EEPROM, writing and reading back values.
