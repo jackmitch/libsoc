@@ -1,0 +1,15 @@
+- Breakout sysfs file and directory management into seperate file in order
+  to reduce duplication of code and have consistent error checking.
+
+  Example API:
+
+  - sysfs.c
+    - sysfs_open
+    - sysfs_close
+    - sysfs_write
+    - sysfs_read
+    - sysfs_valid
+  
+- SPI Support
+- I2C Support
+- ADC Support
