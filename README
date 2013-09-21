@@ -38,6 +38,8 @@ Future ideas are:
 - PWM
 - A/D Converters
 
+Please see the roadmap folder for more information
+
 Does libsoc support the SoC on my board?
 ------------------------------------------------------------------------
 
