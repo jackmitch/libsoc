@@ -27,7 +27,7 @@ int libsoc_spi_read(spi* spi, void* buf, int len)
 int libsoc_spi_rw(spi* spi, void* write_buf, void* read_buf, int len)
  - full duplex read/write
  
-int libsoc_spi_set_{mode,bits,max_speed,lsb_first}(int val)
+int libsoc_spi_set_{mode,bits,max_speed,lsb_first}(spi* spi, int val)
  - set spi modes
  
 int libsoc_spi_raw_transfer(spi* spi, struct spi_ioc_transfer, int num_transfers)
