@@ -7,7 +7,7 @@
 #include <pthread.h>
 #include <errno.h>
 
-#include "libsoc_sysfs.h"
+#include "libsoc_file.h"
 #include "libsoc_debug.h"
 #include "libsoc_gpio.h"
 
@@ -67,7 +67,7 @@ gpio *libsoc_gpio_request(unsigned int gpio_id, enum gpio_mode mode)
 
 	sprintf(tmp_str, "/sys/class/gpio/gpio%d/value", gpio_id);
 
-	if (sysfs_valid(tmp_str)) {
+	if (file_valid(tmp_str)) {
 		libsoc_gpio_debug(__func__, gpio_id, "GPIO already exported");
 
 		switch (mode) {
@@ -89,22 +89,22 @@ gpio *libsoc_gpio_request(unsigned int gpio_id, enum gpio_mode mode)
 			}
 		}
 	} else {
-    fd = sysfs_open("/sys/class/gpio/export", O_SYNC | O_WRONLY);
+    fd = file_open("/sys/class/gpio/export", O_SYNC | O_WRONLY);
     
     if (fd < 0)
       return NULL;
 
 		sprintf(tmp_str, "%d", gpio_id);
 
-		if (sysfs_write(fd, tmp_str, STR_BUF) < 0)
+		if (file_write(fd, tmp_str, STR_BUF) < 0)
 			return NULL;
 
-		if (sysfs_close(fd))
+		if (file_close(fd))
       return NULL;
 
 		sprintf(tmp_str, "/sys/class/gpio/gpio%d", gpio_id);
 
-		if (!sysfs_valid(tmp_str)) {
+		if (!file_valid(tmp_str)) {
 			libsoc_gpio_debug(__func__, gpio_id,
 					  "gpio did not export correctly");
 			perror("libsoc-gpio-debug");
@@ -116,7 +116,7 @@ gpio *libsoc_gpio_request(unsigned int gpio_id, enum gpio_mode mode)
 
 	sprintf(tmp_str, "/sys/class/gpio/gpio%d/value", gpio_id);
 
-	new_gpio->value_fd = sysfs_open(tmp_str, O_SYNC | O_RDWR);
+	new_gpio->value_fd = file_open(tmp_str, O_SYNC | O_RDWR);
   
   if (new_gpio->value_fd < 0)
     return NULL;
@@ -145,7 +145,7 @@ int libsoc_gpio_free(gpio * gpio)
 		libsoc_gpio_callback_interrupt_cancel(gpio);
 	}
 
-	if (sysfs_close(gpio->value_fd) < 0)
+	if (file_close(gpio->value_fd) < 0)
     return EXIT_FAILURE;
 
 	if (gpio->shared == 1) {
@@ -153,22 +153,22 @@ int libsoc_gpio_free(gpio * gpio)
 		return EXIT_SUCCESS;
 	}
 
-	fd = sysfs_open("/sys/class/gpio/unexport", O_SYNC | O_WRONLY);
+	fd = file_open("/sys/class/gpio/unexport", O_SYNC | O_WRONLY);
   
   if (fd < 0)
     return EXIT_FAILURE;
     
 	sprintf(tmp_str, "%d", gpio->gpio);
 
-	if (sysfs_write(fd, tmp_str, STR_BUF) < 0)
+	if (file_write(fd, tmp_str, STR_BUF) < 0)
     return EXIT_FAILURE;
 
-	if (sysfs_close(fd) < 0)
+	if (file_close(fd) < 0)
     return EXIT_FAILURE;
 
 	sprintf(tmp_str, "/sys/class/gpio/gpio%d", gpio->gpio);
 
-	if (sysfs_valid(tmp_str)) {
+	if (file_valid(tmp_str)) {
 		libsoc_gpio_debug(__func__, gpio->gpio, "freeing failed");
 		return EXIT_FAILURE;
 	}
@@ -194,15 +194,15 @@ int libsoc_gpio_set_direction(gpio * current_gpio, gpio_direction direction)
 
 	sprintf(path, "/sys/class/gpio/gpio%d/direction", current_gpio->gpio);
 
-	fd = sysfs_open(path, O_SYNC | O_WRONLY);
+	fd = file_open(path, O_SYNC | O_WRONLY);
   
   if (fd < 0)
     return EXIT_FAILURE;
 
-	if (sysfs_write(fd, gpio_direction_strings[direction], STR_BUF) < 0)
+	if (file_write(fd, gpio_direction_strings[direction], STR_BUF) < 0)
     return EXIT_FAILURE;
 
-	if (sysfs_close(fd) < 0)
+	if (file_close(fd) < 0)
     return EXIT_FAILURE;
 
 	return EXIT_SUCCESS;
@@ -221,17 +221,17 @@ gpio_direction libsoc_gpio_get_direction(gpio * current_gpio)
 	sprintf(tmp_str, "/sys/class/gpio/gpio%d/direction",
 		current_gpio->gpio);
 
-	fd = sysfs_open(tmp_str, O_RDONLY);
+	fd = file_open(tmp_str, O_RDONLY);
   
   if (fd < 0)
 		return DIRECTION_ERROR;
 
 	lseek(fd, 0, SEEK_SET);
 
-	if (sysfs_read(fd, tmp_str, STR_BUF) < 0)
+	if (file_read(fd, tmp_str, STR_BUF) < 0)
     return DIRECTION_ERROR;
 
-	if (sysfs_close(fd) < 0)
+	if (file_close(fd) < 0)
     return DIRECTION_ERROR;
 
 	if (strncmp(tmp_str, "in", 2) <= 0) {
@@ -255,7 +255,7 @@ int libsoc_gpio_set_level(gpio * current_gpio, gpio_level level)
 	libsoc_gpio_debug(__func__, current_gpio->gpio, "setting level to %d",
 			  level);
 
-	if (sysfs_write(current_gpio->value_fd, gpio_level_strings[level], 1) < 0)
+	if (file_write(current_gpio->value_fd, gpio_level_strings[level], 1) < 0)
     return EXIT_FAILURE;
 
 	return EXIT_SUCCESS;
@@ -309,15 +309,15 @@ int libsoc_gpio_set_edge(gpio * current_gpio, gpio_edge edge)
 
 	sprintf(path, "/sys/class/gpio/gpio%d/edge", current_gpio->gpio);
 
-	fd = sysfs_open(path, O_SYNC | O_WRONLY);
+	fd = file_open(path, O_SYNC | O_WRONLY);
   
   if (fd < 0)
 		return EXIT_FAILURE;
 
-	if (sysfs_write(fd, gpio_edge_strings[edge], STR_BUF) < 0)
+	if (file_write(fd, gpio_edge_strings[edge], STR_BUF) < 0)
     return EXIT_FAILURE;
 
-	if (sysfs_close(fd) < 0)
+	if (file_close(fd) < 0)
     return EXIT_FAILURE;
 
 	return EXIT_SUCCESS;
@@ -335,17 +335,17 @@ gpio_edge libsoc_gpio_get_edge(gpio * current_gpio)
 
 	sprintf(tmp_str, "/sys/class/gpio/gpio%d/edge", current_gpio->gpio);
 
-	fd = sysfs_open(tmp_str, O_RDONLY);
+	fd = file_open(tmp_str, O_RDONLY);
   
   if (fd < 0)
 		return EDGE_ERROR;
 
 	lseek(fd, 0, SEEK_SET);
 
-	if (sysfs_read(fd, tmp_str, STR_BUF) < 0)
+	if (file_read(fd, tmp_str, STR_BUF) < 0)
     return EDGE_ERROR;
 
-	if (sysfs_close(fd) < 0)
+	if (file_close(fd) < 0)
     return EDGE_ERROR;
 
 	if (strncmp(tmp_str, "r", 1) == 0) {
