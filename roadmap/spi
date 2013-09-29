@@ -1,3 +1,37 @@
 Ordered MicroChip 25LC640-I/P 64K EEPROM to do SPI development and testing
 
 Unit tests will be against the 64K EEPROM, writing and reading back values.
+
+SPI API Details
+---------------
+
+- SPI support will use spidev ioctls
+- wrappers for simple read/write support
+- basic wrapper for support of sending raw spi_ioc_transfer structs
+- possible support for using libsoc requested gpio as chip select (undecided)
+
+Current Draft API
+-----------------
+
+This is _not_ set in stone, please feel free to comment!
+
+spi* libsoc_spidev_init (int spidev_device, int chip_select)
+ - checks spidev char devices is available and sets up libsoc_spi device struct
+ 
+int libsoc_spi_write(spi* spi, void* buf, int len)
+ - write buffer to spi device
+
+int libsoc_spi_read(spi* spi, void* buf, int len)
+ - read from spi device into buf
+ 
+int libsoc_spi_rw(spi* spi, void* write_buf, void* read_buf, int len)
+ - full duplex read/write
+ 
+int libsoc_spi_set_{mode,bits,max_speed,lsb_first}(int val)
+ - set spi modes
+ 
+int libsoc_spi_raw_transfer(spi* spi, struct spi_ioc_transfer, int num_transfers)
+ - basic wrapper around SPI_IOC_MESSAGE for more advanced transfers
+ 
+int spi_free(spi* spi)
+ - free the libsoc_spi struct
