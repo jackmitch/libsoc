@@ -3,6 +3,7 @@ include_HEADERS = include/libsoc_gpio.h \
 									include/libsoc_debug.h
 
 libsoc_la_SOURCES = gpio.c \
+										spi.c \
 										file.c \
 										debug.c
 
