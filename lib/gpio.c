@@ -1,13 +1,14 @@
 #include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
+#include <stdarg.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <stdarg.h>
+#include <stdio.h>
 #include <poll.h>
 #include <pthread.h>
 #include <errno.h>
 
+#include "libsoc_sysfs.h"
+#include "libsoc_debug.h"
 #include "libsoc_gpio.h"
 
 #define STR_BUF 256
@@ -17,31 +18,12 @@ const char gpio_level_strings[2][STR_BUF] = { "0", "1" };
 const char gpio_direction_strings[2][STR_BUF] = { "in", "out" };
 const char gpio_edge_strings[3][STR_BUF] = { "rising", "falling", "none" };
 
-int debug = 0;
-
-void libsoc_gpio_set_debug(int level)
-{
-#ifdef DEBUG
-
-	if (level) {
-		debug = 1;
-	} else {
-		debug = 0;
-	}
-
-#else
-
-	printf("libsoc-gpio: warning debug support missing!\n");
-
-#endif
-}
-
 inline void libsoc_gpio_debug(const char *func, unsigned int gpio, char *format,
 			      ...)
 {
 #ifdef DEBUG
 
-	if (debug) {
+	if (libsoc_get_debug()) {
 		va_list args;
 
 		fprintf(stderr, "libsoc-gpio-debug: ");
@@ -85,7 +67,7 @@ gpio *libsoc_gpio_request(unsigned int gpio_id, enum gpio_mode mode)
 
 	sprintf(tmp_str, "/sys/class/gpio/gpio%d/value", gpio_id);
 
-	if (access(tmp_str, F_OK) != -1) {
+	if (sysfs_valid(tmp_str)) {
 		libsoc_gpio_debug(__func__, gpio_id, "GPIO already exported");
 
 		switch (mode) {
@@ -107,31 +89,22 @@ gpio *libsoc_gpio_request(unsigned int gpio_id, enum gpio_mode mode)
 			}
 		}
 	} else {
-		fd = open("/sys/class/gpio/export", O_SYNC | O_WRONLY);
-
-		if (fd < 0) {
-			libsoc_gpio_debug(__func__, gpio_id,
-					  "opening sysfs export failed");
-			perror("libsoc-gpio-debug");
-			return NULL;
-		}
+    fd = sysfs_open("/sys/class/gpio/export", O_SYNC | O_WRONLY);
+    
+    if (fd < 0)
+      return NULL;
 
 		sprintf(tmp_str, "%d", gpio_id);
 
-		ret = write(fd, tmp_str, STR_BUF);
-
-		if (ret == 0 || ret < 0) {
-			libsoc_gpio_debug(__func__, gpio_id,
-					  "write to export failed");
-			perror("libsoc-gpio-debug");
+		if (sysfs_write(fd, tmp_str, STR_BUF) < 0)
 			return NULL;
-		}
 
-		close(fd);
+		if (sysfs_close(fd))
+      return NULL;
 
 		sprintf(tmp_str, "/sys/class/gpio/gpio%d", gpio_id);
 
-		if (access(tmp_str, F_OK) == -1) {
+		if (!sysfs_valid(tmp_str)) {
 			libsoc_gpio_debug(__func__, gpio_id,
 					  "gpio did not export correctly");
 			perror("libsoc-gpio-debug");
@@ -143,15 +116,10 @@ gpio *libsoc_gpio_request(unsigned int gpio_id, enum gpio_mode mode)
 
 	sprintf(tmp_str, "/sys/class/gpio/gpio%d/value", gpio_id);
 
-	new_gpio->value_fd = open(tmp_str, O_SYNC | O_RDWR);
-
-	if (new_gpio->value_fd < 0) {
-		libsoc_gpio_debug(__func__, gpio_id,
-				  "opening gpio value failed");
-		perror("libsoc-gpio-debug");
-		free(new_gpio);
-		return NULL;
-	}
+	new_gpio->value_fd = sysfs_open(tmp_str, O_SYNC | O_RDWR);
+  
+  if (new_gpio->value_fd < 0)
+    return NULL;
 
 	new_gpio->gpio = gpio_id;
 	new_gpio->shared = shared;
@@ -177,31 +145,30 @@ int libsoc_gpio_free(gpio * gpio)
 		libsoc_gpio_callback_interrupt_cancel(gpio);
 	}
 
-	close(gpio->value_fd);
+	if (sysfs_close(gpio->value_fd) < 0)
+    return EXIT_FAILURE;
 
 	if (gpio->shared == 1) {
 		free(gpio);
 		return EXIT_SUCCESS;
 	}
 
-	fd = open("/sys/class/gpio/unexport", O_SYNC | O_WRONLY);
-
-	if (fd < 0) {
-		libsoc_gpio_debug(__func__, gpio->gpio,
-				  "opening sysfs unexport failed");
-		perror("libsoc-gpio-debug");
-		return EXIT_FAILURE;
-	}
-
+	fd = sysfs_open("/sys/class/gpio/unexport", O_SYNC | O_WRONLY);
+  
+  if (fd < 0)
+    return EXIT_FAILURE;
+    
 	sprintf(tmp_str, "%d", gpio->gpio);
 
-	write(fd, tmp_str, STR_BUF);
+	if (sysfs_write(fd, tmp_str, STR_BUF) < 0)
+    return EXIT_FAILURE;
 
-	close(fd);
+	if (sysfs_close(fd) < 0)
+    return EXIT_FAILURE;
 
 	sprintf(tmp_str, "/sys/class/gpio/gpio%d", gpio->gpio);
 
-	if (access(tmp_str, F_OK) != -1) {
+	if (sysfs_valid(tmp_str)) {
 		libsoc_gpio_debug(__func__, gpio->gpio, "freeing failed");
 		return EXIT_FAILURE;
 	}
@@ -227,18 +194,16 @@ int libsoc_gpio_set_direction(gpio * current_gpio, gpio_direction direction)
 
 	sprintf(path, "/sys/class/gpio/gpio%d/direction", current_gpio->gpio);
 
-	fd = open(path, O_SYNC | O_WRONLY);
+	fd = sysfs_open(path, O_SYNC | O_WRONLY);
+  
+  if (fd < 0)
+    return EXIT_FAILURE;
 
-	if (fd < 0) {
-		libsoc_gpio_debug(__func__, current_gpio->gpio,
-				  "opening sysfs direction failed");
-		perror("libsoc-gpio-debug");
-		return EXIT_FAILURE;
-	}
+	if (sysfs_write(fd, gpio_direction_strings[direction], STR_BUF) < 0)
+    return EXIT_FAILURE;
 
-	write(fd, gpio_direction_strings[direction], STR_BUF);
-
-	close(fd);
+	if (sysfs_close(fd) < 0)
+    return EXIT_FAILURE;
 
 	return EXIT_SUCCESS;
 }
@@ -256,20 +221,18 @@ gpio_direction libsoc_gpio_get_direction(gpio * current_gpio)
 	sprintf(tmp_str, "/sys/class/gpio/gpio%d/direction",
 		current_gpio->gpio);
 
-	fd = open(tmp_str, O_RDONLY);
-
-	if (fd < 0) {
-		libsoc_gpio_debug(__func__, current_gpio->gpio,
-				  "opening sysfs direction failed");
-		perror("libsoc-gpio-debug");
+	fd = sysfs_open(tmp_str, O_RDONLY);
+  
+  if (fd < 0)
 		return DIRECTION_ERROR;
-	}
 
 	lseek(fd, 0, SEEK_SET);
 
-	read(fd, tmp_str, STR_BUF);
+	if (sysfs_read(fd, tmp_str, STR_BUF) < 0)
+    return DIRECTION_ERROR;
 
-	close(fd);
+	if (sysfs_close(fd) < 0)
+    return DIRECTION_ERROR;
 
 	if (strncmp(tmp_str, "in", 2) <= 0) {
 		libsoc_gpio_debug(__func__, current_gpio->gpio,
@@ -292,7 +255,8 @@ int libsoc_gpio_set_level(gpio * current_gpio, gpio_level level)
 	libsoc_gpio_debug(__func__, current_gpio->gpio, "setting level to %d",
 			  level);
 
-	write(current_gpio->value_fd, gpio_level_strings[level], 1);
+	if (sysfs_write(current_gpio->value_fd, gpio_level_strings[level], 1) < 0)
+    return EXIT_FAILURE;
 
 	return EXIT_SUCCESS;
 }
@@ -309,7 +273,8 @@ gpio_level libsoc_gpio_get_level(gpio * current_gpio)
 
 	lseek(current_gpio->value_fd, 0, SEEK_SET);
 
-	ret = read(current_gpio->value_fd, level, STR_BUF);
+	if (read(current_gpio->value_fd, level, STR_BUF) < 0)
+    return LEVEL_ERROR;
 
 	if (ret < 0) {
 		libsoc_gpio_debug(__func__, current_gpio->gpio,
@@ -344,18 +309,16 @@ int libsoc_gpio_set_edge(gpio * current_gpio, gpio_edge edge)
 
 	sprintf(path, "/sys/class/gpio/gpio%d/edge", current_gpio->gpio);
 
-	fd = open(path, O_SYNC | O_WRONLY);
-
-	if (fd < 0) {
-		libsoc_gpio_debug(__func__, current_gpio->gpio,
-				  "opening sysfs edge failed");
-		perror("libsoc-gpio-debug");
+	fd = sysfs_open(path, O_SYNC | O_WRONLY);
+  
+  if (fd < 0)
 		return EXIT_FAILURE;
-	}
 
-	write(fd, gpio_edge_strings[edge], STR_BUF);
+	if (sysfs_write(fd, gpio_edge_strings[edge], STR_BUF) < 0)
+    return EXIT_FAILURE;
 
-	close(fd);
+	if (sysfs_close(fd) < 0)
+    return EXIT_FAILURE;
 
 	return EXIT_SUCCESS;
 }
@@ -372,20 +335,18 @@ gpio_edge libsoc_gpio_get_edge(gpio * current_gpio)
 
 	sprintf(tmp_str, "/sys/class/gpio/gpio%d/edge", current_gpio->gpio);
 
-	fd = open(tmp_str, O_RDONLY);
-
-	if (fd < 0) {
-		libsoc_gpio_debug(__func__, current_gpio->gpio,
-				  "opening sysfs edge failed");
-		perror("libsoc-gpio-debug");
+	fd = sysfs_open(tmp_str, O_RDONLY);
+  
+  if (fd < 0)
 		return EDGE_ERROR;
-	}
 
 	lseek(fd, 0, SEEK_SET);
 
-	read(fd, tmp_str, STR_BUF);
+	if (sysfs_read(fd, tmp_str, STR_BUF) < 0)
+    return EDGE_ERROR;
 
-	close(fd);
+	if (sysfs_close(fd) < 0)
+    return EDGE_ERROR;
 
 	if (strncmp(tmp_str, "r", 1) == 0) {
 		libsoc_gpio_debug(__func__, current_gpio->gpio,

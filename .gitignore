@@ -26,3 +26,5 @@ ltmain.sh
 missing
 test/gpio_test
 libtool
+*.lo
+*.o

@@ -4,6 +4,7 @@
 #include <sys/wait.h>
 
 #include "libsoc_gpio.h"
+#include "libsoc_debug.h"
 
 /**
  * 
@@ -36,7 +37,7 @@ int main(void)
   gpio *gpio_output, *gpio_input;
 
   // Enable debug output
-  libsoc_gpio_set_debug(1);
+  libsoc_set_debug(1);
 
   // Request gpios
   gpio_output = libsoc_gpio_request(GPIO_OUTPUT, LS_SHARED);
@@ -99,7 +100,7 @@ int main(void)
   }
   
   // Turn off debug printing for fast toggle
-  libsoc_gpio_set_debug(0);
+  libsoc_set_debug(0);
   
   int i;
   
@@ -111,7 +112,7 @@ int main(void)
   }
   
   // Turn debug back on
-  libsoc_gpio_set_debug(1);
+  libsoc_set_debug(1);
   
   // Set edge to RISING
   libsoc_gpio_set_edge(gpio_input, RISING);
@@ -194,7 +195,7 @@ int main(void)
   libsoc_gpio_callback_interrupt(gpio_input, &callback_test, (void*) &interrupt_count);
   
   // Turn off debug
-  libsoc_gpio_set_debug(0);
+  libsoc_set_debug(0);
   
   printf("Setting off interrupt generation...\n"); 
   
@@ -210,7 +211,7 @@ int main(void)
   }
   
   // Turn debug back on
-  libsoc_gpio_set_debug(1);
+  libsoc_set_debug(1);
   
   printf("Caught %d of 10000 interrupts\n", interrupt_count); 
   
