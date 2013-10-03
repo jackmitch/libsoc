@@ -13,13 +13,14 @@
 spi* libsoc_spi_init (int spidev_device, int chip_select)
 {
   spi* spi = malloc(sizeof(spi));
+  char path[40];
   
-  sprintf(spi->path, "/dev/spidev%d.%d", spidev_device, chip_select);
+  sprintf(path, "/dev/spidev%d.%d", spidev_device, chip_select);
   
-  if (!file_valid(spi->path))
+  if (!file_valid(path))
     goto error;
   
-  spi->fd = file_open(spi->path);
+  spi->fd = file_open(path);
     
   if (spi->fd < 0)
     goto error;
@@ -28,7 +29,7 @@ spi* libsoc_spi_init (int spidev_device, int chip_select)
     
   error:
     
-  libsoc_debug(__func__, "spidev device %s does not exist", spi->path);  
+  libsoc_debug(__func__, "spidev device %s does not exist", path);  
   
   free(spi);
   
