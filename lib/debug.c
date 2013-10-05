@@ -3,13 +3,35 @@
 
 int debug = 0;
 
+inline void libsoc_debug(const char *func, char *format, ...)
+{
+#ifdef DEBUG
+
+	if (debug) {
+		va_list args;
+
+		fprintf(stderr, "libsoc-debug: ");
+
+		va_start(args, format);
+		vfprintf(stderr, format, args);
+		va_end(args);
+
+    fprintf(stderr, " (%s)", func);
+
+		fprintf(stderr, "\n");
+	}
+#endif
+}
+
 void libsoc_set_debug(int level)
 {
 #ifdef DEBUG
 
 	if (level) {
-		debug = 1;
+    debug = 1;
+    libsoc_debug(__func__, "debug enabled");
 	} else {
+    libsoc_debug(__func__, "debug disabled");
 		debug = 0;
 	}
 
@@ -30,25 +52,5 @@ int libsoc_get_debug()
 
 	printf("libsoc-debug: warning debug support missing!\n");
 
-#endif
-}
-
-inline void libsoc_debug(const char *func, char *format, ...)
-{
-#ifdef DEBUG
-
-	if (debug) {
-		va_list args;
-
-		fprintf(stderr, "libsoc-debug: ");
-
-		va_start(args, format);
-		vfprintf(stderr, format, args);
-		va_end(args);
-
-    fprintf(stderr, " (%s)", func);
-
-		fprintf(stderr, "\n");
-	}
 #endif
 }
