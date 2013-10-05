@@ -22,6 +22,9 @@
 #define SPI_DEVICE   1
 #define CHIP_SELECT  0
 
+#define EEPROM_SIZE 8192*8
+#define EEPROM_NUM_PAGES EEPROM_SIZE/32
+
 #define WREN  0x06
 #define WRDI  0x04
 #define WRITE 0x02
@@ -49,6 +52,8 @@ uint8_t read_status_register(spi* spi_dev) {
 int write_page(spi* spi_dev, uint16_t page_address, uint8_t* data, int len) {
   
   printf("Writing to page %d\n", page_address);
+  
+  page_address = page_address * 32;
   
   tx[0] = WRITE;
   
@@ -87,14 +92,16 @@ int write_page(spi* spi_dev, uint16_t page_address, uint8_t* data, int len) {
   
 }
 
-int read_page(spi* spi_dev, uint16_t address, uint8_t* data, int len) {
+int read_page(spi* spi_dev, uint16_t page_address, uint8_t* data, int len) {
+  
+  printf("Reading page address %d\n", page_address);
   
   tx[0] = READ;
   
-  tx[1] = (address >> 8);
-  tx[2] = address;
+  page_address = page_address * 32;
   
-  printf("Reading page address %d\n", address);
+  tx[1] = (page_address >> 8);
+  tx[2] = page_address;
   
   libsoc_spi_rw(spi_dev, tx, rx, (len+3));
   
@@ -124,8 +131,9 @@ int main()
   libsoc_set_debug(1);
    
   uint8_t status;
+  uint16_t page;
   int i;
-   
+
   spi* spi_dev = libsoc_spi_init(SPI_DEVICE, CHIP_SELECT);
 
   libsoc_spi_set_mode(spi_dev, MODE_0);
@@ -162,9 +170,11 @@ int main()
     data[i] = rand() % 255;
   }
   
-  write_page(spi_dev, 0, data, len);
+  page = rand() % EEPROM_NUM_PAGES;
   
-  read_page(spi_dev, 0, data_read, len);
+  write_page(spi_dev, page, data, len);
+  
+  read_page(spi_dev, page, data_read, len);
   
   for (i=0; i<len; i++) {
     printf("data[%d] = 0x%02x : data_read[%d] = 0x%02x", i, data[i], i, data_read[i]);
