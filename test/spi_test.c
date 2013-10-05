@@ -26,13 +26,32 @@
 #define READ  0x03
 #define RDSR  0x05
 
+static uint8_t tx[4], rx[4];
+
+uint8_t read_status_register(spi* spi_dev) {
+    
+  printf("Reading STATUS register\n");
+    
+  tx[0] = RDSR;
+  tx[1] = 0;
+  rx[0] = 0;
+  rx[1] = 0;
+  
+  libsoc_spi_rw(spi_dev, tx, rx, 2);
+  
+  printf("STATUS is 0x%02x\n", rx[1]);
+  
+  return rx[1];
+}
+
+
 int main()
 {
-  libsoc_set_debug(1);
+  libsoc_set_debug(0);
+   
+  uint8_t status;
    
   spi* spi_dev = libsoc_spi_init(SPI_DEVICE, CHIP_SELECT);
-   
-  uint8_t tx[4], rx[4];
 
   libsoc_spi_set_mode(spi_dev, MODE_0);
   libsoc_spi_get_mode(spi_dev);
@@ -43,16 +62,7 @@ int main()
   libsoc_spi_set_bits_per_word(spi_dev, BITS_8);
   libsoc_spi_get_bits_per_word(spi_dev);
   
-  printf("Reading STATUS register\n");
-  
-  tx[0] = RDSR;
-  tx[1] = 0;
-  rx[0] = 0;
-  rx[1] = 0;
-  
-  libsoc_spi_rw(spi_dev, tx, rx, 2);
-  
-  printf("STATUS is 0x%02x\n", rx[1]);
+  status = read_status_register(spi_dev);
   
   tx[0] = WREN;
   
@@ -60,16 +70,7 @@ int main()
    
   libsoc_spi_write(spi_dev, tx, 1);
   
-  tx[0] = RDSR;
-  tx[1] = 0;
-  rx[0] = 0;
-  rx[1] = 0;
-  
-  printf("Reading STATUS register\n");
-  
-  libsoc_spi_rw(spi_dev, tx, rx, 2);
-  
-  printf("STATUS is 0x%02x\n", rx[1]);
+  status = read_status_register(spi_dev);
   
   if (!(rx[1] & 0x02)) {
     printf("Write Enable was not set, failure\n");
@@ -87,17 +88,15 @@ int main()
   
   do {
   
-    tx[0] = RDSR;
-    tx[1] = 0;
-    rx[0] = 0;
-    rx[1] = 0;
-  
-    libsoc_spi_rw(spi_dev, tx, rx, 2);
+    status = read_status_register(spi_dev);
     
-    if (rx[1] & 0x01)
+    if (status & 0x01) {
       printf("Write in progress...\n");
+    } else {
+      printf("Write finished...\n");
+    }
     
-  } while (rx[1] & 0x1);
+  } while (status & 0x1);
   
   tx[0] = READ;
   tx[1] = 0;
