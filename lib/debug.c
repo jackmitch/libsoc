@@ -3,46 +3,53 @@
 
 int debug = 0;
 
-inline void libsoc_debug(const char *func, char *format, ...)
+inline void
+libsoc_debug (const char *func, char *format, ...)
 {
 #ifdef DEBUG
 
-	if (debug) {
-		va_list args;
+  if (debug)
+    {
+      va_list args;
 
-		fprintf(stderr, "libsoc-debug: ");
+      fprintf (stderr, "libsoc-debug: ");
 
-		va_start(args, format);
-		vfprintf(stderr, format, args);
-		va_end(args);
+      va_start (args, format);
+      vfprintf (stderr, format, args);
+      va_end (args);
 
-    fprintf(stderr, " (%s)", func);
+      fprintf (stderr, " (%s)", func);
 
-		fprintf(stderr, "\n");
-	}
+      fprintf (stderr, "\n");
+    }
 #endif
 }
 
-void libsoc_set_debug(int level)
+void
+libsoc_set_debug (int level)
 {
 #ifdef DEBUG
 
-	if (level) {
-    debug = 1;
-    libsoc_debug(__func__, "debug enabled");
-	} else {
-    libsoc_debug(__func__, "debug disabled");
-		debug = 0;
-	}
+  if (level)
+    {
+      debug = 1;
+      libsoc_debug (__func__, "debug enabled");
+    }
+  else
+    {
+      libsoc_debug (__func__, "debug disabled");
+      debug = 0;
+    }
 
 #else
 
-	printf("libsoc-gpio: warning debug support missing!\n");
+  printf ("libsoc-gpio: warning debug support missing!\n");
 
 #endif
 }
 
-int libsoc_get_debug()
+int
+libsoc_get_debug ()
 {
 #ifdef DEBUG
 
@@ -50,7 +57,7 @@ int libsoc_get_debug()
 
 #else
 
-	printf("libsoc-debug: warning debug support missing!\n");
+  printf ("libsoc-debug: warning debug support missing!\n");
 
 #endif
 }
