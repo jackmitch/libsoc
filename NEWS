@@ -1,3 +1,9 @@
+06/10/13 - 0.4
+--------------
+
+- Basic SPI support
+  - See lib/include/libsoc_spi.h
+
 13/09/13 - 0.3
 --------------
 

@@ -11,11 +11,15 @@
 
 /**
  * 
- * This gpio_test is intended to be run on beaglebone white hardware
- * and uses pins P9_42(gpio7) and P9_27 (gpio115) connected together.
+ * This spi_test is intended to be run on beaglebone white hardware
+ * and uses the SPIDEV1 device on pins P9_31 as SCLK, P9_29 as SI, 
+ * P9_30 as as SO, P9_28 as CS.
  *
- * The GPIO_OUTPUT and INPUT defines can be changed to support any board
- * all you need to do is ensure that the two pins are connected together
+ * The BeagleBone is connected to a MicroChip 25LC640-I/P 64K EEPROM.
+ *
+ * The test covers writing 32 bytes of random data, to a random page
+ * on the EEPROM. It then reads the page back, and compares the data
+ * read against the data sent, the test passes if all data matches.
  * 
  */
  
