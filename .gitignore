@@ -26,6 +26,7 @@ ltmain.sh
 missing
 test/gpio_test
 test/spi_test
+test/i2c_test
 libtool
 *.lo
 *.o

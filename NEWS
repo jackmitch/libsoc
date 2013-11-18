@@ -1,3 +1,9 @@
+17/11/13 - In Progress
+----------------------
+
+- Intitial I2C support
+- Add SPI header to include_header in configure.ac
+
 06/10/13 - 0.4
 --------------
 

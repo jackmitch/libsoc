@@ -99,3 +99,73 @@ libsoc_i2c_free (i2c * i2c)
 
   free (i2c);
 }
+
+int 
+libsoc_i2c_ioctl(i2c * i2c, int num_messages)
+{
+   i2c->packets.msgs = i2c->messages;
+   i2c->packets.nmsgs = num_messages;
+
+   if (ioctl(i2c->fd, I2C_RDWR, &i2c->packets) < 0)
+   {
+      libsoc_i2c_debug(__func__, i2c, "message failed");
+      perror ("libsoc-i2c-debug");
+      return EXIT_FAILURE;
+   }
+
+   return EXIT_SUCCESS;
+}
+
+int
+libsoc_i2c_set_timeout(i2c * i2c, int timeout)
+{
+   if (ioctl(i2c->fd, I2C_TIMEOUT, timeout) < 0)
+   {
+      libsoc_i2c_debug(__func__, i2c, "setting timeout failed");
+      perror ("libsoc-i2c-debug");
+      return EXIT_FAILURE;
+   }
+   
+   libsoc_i2c_debug(__func__, i2c, "timeout set to %dms", (timeout*10));
+   
+   return EXIT_SUCCESS;
+}
+
+int 
+libsoc_i2c_write (i2c * i2c, uint8_t * buffer, uint16_t len)
+{ 
+    if (i2c == NULL || buffer == NULL)
+    {
+      libsoc_i2c_debug (__func__, i2c, "i2c | buffer was NULL");
+      return EXIT_FAILURE;
+    }
+    
+      libsoc_i2c_debug(__func__, i2c, "Writing buffer of length %d", len);
+  
+   i2c->messages[0].addr = i2c->address;
+   i2c->messages[0].flags = 0;
+   i2c->messages[0].len = len;
+   i2c->messages[0].buf = buffer;
+
+   return libsoc_i2c_ioctl(i2c, 1);
+}
+
+int 
+libsoc_i2c_read (i2c * i2c, uint8_t * buffer, uint16_t len)
+{ 
+   if (i2c == NULL || buffer == NULL)
+    {
+      libsoc_i2c_debug (__func__, i2c, "i2c | buffer was NULL");
+      return EXIT_FAILURE;
+    }
+    
+    libsoc_i2c_debug(__func__, i2c, "Reading buffer of length %d", len);
+  
+   i2c->messages[0].addr = i2c->address;
+   i2c->messages[0].flags = I2C_M_RD;
+   i2c->messages[0].len = len;
+   i2c->messages[0].buf = buffer;
+
+   return libsoc_i2c_ioctl(i2c, 1);
+}
+
