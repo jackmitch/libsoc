@@ -31,10 +31,10 @@ Current Support:
 - Blocking GPIO Interrupts with timeout
 - Non-blocking GPIO Interrupts with callback mechanism (pthread based)
 - SPI transfers using spidev
+- I2C transfers using ioctls
 
 Future ideas are:
 
-- I2C
 - PWM
 - A/D Converters
 - UART

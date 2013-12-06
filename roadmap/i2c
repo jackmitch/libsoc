@@ -1,3 +1,0 @@
-Ordered ST MicroElectronics M24C01-WBN6P 1K EEPROM to do I2C development and testing
-
-Unit tests will be against the 1K EEPROM, writing and reading back values.

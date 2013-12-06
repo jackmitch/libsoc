@@ -1,9 +1,6 @@
 - Investigate using pthread_barrier_wait with GPIO
 - Investigate using pread for improved GPIO throughput and polling
 
-- I2C Support
-  - See file I2C
-
 - ADC Support
   - See file ADC
 
