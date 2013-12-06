@@ -35,8 +35,10 @@
 
 int main()
 {
+  // Turn debug on
   libsoc_set_debug(1);
    
+  // Initialise i2c struct
   i2c *eeprom = libsoc_i2c_init(I2C_BUS, ADDRESS);
   
   if (eeprom == NULL) {
@@ -44,19 +46,26 @@ int main()
     return EXIT_FAILURE;
   }
   
+  // Set the timeout for the i2c slave
   libsoc_i2c_set_timeout(eeprom, 1);
   
+  // Setup the seed for the random number
   struct timeval t1;
   gettimeofday(&t1, NULL);
   srand(t1.tv_usec * t1.tv_sec);
   
+  // Buffers for reading and writing
   uint8_t data[EEPROM_PAGE_SIZE+1];
   uint8_t data_read[EEPROM_PAGE_SIZE];
+  
+  // Get a random page number
   uint8_t page = (rand() % EEPROM_NUM_PAGES) * EEPROM_PAGE_SIZE;
   int i, ret;
   
+  // The first byte of the i2c write in the EEPROM protocol is the page
   data[0] = page;
   
+  // Fill the rest of the write buffer with random data
   for (i=1; i<(EEPROM_PAGE_SIZE+1); i++) {
     data[i] = rand() % 255;
   }
@@ -67,6 +76,8 @@ int main()
   
   printf("Waiting for data to be written\n");
   
+  // Wait for the page to be written (spin on bogus write till we get
+  // an ACK, signalling the EEPROM has written the page)
   while (libsoc_i2c_write(eeprom, &page, 1) == EXIT_FAILURE) {
     printf("Waiting...\n");
     usleep(1);
@@ -76,7 +87,7 @@ int main()
   
   printf("Reading data\n");
   
-  // Set byte address to read
+  // Write page address to read
   ret = libsoc_i2c_write(eeprom, &page, 1);
   
   // Read page
@@ -88,6 +99,7 @@ int main()
   
   printf ("Reading page starting at byte address: %d\n", page);
   
+  // Print out read back page contects, while checking validity
   for (i=0; i<EEPROM_PAGE_SIZE; i++) {
     printf("data[%d] = 0x%02x : data_read[%d] = 0x%02x", i, data[(i+1)], i, data_read[i]);
     
@@ -102,6 +114,7 @@ int main()
 
   free:
   
+  // Free i2c struct
   libsoc_i2c_free(eeprom);
 
   return EXIT_SUCCESS;

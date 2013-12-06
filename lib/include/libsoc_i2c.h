@@ -34,6 +34,31 @@ i2c * libsoc_i2c_init (uint8_t i2c_bus, uint8_t i2c_address);
  */
 int libsoc_i2c_free (i2c * i2c);
 
+/**
+ * \fn libsoc_i2c_write(i2c *i2c, uint8_t *buffer, uint16_t len)
+ * \brief write a specified amount of data to i2c slave
+ * \param i2c *i2c - valid i2c device struct
+ * \param uint8_t *buffer - pointer to output data buffer
+ * \param uint16_t len - length of buffer in bytes
+ * \return EXIT_SUCCESS or EXIT_FAILURE 
+ */
 int libsoc_i2c_write (i2c * i2c, uint8_t * buffer, uint16_t len);
+
+/**
+ * \fn libsoc_i2c_read(i2c *i2c, uint8_t *buffer, uint16_t len)
+ * \brief read a specified amount of data from an i2c slave
+ * \param i2c *i2c - valid i2c device struct
+ * \param uint8_t *buffer - pointer to input data buffer
+ * \param uint16_t len - length of buffer in bytes
+ * \return EXIT_SUCCESS or EXIT_FAILURE 
+ */
 int libsoc_i2c_read (i2c * i2c, uint8_t * buffer, uint16_t len);
+
+/**
+ * \fn libsoc_i2c_set_timeout(i2c *i2c, int timeout)
+ * \brief set the timeout in is 10's of milliseconds, i.e. a timeout of
+ * 2 is 2 x 10ms = 20ms
+ * \param i2c *i2c - valid i2c device struct
+ * \return EXIT_SUCCESS or EXIT_FAILURE 
+ */
 int libsoc_i2c_set_timeout(i2c * i2c, int timeout);
