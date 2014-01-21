@@ -3,8 +3,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <poll.h>
-#include <pthread.h>
 #include <errno.h>
 
 #include "libsoc_file.h"
@@ -13,16 +11,15 @@
 
 #define STR_BUF 256
 
-const char pwm_polarity_strings[2][STR_BUF] = { "normal", "inverted" };
-const char pwm_enabled_strings[2][STR_BUF] = { "0", "1" };
+static char pwm_polarity_strings[2][STR_BUF] = { "normal", "inversed" };
+static char pwm_enabled_strings[2][STR_BUF] = { "0", "1" };
 
-inline void
-libsoc_pwm_debug (const char *func, unsigned int chip, unsigned int pwm,
-  char *format, ...)
+inline void libsoc_pwm_debug (const char *func, unsigned int chip,
+  unsigned int pwm, char *format, ...)
 {
 #ifdef DEBUG
-  if (libsoc_get_debug ()) {
-
+  if (libsoc_get_debug ())
+  {
     va_list args;
 
     fprintf (stderr, "libsoc-pwm-debug: ");
@@ -86,23 +83,10 @@ pwm* libsoc_pwm_request (unsigned int chip, unsigned int pwm_num,
   {
     sprintf(tmp_str, "/sys/class/pwm/pwmchip%d/export", chip);
 
-    fd = file_open(tmp_str, O_SYNC | O_WRONLY);
-
-    if (fd < 0)
+    if (file_write_int(tmp_str, pwm_num) == EXIT_FAILURE)
     {
-	    return NULL;
-    }
-
-    sprintf(tmp_str, "%d", pwm_num);
-
-    if(file_write(fd, tmp_str, STR_BUF) < 0)
-    {
-	    return NULL;
-    }
-
-    if(file_close(fd))
-    {
-	    return NULL;
+      libsoc_pwm_debug(__func__, chip, pwm_num, "write failed");
+      return NULL;
     }
 
     sprintf(tmp_str, "/sys/class/pwm/pwmchip%d/pwm%d/enable", chip, pwm_num);
@@ -121,6 +105,8 @@ pwm* libsoc_pwm_request (unsigned int chip, unsigned int pwm_num,
 
   sprintf(tmp_str, "/sys/class/pwm/pwmchip%d/pwm%d/enable", chip, pwm_num);
 
+  new_pwm->enabled_fd = file_open(tmp_str, O_SYNC | O_RDWR);
+
   if (new_pwm->enabled_fd  < 0)
   {
     free(new_pwm);
@@ -136,7 +122,7 @@ pwm* libsoc_pwm_request (unsigned int chip, unsigned int pwm_num,
 
 int libsoc_pwm_free(pwm *pwm)
 {
-  char tmp_str[STR_BUF];
+  char path[STR_BUF];
   int fd;
 
   if (pwm == NULL)
@@ -156,38 +142,25 @@ int libsoc_pwm_free(pwm *pwm)
     return EXIT_SUCCESS;
   }
 
-  sprintf (tmp_str, "/sys/class/pwm/pwmchip%d/unexport", pwm->chip);
+  sprintf(path, "/sys/class/pwm/pwmchip%d/unexport", pwm->chip);
 
-  fd = file_open(tmp_str, O_SYNC | O_WRONLY);
+  file_write_int(path, pwm->pwm);
 
-  if(fd < 0)
-    return EXIT_FAILURE;
+  sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d", pwm->chip, pwm->pwm);
 
-  sprintf(tmp_str, "%d", pwm->pwm);
-
-  if(file_write(fd, tmp_str, STR_BUF) < 0)
-    return EXIT_FAILURE;
-
-  if(file_close (fd) < 0)
-    return EXIT_FAILURE;
-
-  sprintf (tmp_str, "/sys/class/pwm/pwmchip%d/pwm%d", pwm->chip, pwm->pwm);
-
-  if (file_valid (tmp_str))
+  if (file_valid(path))
   {
-    libsoc_pwm_debug (__func__, pwm->chip, pwm->pwm, "freeing failed");
+    libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm, "freeing failed");
     return EXIT_FAILURE;
   }
 
-  free (pwm);
+  free(pwm);
 
   return EXIT_SUCCESS;
 }
 
-int
-libsoc_pwm_set_enabled(pwm *pwm, pwm_enabled enabled)
+int libsoc_pwm_set_enabled(pwm *pwm, pwm_enabled enabled)
 {
-  int fd;
   char path[STR_BUF];
 
   if (pwm == NULL)
@@ -196,29 +169,23 @@ libsoc_pwm_set_enabled(pwm *pwm, pwm_enabled enabled)
     return EXIT_FAILURE;
   }
 
+  if (enabled != ENABLED && enabled != DISABLED)
+  {
+    return EXIT_FAILURE;
+  }
+
   libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm,
     "setting enabled to %s", pwm_enabled_strings[enabled]);
 
   sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d/enable", pwm->chip, pwm->pwm);
 
-  fd = file_open(path, O_SYNC | O_WRONLY);
-
-  if (fd < 0)
-    return EXIT_FAILURE;
-
-  if (file_write(fd, pwm_enabled_strings[enabled], STR_BUF) < 0)
-    return EXIT_FAILURE;
-
-  if (file_close(fd) < 0)
-    return EXIT_FAILURE;
-
-  return EXIT_SUCCESS;
+  return file_write_str(path, pwm_enabled_strings[enabled], 1);
 }
 
 pwm_enabled libsoc_pwm_get_enabled(pwm *pwm)
 {
-  int fd;
-  char tmp_str[STR_BUF];
+  int val;
+  char path[STR_BUF];
 
   if (pwm == NULL)
   {
@@ -226,28 +193,20 @@ pwm_enabled libsoc_pwm_get_enabled(pwm *pwm)
     return ENABLED_ERROR;
   }
 
-  sprintf(tmp_str, "/sys/class/pwm/pwmchip%d/pwm%d/enable", pwm->chip, pwm->pwm);
+  sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d/enable", pwm->chip, pwm->pwm);
 
-  fd = file_open(tmp_str, O_RDONLY);
-
-  if (fd < 0)
+  if (file_read_int(path, &val) == EXIT_FAILURE)
+  {
     return ENABLED_ERROR;
+  }
 
-  lseek(fd, 0, SEEK_SET);
-
-  if(file_read (fd, tmp_str, STR_BUF) < 0)
-    return ENABLED_ERROR;
-
-  if(file_close (fd) < 0)
-    return ENABLED_ERROR;
-
-  if(strncmp(tmp_str, pwm_enabled_strings[ENABLED], 1) == 0)
+  if(val == 1)
   {
     libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm,
 		  "read as enabled");
     return ENABLED;
   }
-  else if (strncmp(tmp_str, pwm_enabled_strings[DISABLED], 1) == 0)
+  else if (val == 0)
   {
     libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm,
       "read as disabled");
@@ -258,3 +217,166 @@ pwm_enabled libsoc_pwm_get_enabled(pwm *pwm)
     return ENABLED_ERROR;
   }
 }
+
+int libsoc_pwm_set_period(pwm *pwm, unsigned int period)
+{
+  int fd;
+  char tmp_str[STR_BUF];
+
+  if (pwm == NULL)
+  {
+    libsoc_pwm_debug(__func__, -1, -1, "invalid pwm pointer");
+    return EXIT_FAILURE;
+  }
+
+  libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm,
+    "setting period to %d", period);
+
+  sprintf(tmp_str, "/sys/class/pwm/pwmchip%d/pwm%d/period", pwm->chip, pwm->pwm);
+
+  fd = file_open(tmp_str, O_SYNC | O_WRONLY);
+
+  if (fd < 0)
+    return EXIT_FAILURE;
+
+  sprintf(tmp_str, "%d", period);
+
+  if (file_write(fd, tmp_str, STR_BUF) < 0)
+    return EXIT_FAILURE;
+
+  if (file_close(fd) < 0)
+    return EXIT_FAILURE;
+
+  return EXIT_SUCCESS;
+}
+
+int libsoc_pwm_set_duty_cycle(pwm *pwm, unsigned int duty)
+{
+  int ret;
+  char path[STR_BUF];
+
+  if (pwm == NULL)
+  {
+    libsoc_pwm_debug(__func__, -1, -1, "invalid pwm pointer");
+    return EXIT_FAILURE;
+  }
+
+  libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm,
+    "setting duty to %d", duty);
+
+  sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d/duty_cycle", pwm->chip, pwm->pwm);
+
+  ret = file_write_int(path, duty);
+
+  return ret;
+}
+
+int libsoc_pwm_get_period(pwm *pwm)
+{
+  int period;
+  char path[STR_BUF];
+
+  if (pwm == NULL)
+  {
+    libsoc_pwm_debug(__func__, -1, -1, "invalid pwm pointer");
+    return EXIT_FAILURE;
+  }
+
+  sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d/period", pwm->chip, pwm->pwm);
+
+  if (file_read_int(path, &period) == EXIT_FAILURE)
+  {
+    return EXIT_FAILURE;
+  }
+
+  libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm, "got period as %d", period);
+
+  return period;
+}
+
+int libsoc_pwm_get_duty_cycle(pwm *pwm)
+{
+  int duty;
+  char path[STR_BUF];
+
+  if (pwm == NULL)
+  {
+    libsoc_pwm_debug(__func__, -1, -1, "invalid pwm pointer");
+    return EXIT_FAILURE;
+  }
+
+  sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d/duty_cycle", pwm->chip, pwm->pwm);
+
+  if (file_read_int(path, &duty) == EXIT_FAILURE)
+  {
+    return EXIT_FAILURE;
+  }
+
+  libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm, "got duty as %d", duty);
+
+  return duty;
+}
+
+int libsoc_pwm_set_polarity(pwm *pwm, pwm_polarity polarity)
+{
+  char path[STR_BUF];
+
+  if (pwm == NULL)
+  {
+    libsoc_pwm_debug(__func__, -1, -1, "invalid pwm pointer");
+    return EXIT_FAILURE;
+  }
+
+  if (polarity != NORMAL && polarity != INVERSED)
+  {
+    return EXIT_FAILURE;
+  }
+
+  libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm,
+    "setting polarity to %s", pwm_polarity_strings[polarity]);
+
+  sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d/polarity", pwm->chip, pwm->pwm);
+
+  return file_write_str(path, pwm_polarity_strings[polarity], STR_BUF);
+}
+
+int libsoc_pwm_get_polarity(pwm *pwm)
+{
+  int polarity;
+  char path[STR_BUF];
+  char tmp_str[1];
+
+  if (pwm == NULL)
+  {
+    libsoc_pwm_debug(__func__, -1, -1, "invalid pwm pointer");
+    return EXIT_FAILURE;
+  }
+
+  sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d/polarity", pwm->chip, pwm->pwm);
+
+  if (file_read_str(path, tmp_str, 1) == EXIT_FAILURE)
+  {
+    return EXIT_FAILURE;
+  }
+
+  tmp_str[1] = NULL;
+
+  if (strncmp(tmp_str, "i", 1) == 0)
+  {
+    polarity = INVERSED;
+  }
+  else if (strncmp(tmp_str, "n", 1) == 0)
+  {
+    polarity = NORMAL;
+  }
+  else
+  {
+    polarity = POLARITY_ERROR;
+    return EXIT_FAILURE;
+  }
+
+  libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm, "got polarity as %s", pwm_polarity_strings[polarity]);
+
+  return polarity;
+}
+

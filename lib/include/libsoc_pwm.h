@@ -13,6 +13,8 @@ typedef struct {
 	unsigned int pwm;
 	int enabled_fd;
 	int shared;
+  unsigned int duty;
+  unsigned int period;
 } pwm;
 
 /**
@@ -34,7 +36,7 @@ typedef enum {
 typedef enum {
 	POLARITY_ERROR = -1,
 	NORMAL = 0,
-	INVERTED = 1,
+	INVERSED = 1,
 } pwm_polarity;
 
 /**
@@ -73,9 +75,9 @@ pwm* libsoc_pwm_request(unsigned int pwm_chip, unsigned int pwm_num,
 
 /**
  * \fn int libsoc_pwm_free(pwm* pwm)
- * \brief free a previously requested pwm 
+ * \brief free a previously requested pwm
  * \param pwm* pwm - valid pointer to a requested pwm
- * \return EXIT_SUCCESS or EXIT_FAILURE 
+ * \return EXIT_SUCCESS or EXIT_FAILURE
  */
 
 int libsoc_pwm_free(pwm *pwm);
@@ -101,7 +103,7 @@ pwm_enabled libsoc_pwm_get_enabled(pwm *pwm);
 
 /**
  * \fn libsoc_pwm_set_polarity(pwm *pwm, pwm_polarity polarity)
- * \brief set the PWM polarity to normal or inverted 
+ * \brief set the PWM polarity to normal or inverted
  * \param pwm *pwm - pointer to pwm struct on which to set the polarity
  * \param pwm_polarity = enumerated pwm_polarity NORMAL or INVERTED
  * \return EXIT_SUCCES or EXIT_FAILURE
@@ -111,15 +113,15 @@ int libsoc_pwm_set_polarity(pwm *pwm, pwm_polarity polarity);
 
 /**
  * \fn libsoc_pwm_get_polarity(pwm *pwm)
- * \brief gets the current pwm polarity 
- * \param pwm *pwm - pointer to pwm struct on which to get the polarity 
+ * \brief gets the current pwm polarity
+ * \param pwm *pwm - pointer to pwm struct on which to get the polarity
  * \return pwm_polarity - NORMAL, INVERTED or ERROR_POLARITY
  */
 
 pwm_polarity libsoc_pwm_get_polarity(pwm *pwm);
 
-int libsoc_pwm_set_duty_cycle(pwm *pwm, int duty_cycle);
+int libsoc_pwm_set_duty_cycle(pwm *pwm, unsigned int duty);
 int libsoc_pwm_get_duty_cycle(pwm *pwm);
 
-int libsoc_pwm_set_period(pwm *pwm, int period);
+int libsoc_pwm_set_period(pwm *pwm, unsigned int period);
 int libsoc_pwm_get_period(pwm *pwm);

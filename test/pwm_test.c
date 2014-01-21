@@ -17,7 +17,7 @@
  */
 
 #define PWM_OUTPUT_CHIP 0
-#define PWM_CHIP_OUTPUT 0
+#define PWM_CHIP_OUTPUT 1
 
 int main(void)
 {
@@ -29,7 +29,7 @@ int main(void)
 
   if (!pwm)
   {
-    printf("Failed to get PWM");
+    printf("Failed to get PWM\n");
     goto fail;
   }
 
@@ -39,7 +39,7 @@ int main(void)
 
   if (!enabled)
   {
-    printf("Failed enabling test");
+    printf("Failed enabling test\n");
     ret = EXIT_FAILURE;
     goto fail;
   }
@@ -50,8 +50,47 @@ int main(void)
 
   if (enabled)
   {
-    printf("Failed disabling test");
+    printf("Failed disabling test\n");
     ret = EXIT_FAILURE;
+    goto fail;
+  }
+
+  libsoc_pwm_set_period(pwm, 10);
+
+  int current_period = libsoc_pwm_get_period(pwm);
+
+  if (current_period != 10)
+  {
+    printf("Failed period test\n");
+    goto fail;
+  }
+
+  libsoc_pwm_set_duty_cycle(pwm, 5);
+
+  int current_duty = libsoc_pwm_get_duty_cycle(pwm);
+
+  if (current_duty != 5)
+  {
+    printf("Failed duty test\n");
+  }
+
+  libsoc_pwm_set_polarity(pwm, INVERSED);
+
+  int polarity = libsoc_pwm_get_polarity(pwm);
+
+  if (polarity != INVERSED)
+  {
+    printf("Failed polarity test\n");
+    goto fail;
+  }
+
+  libsoc_pwm_set_polarity(pwm, NORMAL);
+
+  polarity = libsoc_pwm_get_polarity(pwm);
+
+  if (polarity != NORMAL)
+  {
+    printf("Failed polarity test\n");
     goto fail;
   }
 
