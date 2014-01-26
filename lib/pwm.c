@@ -359,8 +359,6 @@ int libsoc_pwm_get_polarity(pwm *pwm)
     return EXIT_FAILURE;
   }
 
-  tmp_str[1] = NULL;
-
   if (strncmp(tmp_str, "i", 1) == 0)
   {
     polarity = INVERSED;
