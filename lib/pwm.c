@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <errno.h>
+#include <string.h>
 
 #include "libsoc_file.h"
 #include "libsoc_debug.h"
@@ -39,7 +40,6 @@ pwm* libsoc_pwm_request (unsigned int chip, unsigned int pwm_num,
   enum shared_mode mode)
 {
   pwm *new_pwm;
-  int fd, ret;
   char tmp_str[STR_BUF];
   int shared = 0;
 
@@ -123,7 +123,6 @@ pwm* libsoc_pwm_request (unsigned int chip, unsigned int pwm_num,
 int libsoc_pwm_free(pwm *pwm)
 {
   char path[STR_BUF];
-  int fd;
 
   if (pwm == NULL)
   {

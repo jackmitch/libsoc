@@ -9,6 +9,8 @@
 #include <linux/types.h>
 
 #include "libsoc_i2c.h"
+#include "libsoc_debug.h"
+#include "libsoc_file.h"
 
 inline void
 libsoc_i2c_debug (const char *func, i2c * i2c, char *format, ...)
@@ -45,7 +47,7 @@ libsoc_i2c_init (uint8_t i2c_bus, uint8_t i2c_address)
 {
   i2c *i2c_dev;
 
-  libsoc_spi_debug (__func__, i2c_dev, "initialising i2c bus %d at "
+  libsoc_i2c_debug (__func__, NULL, "initialising i2c bus %d at "
                       "address %d", i2c_bus, i2c_address);
 
   i2c_dev = malloc (sizeof (i2c));
@@ -98,6 +100,8 @@ libsoc_i2c_free (i2c * i2c)
   libsoc_i2c_debug (__func__, i2c, "freeing i2c device");
 
   free (i2c);
+
+  return EXIT_SUCCESS;
 }
 
 int 

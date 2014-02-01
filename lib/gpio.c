@@ -6,6 +6,8 @@
 #include <poll.h>
 #include <pthread.h>
 #include <errno.h>
+#include <unistd.h>
+#include <string.h>
 
 #include "libsoc_file.h"
 #include "libsoc_debug.h"
@@ -19,7 +21,7 @@ const char gpio_direction_strings[2][STR_BUF] = { "in", "out" };
 const char gpio_edge_strings[3][STR_BUF] = { "rising", "falling", "none" };
 
 inline void
-libsoc_gpio_debug (const char *func, unsigned int gpio, char *format, ...)
+libsoc_gpio_debug (const char *func, int gpio, char *format, ...)
 {
 #ifdef DEBUG
 
@@ -51,7 +53,7 @@ gpio *
 libsoc_gpio_request (unsigned int gpio_id, enum gpio_mode mode)
 {
   gpio *new_gpio;
-  int fd, ret;
+  int fd;
   char tmp_str[STR_BUF];
   int shared = 0;
 
@@ -65,7 +67,7 @@ libsoc_gpio_request (unsigned int gpio_id, enum gpio_mode mode)
 
   libsoc_gpio_debug (__func__, gpio_id, "requested gpio");
 
-  if (gpio_id > MAX_GPIO_ID || gpio_id < 0)
+  if (gpio_id > MAX_GPIO_ID)
     {
       libsoc_gpio_debug (__func__, gpio_id, "gpio out of range (0-255)");
       return NULL;
@@ -289,7 +291,6 @@ gpio_level
 libsoc_gpio_get_level (gpio * current_gpio)
 {
   char level[STR_BUF];
-  int ret;
 
   if (current_gpio == NULL)
     {
@@ -300,14 +301,11 @@ libsoc_gpio_get_level (gpio * current_gpio)
   lseek (current_gpio->value_fd, 0, SEEK_SET);
 
   if (read (current_gpio->value_fd, level, STR_BUF) < 0)
+  {
+    libsoc_gpio_debug (__func__, current_gpio->gpio, "level read failed");
+    perror ("libgpio");
     return LEVEL_ERROR;
-
-  if (ret < 0)
-    {
-      libsoc_gpio_debug (__func__, current_gpio->gpio, "level read failed");
-      perror ("libgpio");
-      return LEVEL_ERROR;
-    }
+  }
 
   if (strncmp (level, "0", 1) <= 0)
     {
@@ -464,7 +462,7 @@ __libsoc_new_interrupt_callback_thread (void *void_gpio)
   pfd[0].revents = 0;
 
   char buffer[1];
-  int ret, ready;
+  int ready;
 
   // Read data for clean initial poll
   read (pfd[0].fd, buffer, 1);
@@ -549,9 +547,10 @@ int
 libsoc_gpio_callback_interrupt_cancel (gpio * gpio)
 {
   if (gpio->callback->thread == NULL)
-    {
-      libsoc_gpio_debug (__func__, gpio->gpio, "callback thread was NULL");
-    }
+  {
+    libsoc_gpio_debug (__func__, gpio->gpio, "callback thread was NULL");
+    return EXIT_FAILURE;
+  }
 
   pthread_cancel (*gpio->callback->thread);
 
@@ -563,4 +562,6 @@ libsoc_gpio_callback_interrupt_cancel (gpio * gpio)
   gpio->callback = NULL;
 
   libsoc_gpio_debug (__func__, gpio->gpio, "callback thread was stopped");
+
+  return EXIT_SUCCESS;
 }

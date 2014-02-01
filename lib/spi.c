@@ -10,6 +10,8 @@
 #include <linux/spi/spidev.h>
 
 #include "libsoc_spi.h"
+#include "libsoc_debug.h"
+#include "libsoc_file.h"
 
 inline void
 libsoc_spi_debug (const char *func, spi * spi, char *format, ...)
@@ -46,7 +48,7 @@ libsoc_spi_init (uint8_t spidev_device, uint8_t chip_select)
 {
   spi *spi_dev;
 
-  libsoc_spi_debug (__func__, spi_dev, "initialising spidev device %d.%d",
+  libsoc_spi_debug (__func__, NULL, "initialising spidev device %d.%d",
 		    spidev_device, chip_select);
 
   spi_dev = malloc (sizeof (spi));
@@ -280,8 +282,12 @@ libsoc_spi_write (spi * spi, uint8_t * tx, uint32_t len)
   ret = ioctl (spi->fd, SPI_IOC_MESSAGE (1), &tr);
 
   if (ret < 1)
+  {
     libsoc_spi_debug (__func__, spi, "failed sending message");
+    return EXIT_FAILURE;
+  }
 
+  return EXIT_SUCCESS;
 }
 
 int
@@ -347,8 +353,12 @@ libsoc_spi_rw (spi * spi, uint8_t * tx, uint8_t * rx, uint32_t len)
   ret = ioctl (spi->fd, SPI_IOC_MESSAGE (1), &tr);
 
   if (ret < 1)
+  {
     libsoc_spi_debug (__func__, spi, "failed duplex transfer");
+    return EXIT_FAILURE;
+  }
 
+  return EXIT_SUCCESS;
 }
 
 int
@@ -363,4 +373,6 @@ libsoc_spi_free (spi * spi)
   libsoc_spi_debug (__func__, spi, "freeing spi device");
 
   free (spi);
+
+  return EXIT_SUCCESS;
 }
