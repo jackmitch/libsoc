@@ -279,14 +279,14 @@ int libsoc_pwm_get_period(pwm *pwm)
   if (pwm == NULL)
   {
     libsoc_pwm_debug(__func__, -1, -1, "invalid pwm pointer");
-    return EXIT_FAILURE;
+    return -1;
   }
 
   sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d/period", pwm->chip, pwm->pwm);
 
   if (file_read_int(path, &period) == EXIT_FAILURE)
   {
-    return EXIT_FAILURE;
+    return -1;
   }
 
   libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm, "got period as %d", period);
@@ -302,14 +302,14 @@ int libsoc_pwm_get_duty_cycle(pwm *pwm)
   if (pwm == NULL)
   {
     libsoc_pwm_debug(__func__, -1, -1, "invalid pwm pointer");
-    return EXIT_FAILURE;
+    return -1;
   }
 
   sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d/duty_cycle", pwm->chip, pwm->pwm);
 
   if (file_read_int(path, &duty) == EXIT_FAILURE)
   {
-    return EXIT_FAILURE;
+    return -1;
   }
 
   libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm, "got duty as %d", duty);
@@ -356,7 +356,7 @@ int libsoc_pwm_get_polarity(pwm *pwm)
 
   if (file_read_str(path, tmp_str, 1) == EXIT_FAILURE)
   {
-    return EXIT_FAILURE;
+    return POLARITY_ERROR;
   }
 
   if (strncmp(tmp_str, "i", 1) == 0)
@@ -370,10 +370,16 @@ int libsoc_pwm_get_polarity(pwm *pwm)
   else
   {
     polarity = POLARITY_ERROR;
-    return EXIT_FAILURE;
   }
 
-  libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm, "got polarity as %s", pwm_polarity_strings[polarity]);
+  if (polarity > 0)
+  {
+    libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm, "got polarity as %s", pwm_polarity_strings[polarity]);
+  }
+  else
+  {
+    libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm, "getting polarity failed");
+  }
 
   return polarity;
 }

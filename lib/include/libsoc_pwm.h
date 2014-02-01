@@ -106,7 +106,7 @@ pwm_enabled libsoc_pwm_get_enabled(pwm *pwm);
  * \brief set the PWM polarity to normal or inverted
  * \param pwm *pwm - pointer to pwm struct on which to set the polarity
  * \param pwm_polarity = enumerated pwm_polarity NORMAL or INVERTED
- * \return EXIT_SUCCES or EXIT_FAILURE
+ * \return EXIT_SUCCESS or EXIT_FAILURE
  */
 
 int libsoc_pwm_set_polarity(pwm *pwm, pwm_polarity polarity);
@@ -120,8 +120,40 @@ int libsoc_pwm_set_polarity(pwm *pwm, pwm_polarity polarity);
 
 pwm_polarity libsoc_pwm_get_polarity(pwm *pwm);
 
+/**
+ * \fn libsoc_pwm_set_duty_cycle(pwm *pwm, int duty)
+ * \brief set the PWM duty cycle 
+ * \param pwm *pwm - pointer to valid pwm struct
+ * \param int duty - duty value
+ * \return EXIT_SUCCESS or EXIT_FAILURE
+ */
+
 int libsoc_pwm_set_duty_cycle(pwm *pwm, unsigned int duty);
+
+/**
+ * \fn libsoc_pwm_get_duty_cycle(pwm *pwm)
+ * \brief gets the current pwm duty cycle 
+ * \param pwm *pwm - pointer to valid pwm struct
+ * \return duty_cycle - integer, -1 on failure 
+ */
+
 int libsoc_pwm_get_duty_cycle(pwm *pwm);
 
+/**
+ * \fn libsoc_pwm_set_period(pwm *pwm, unsigned int period)
+ * \brief set the PWM period
+ * \param pwm *pwm - pointer to valid pwm struct
+ * \param int period - period value
+ * \return EXIT_SUCCESS or EXIT_FAILURE
+ */
+
 int libsoc_pwm_set_period(pwm *pwm, unsigned int period);
+
+/**
+ * \fn libsoc_pwm_get_period(pwm *pwm)
+ * \brief gets the current pwm period 
+ * \param pwm *pwm - pointer to valid pwm struct
+ * \return period - integer, -1 on failure
+ */
+
 int libsoc_pwm_get_period(pwm *pwm);
