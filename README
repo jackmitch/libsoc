@@ -32,7 +32,7 @@ Current Support:
 - Non-blocking GPIO Interrupts with callback mechanism (pthread based)
 - SPI transfers using spidev
 - I2C transfers using ioctls
-- PWM support through sysfs
+- PWM support through sysfs (Linux 3.12+)
 
 Future ideas are:
 

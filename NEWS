@@ -1,7 +1,7 @@
 2/2/14 - 0.6
 ------------
 
-- PWM sysfs support
+- PWM sysfs support (Linux 3.12+)
 - Fixed some bugs
 - Enabled debugging by default; you will now have to specifically
   switch it off (./configure --disable-debug)
