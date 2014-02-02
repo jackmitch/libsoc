@@ -139,7 +139,19 @@ int libsoc_pwm_free(pwm *pwm)
   libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm, "freeing pwm");
 
   if (file_close(pwm->enable_fd) < 0)
+  {
     return EXIT_FAILURE;
+  }
+
+  if (file_close(pwm->period_fd) < 0)
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (file_close(pwm->duty_fd) < 0)
+  {
+    return EXIT_FAILURE;
+  }
 
   if (pwm->shared == 1)
   {
