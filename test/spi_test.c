@@ -140,6 +140,12 @@ int main()
 
   spi* spi_dev = libsoc_spi_init(SPI_DEVICE, CHIP_SELECT);
 
+  if (!spi_dev)
+  {
+    printf("Failed to get spidev device!\n");
+    return EXIT_FAILURE;
+  }
+
   libsoc_spi_set_mode(spi_dev, MODE_0);
   libsoc_spi_get_mode(spi_dev);
   
