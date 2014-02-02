@@ -53,7 +53,7 @@ pwm* libsoc_pwm_request (unsigned int chip, unsigned int pwm_num,
 
   libsoc_pwm_debug (__func__, chip, pwm_num, "requested PWM");
 
-  sprintf (tmp_str, "/sys/class/new_pwm/new_pwmchip%d/new_pwm%d/enable", chip, pwm_num);
+  sprintf (tmp_str, "/sys/class/pwm/pwmchip%d/pwm%d/enable", chip, pwm_num);
 
   if (file_valid (tmp_str))
   {
@@ -83,7 +83,7 @@ pwm* libsoc_pwm_request (unsigned int chip, unsigned int pwm_num,
   {
     sprintf(tmp_str, "/sys/class/pwm/pwmchip%d/export", chip);
 
-    if (file_write_int(tmp_str, pwm_num) == EXIT_FAILURE)
+    if (file_write_int_path(tmp_str, pwm_num) == EXIT_FAILURE)
     {
       libsoc_pwm_debug(__func__, chip, pwm_num, "write failed");
       return NULL;
@@ -104,12 +104,18 @@ pwm* libsoc_pwm_request (unsigned int chip, unsigned int pwm_num,
   new_pwm = malloc(sizeof(pwm));
 
   sprintf(tmp_str, "/sys/class/pwm/pwmchip%d/pwm%d/enable", chip, pwm_num);
+  new_pwm->enable_fd = file_open(tmp_str, O_SYNC | O_RDWR);
 
-  new_pwm->enabled_fd = file_open(tmp_str, O_SYNC | O_RDWR);
+  sprintf(tmp_str, "/sys/class/pwm/pwmchip%d/pwm%d/period", chip, pwm_num);
+  new_pwm->period_fd = file_open(tmp_str, O_SYNC | O_RDWR);
 
-  if (new_pwm->enabled_fd  < 0)
+  sprintf(tmp_str, "/sys/class/pwm/pwmchip%d/pwm%d/duty_cycle", chip, pwm_num);
+  new_pwm->duty_fd = file_open(tmp_str, O_SYNC | O_RDWR);
+
+  if (new_pwm->enable_fd < 0 || new_pwm->period_fd < 0 || new_pwm->duty_fd < 0)
   {
     free(new_pwm);
+	  libsoc_pwm_debug(__func__, chip, pwm_num, "Failed to open pwm sysfs file: %d", new_pwm->enable_fd);
     return NULL;
   }
 
@@ -132,7 +138,7 @@ int libsoc_pwm_free(pwm *pwm)
 
   libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm, "freeing pwm");
 
-  if (file_close(pwm->enabled_fd) < 0)
+  if (file_close(pwm->enable_fd) < 0)
     return EXIT_FAILURE;
 
   if (pwm->shared == 1)
@@ -143,7 +149,7 @@ int libsoc_pwm_free(pwm *pwm)
 
   sprintf(path, "/sys/class/pwm/pwmchip%d/unexport", pwm->chip);
 
-  file_write_int(path, pwm->pwm);
+  file_write_int_path(path, pwm->pwm);
 
   sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d", pwm->chip, pwm->pwm);
 
@@ -184,7 +190,6 @@ int libsoc_pwm_set_enabled(pwm *pwm, pwm_enabled enabled)
 pwm_enabled libsoc_pwm_get_enabled(pwm *pwm)
 {
   int val;
-  char path[STR_BUF];
 
   if (pwm == NULL)
   {
@@ -192,9 +197,7 @@ pwm_enabled libsoc_pwm_get_enabled(pwm *pwm)
     return ENABLED_ERROR;
   }
 
-  sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d/enable", pwm->chip, pwm->pwm);
-
-  if (file_read_int(path, &val) == EXIT_FAILURE)
+  if (file_read_int_fd(pwm->enable_fd, &val) == EXIT_FAILURE)
   {
     return ENABLED_ERROR;
   }
@@ -220,7 +223,6 @@ pwm_enabled libsoc_pwm_get_enabled(pwm *pwm)
 int libsoc_pwm_set_period(pwm *pwm, unsigned int period)
 {
   int fd;
-  char tmp_str[STR_BUF];
 
   if (pwm == NULL)
   {
@@ -231,29 +233,11 @@ int libsoc_pwm_set_period(pwm *pwm, unsigned int period)
   libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm,
     "setting period to %d", period);
 
-  sprintf(tmp_str, "/sys/class/pwm/pwmchip%d/pwm%d/period", pwm->chip, pwm->pwm);
-
-  fd = file_open(tmp_str, O_SYNC | O_WRONLY);
-
-  if (fd < 0)
-    return EXIT_FAILURE;
-
-  sprintf(tmp_str, "%d", period);
-
-  if (file_write(fd, tmp_str, STR_BUF) < 0)
-    return EXIT_FAILURE;
-
-  if (file_close(fd) < 0)
-    return EXIT_FAILURE;
-
-  return EXIT_SUCCESS;
+  return file_write_int_fd(pwm->period_fd, period);
 }
 
 int libsoc_pwm_set_duty_cycle(pwm *pwm, unsigned int duty)
 {
-  int ret;
-  char path[STR_BUF];
-
   if (pwm == NULL)
   {
     libsoc_pwm_debug(__func__, -1, -1, "invalid pwm pointer");
@@ -263,17 +247,12 @@ int libsoc_pwm_set_duty_cycle(pwm *pwm, unsigned int duty)
   libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm,
     "setting duty to %d", duty);
 
-  sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d/duty_cycle", pwm->chip, pwm->pwm);
-
-  ret = file_write_int(path, duty);
-
-  return ret;
+  return file_write_int_fd(pwm->duty_fd, duty);
 }
 
 int libsoc_pwm_get_period(pwm *pwm)
 {
-  int period;
-  char path[STR_BUF];
+  int period = -1;
 
   if (pwm == NULL)
   {
@@ -281,12 +260,7 @@ int libsoc_pwm_get_period(pwm *pwm)
     return -1;
   }
 
-  sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d/period", pwm->chip, pwm->pwm);
-
-  if (file_read_int(path, &period) == EXIT_FAILURE)
-  {
-    return -1;
-  }
+  file_read_int_fd(pwm->period_fd, &period);
 
   libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm, "got period as %d", period);
 
@@ -295,8 +269,7 @@ int libsoc_pwm_get_period(pwm *pwm)
 
 int libsoc_pwm_get_duty_cycle(pwm *pwm)
 {
-  int duty;
-  char path[STR_BUF];
+  int duty = -1;
 
   if (pwm == NULL)
   {
@@ -304,12 +277,7 @@ int libsoc_pwm_get_duty_cycle(pwm *pwm)
     return -1;
   }
 
-  sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d/duty_cycle", pwm->chip, pwm->pwm);
-
-  if (file_read_int(path, &duty) == EXIT_FAILURE)
-  {
-    return -1;
-  }
+  file_read_int_fd(pwm->duty_fd, &duty);
 
   libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm, "got duty as %d", duty);
 

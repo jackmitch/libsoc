@@ -8,11 +8,14 @@
 
 /**
  *
- * This pwm_test is intended to be run on beaglebone white hardware
- * and uses pins P9_42(gpio7) and P9_27 (gpio115) connected together.
+ * This pwm_test is intended to be run on beaglebone white hardware,
+ * however, it will work on any board with a PWM sysfs implementation.
  *
- * The GPIO_OUTPUT and INPUT defines can be changed to support any board
- * all you need to do is ensure that the two pins are connected together
+ * The PWM sysfs interface was introduced in linux 3.12, if your kernel
+ * is older than this you will need to update or backport the PWM sysfs
+ * patch.
+ *
+ * PWM sysfs Documentation: https://www.kernel.org/doc/Documentation/pwm.txt
  *
  */
 
@@ -72,6 +75,22 @@ int main(void)
   if (current_duty != 5)
   {
     printf("Failed duty test\n");
+    goto fail;
+  }
+
+  // This command should fail as the duty should not
+  // be allowed to be greater than the period
+  libsoc_pwm_set_duty_cycle(pwm, 15);
+
+  current_duty = libsoc_pwm_get_duty_cycle(pwm);
+
+  if (current_duty != 5)
+  {
+    printf("Failed duty test, this may be a problem with the kernel driver, continuing...\n");
+  }
+  else
+  {
+    printf("Driver correctly responded to setting duty higher than period, with error\n");
   }
 
   libsoc_pwm_set_polarity(pwm, INVERSED);
@@ -80,8 +99,7 @@ int main(void)
 
   if (polarity != INVERSED)
   {
-    printf("Failed polarity test\n");
-    goto fail;
+    printf("Failed polarity test, this may be an error, or it might not be supported by your driver\n");
   }
 
   libsoc_pwm_set_polarity(pwm, NORMAL);
@@ -90,8 +108,7 @@ int main(void)
 
   if (polarity != NORMAL)
   {
-    printf("Failed polarity test\n");
-    goto fail;
+    printf("Failed polarity test, this may be an error, or it might not be supported by your driver\n");
   }
 
   fail:

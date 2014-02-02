@@ -3,7 +3,9 @@
  * \brief representation of a single requested pwm
  * \param unsigned int pwm - pwm num
  * \param unsigned int pwm_chip - pwm chip num
- * \param int enabled_fd - file descriptor to pwm enabled file
+ * \param int enabled_fd - file descriptor to pwm enable file
+ * \param int duty_fd - file descriptor to pwm duty_cycle file
+ * \param int period_fd - file descriptor to pwm period file
  * \param int shared - set if the request flag was shared and the pwm was
  *  exported on request
  */
@@ -11,10 +13,10 @@
 typedef struct {
 	unsigned int chip;
 	unsigned int pwm;
-	int enabled_fd;
+	int enable_fd;
+	int duty_fd;
+	int period_fd;
 	int shared;
-  unsigned int duty;
-  unsigned int period;
 } pwm;
 
 /**
@@ -122,9 +124,9 @@ pwm_polarity libsoc_pwm_get_polarity(pwm *pwm);
 
 /**
  * \fn libsoc_pwm_set_duty_cycle(pwm *pwm, int duty)
- * \brief set the PWM duty cycle 
+ * \brief set the PWM duty cycle (active time of the PWM signal)
  * \param pwm *pwm - pointer to valid pwm struct
- * \param int duty - duty value
+ * \param int duty - duty value in nanoseconds, must be less than period
  * \return EXIT_SUCCESS or EXIT_FAILURE
  */
 
@@ -132,18 +134,19 @@ int libsoc_pwm_set_duty_cycle(pwm *pwm, unsigned int duty);
 
 /**
  * \fn libsoc_pwm_get_duty_cycle(pwm *pwm)
- * \brief gets the current pwm duty cycle 
+ * \brief gets the current pwm duty cycle
  * \param pwm *pwm - pointer to valid pwm struct
- * \return duty_cycle - integer, -1 on failure 
+ * \return duty_cycle - integer, -1 on failure
  */
 
 int libsoc_pwm_get_duty_cycle(pwm *pwm);
 
 /**
  * \fn libsoc_pwm_set_period(pwm *pwm, unsigned int period)
- * \brief set the PWM period
+ * \brief set the PWM period (sum of the active and inactive
+ * time of the PWM)
  * \param pwm *pwm - pointer to valid pwm struct
- * \param int period - period value
+ * \param int period - period value in nanoseconds
  * \return EXIT_SUCCESS or EXIT_FAILURE
  */
 
@@ -151,7 +154,7 @@ int libsoc_pwm_set_period(pwm *pwm, unsigned int period);
 
 /**
  * \fn libsoc_pwm_get_period(pwm *pwm)
- * \brief gets the current pwm period 
+ * \brief gets the current pwm period
  * \param pwm *pwm - pointer to valid pwm struct
  * \return period - integer, -1 on failure
  */
