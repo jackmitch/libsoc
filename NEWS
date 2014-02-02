@@ -1,4 +1,12 @@
-6/12/13 - 0.5 
+2/2/14 - 0.6
+------------
+
+- PWM sysfs support
+- Fixed some bugs
+- Enabled debugging by default; you will now have to specifically
+  switch it off (./configure --disable-debug)
+
+6/12/13 - 0.5
 ----------------------
 
 - Basic I2C support

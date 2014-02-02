@@ -1,4 +1,4 @@
-AC_INIT([libsoc], [0.5])
+AC_INIT([libsoc], [0.6])
 AM_INIT_AUTOMAKE()
 
 AC_CONFIG_SRCDIR([lib/gpio.c])
@@ -14,7 +14,7 @@ AC_SEARCH_LIBS([pthread_create, pthread_cancel],[pthread], , AC_MSG_WARN(["ERROR
 AC_ARG_ENABLE([debug],
     AS_HELP_STRING([--enable-debug], [Enable the debug code]))
 
-AS_IF([test "x$enable_debug" = "xyes"], [
+AS_IF([test "x$enable_debug" != "xno"], [
   AC_DEFINE([DEBUG])
 ])
 

@@ -27,15 +27,15 @@ What peripherals does it support?
 
 Current Support:
 
-- Manual GPIO Manipulation (Value, Edge, Direction, Exporting)
+- Manual GPIO Manipulation through sysfs (Value, Edge, Direction, Exporting)
 - Blocking GPIO Interrupts with timeout
 - Non-blocking GPIO Interrupts with callback mechanism (pthread based)
 - SPI transfers using spidev
 - I2C transfers using ioctls
+- PWM support through sysfs
 
 Future ideas are:
 
-- PWM
 - A/D Converters
 - UART
 
