@@ -61,13 +61,13 @@ libsoc uses the autotools build system. A script called autogen.sh is
 included to setup the build. Exact steps:
 
 1) ./autogen.sh
-2) ./configure [--enable-debug]
+2) ./configure [--disable-debug]
 3) make
 
---enable-debug : enables the debug code, allows for better debugging,
-                 but also slows down the code path. Leave disabled for 
-                 fastest operation
-                 
+--enable-debug : disables the debug code, turn off the debug to get
+                 the fastest operation but at the cost of any debug
+                 print outs.
+
 Dependencies
 ------------------------------------------------------------------------
 
