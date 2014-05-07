@@ -1,6 +1,10 @@
 #include <linux/i2c.h>
 #include <linux/i2c-dev.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * \struct i2c
  * \brief representation of spi device and chipselect
@@ -62,3 +66,7 @@ int libsoc_i2c_read (i2c * i2c, uint8_t * buffer, uint16_t len);
  * \return EXIT_SUCCESS or EXIT_FAILURE 
  */
 int libsoc_i2c_set_timeout(i2c * i2c, int timeout);
+
+#ifdef __cplusplus
+}
+#endif

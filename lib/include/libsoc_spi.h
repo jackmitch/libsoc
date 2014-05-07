@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * \struct spi
  * \brief representation of spi device and chipselect
@@ -145,3 +149,6 @@ int libsoc_spi_read(spi* spi, uint8_t* rx, uint32_t len);
  */
 int libsoc_spi_rw(spi* spi, uint8_t* tx, uint8_t* rx, uint32_t len);
 
+#ifdef __cplusplus
+}
+#endif

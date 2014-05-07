@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * \struct pwm
  * \brief representation of a single requested pwm
@@ -160,3 +164,7 @@ int libsoc_pwm_set_period(pwm *pwm, unsigned int period);
  */
 
 int libsoc_pwm_get_period(pwm *pwm);
+
+#ifdef __cplusplus
+}
+#endif
