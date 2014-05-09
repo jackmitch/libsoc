@@ -419,10 +419,14 @@ libsoc_gpio_wait_interrupt (gpio * gpio, int timeout)
     }
 
   struct pollfd pfd[1];
+  char buffer[1];
 
   pfd[0].fd = gpio->value_fd;
   pfd[0].events = POLLPRI;
   pfd[0].revents = 0;
+
+  // Read data for clean initial poll
+  read (pfd[0].fd, buffer, 1);
 
   int ready = poll (pfd, 1, timeout);
 
