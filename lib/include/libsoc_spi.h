@@ -1,3 +1,6 @@
+#ifndef _LIBSOC_SPI_H_
+#define _LIBSOC_SPI_H_
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -151,4 +154,5 @@ int libsoc_spi_rw(spi* spi, uint8_t* tx, uint8_t* rx, uint32_t len);
 
 #ifdef __cplusplus
 }
+#endif
 #endif

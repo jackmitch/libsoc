@@ -1,3 +1,6 @@
+#ifndef _LIBSOC_DEBUG_H_
+#define _LIBSOC_DEBUG_H_
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -8,4 +11,5 @@ void libsoc_set_debug(int level);
 
 #ifdef __cplusplus
 }
+#endif
 #endif

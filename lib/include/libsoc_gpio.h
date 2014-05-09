@@ -1,3 +1,6 @@
+#ifndef _LIBSOC_GPIO_H_
+#define _LIBSOC_GPIO_H_
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -217,4 +220,5 @@ int libsoc_gpio_callback_interrupt_cancel(gpio * gpio);
 
 #ifdef __cplusplus
 }
+#endif
 #endif
