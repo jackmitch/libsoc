@@ -17,7 +17,7 @@
 
 const char gpio_level_strings[2][STR_BUF] = { "0", "1" };
 const char gpio_direction_strings[2][STR_BUF] = { "in", "out" };
-const char gpio_edge_strings[3][STR_BUF] = { "rising", "falling", "none" };
+const char gpio_edge_strings[4][STR_BUF] = { "rising", "falling", "none", "both" };
 
 inline void
 libsoc_gpio_debug (const char *func, int gpio, char *format, ...)
@@ -381,6 +381,12 @@ libsoc_gpio_get_edge (gpio * current_gpio)
 			 "read edge as falling");
       return FALLING;
     }
+  else if (strncmp (tmp_str, "b", 1) == 0)
+    {
+      libsoc_gpio_debug (__func__, current_gpio->gpio,
+			 "read edge as both");
+      return BOTH;
+    }
   else
     {
       libsoc_gpio_debug (__func__, current_gpio->gpio, "read edge as none");
@@ -408,7 +414,7 @@ libsoc_gpio_wait_interrupt (gpio * gpio, int timeout)
   if (test_edge == EDGE_ERROR || test_edge == NONE)
     {
       libsoc_gpio_debug (__func__, gpio->gpio,
-			 "edge must be FALLING or RISING");
+			 "edge must be FALLING, RISING or BOTH");
       return EXIT_FAILURE;
     }
 
