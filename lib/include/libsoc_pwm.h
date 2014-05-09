@@ -1,3 +1,6 @@
+#ifndef _LIBSOC_PWM_H_
+#define _LIBSOC_PWM_H_
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -167,4 +170,5 @@ int libsoc_pwm_get_period(pwm *pwm);
 
 #ifdef __cplusplus
 }
+#endif
 #endif

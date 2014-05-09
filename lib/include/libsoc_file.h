@@ -1,3 +1,6 @@
+#ifndef _LIBSOC_FILE_H_
+#define _LIBSOC_FILE_H_
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -14,4 +17,5 @@ inline int file_read_int(char *path, int *tmp);
 
 #ifdef __cplusplus
 }
+#endif
 #endif

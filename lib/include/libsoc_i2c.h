@@ -1,3 +1,6 @@
+#ifndef _LIBSOC_I2C_H_
+#define _LIBSOC_I2C_H_
+
 #include <linux/i2c.h>
 #include <linux/i2c-dev.h>
 
@@ -69,4 +72,5 @@ int libsoc_i2c_set_timeout(i2c * i2c, int timeout);
 
 #ifdef __cplusplus
 }
+#endif
 #endif
