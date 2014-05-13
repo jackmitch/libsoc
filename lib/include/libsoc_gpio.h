@@ -1,3 +1,10 @@
+#ifndef _LIBSOC_GPIO_H_
+#define _LIBSOC_GPIO_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * \struct gpio_callback
  * \brief representation of an interrupt callback
@@ -210,3 +217,8 @@ int libsoc_gpio_callback_interrupt(gpio * gpio, int (*callback_fn) (void *),
  */
 
 int libsoc_gpio_callback_interrupt_cancel(gpio * gpio);
+
+#ifdef __cplusplus
+}
+#endif
+#endif
