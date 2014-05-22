@@ -1,3 +1,11 @@
+22/5/14 - 0.6.1
+--------------
+
+- Add support for BOTH edge interrupts
+- Add include guards
+- Add C++ ifdef support
+- Include sysfs gpio bug fix for OMAP platforms
+
 2/2/14 - 0.6
 ------------
 
