@@ -134,6 +134,16 @@ int main(void)
     goto fail;
   }
   
+  // Set edge to BOTH
+  libsoc_gpio_set_edge(gpio_input, BOTH);
+  
+  // Check Edge
+  if (libsoc_gpio_get_edge(gpio_input) != BOTH)
+  {
+    printf("Failed to set edge to BOTH\n");
+    goto fail;
+  }
+
   // Set edge to NONE
   libsoc_gpio_set_edge(gpio_input, NONE);
   

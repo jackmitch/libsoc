@@ -6,8 +6,5 @@
 
 - UART Support
 
-- GPIO
- - Add BOTH edge interrupt to GPIO support
- 
 - SPI
  - Add support for more SPI bus config FLAGS
