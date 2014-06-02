@@ -1,6 +1,8 @@
 #ifndef _LIBSOC_GPIO_H_
 #define _LIBSOC_GPIO_H_
 
+#include <pthread.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
