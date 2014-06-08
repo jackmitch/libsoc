@@ -118,13 +118,18 @@ libsoc_gpio_request (unsigned int gpio_id, enum gpio_mode mode)
     }
 
   new_gpio = malloc (sizeof (gpio));
+  if (new_gpio == NULL)
+    return NULL;
 
   sprintf (tmp_str, "/sys/class/gpio/gpio%d/value", gpio_id);
 
   new_gpio->value_fd = file_open (tmp_str, O_SYNC | O_RDWR);
 
   if (new_gpio->value_fd < 0)
-    return NULL;
+    {
+      free(new_gpio);
+      return NULL;
+    }
 
   new_gpio->gpio = gpio_id;
   new_gpio->shared = shared;
