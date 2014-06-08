@@ -234,8 +234,6 @@ pwm_enabled libsoc_pwm_get_enabled(pwm *pwm)
 
 int libsoc_pwm_set_period(pwm *pwm, unsigned int period)
 {
-  int fd;
-
   if (pwm == NULL)
   {
     libsoc_pwm_debug(__func__, -1, -1, "invalid pwm pointer");
