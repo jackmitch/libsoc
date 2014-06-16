@@ -1,3 +1,13 @@
+16/06/13 - 0.6.2
+----------------
+
+- Moved some required headers to include files
+- Fix memory leak in GPIO lib error path
+- Fix wrong SPI brackets in libsoc_spi_read which caused
+  function to return FAILURE regardless
+
+- Special Thanks to Yegor Yefremov <yegorslists@googlemail.com>
+
 22/5/14 - 0.6.1
 --------------
 

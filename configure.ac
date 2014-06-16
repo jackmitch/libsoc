@@ -1,4 +1,4 @@
-AC_INIT([libsoc], [0.6.1])
+AC_INIT([libsoc], [0.6.2])
 AM_INIT_AUTOMAKE()
 
 AC_CONFIG_SRCDIR([lib/gpio.c])
