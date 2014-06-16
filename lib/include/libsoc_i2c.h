@@ -1,6 +1,7 @@
 #ifndef _LIBSOC_I2C_H_
 #define _LIBSOC_I2C_H_
 
+#include <stdint.h>
 #include <linux/i2c.h>
 #include <linux/i2c-dev.h>
 
