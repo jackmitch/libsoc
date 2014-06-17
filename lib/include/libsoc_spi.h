@@ -1,6 +1,8 @@
 #ifndef _LIBSOC_SPI_H_
 #define _LIBSOC_SPI_H_
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
