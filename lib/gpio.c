@@ -133,6 +133,7 @@ libsoc_gpio_request (unsigned int gpio_id, enum gpio_mode mode)
 
   new_gpio->gpio = gpio_id;
   new_gpio->shared = shared;
+  new_gpio->callback = NULL;
 
   return new_gpio;
 }
