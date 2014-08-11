@@ -64,7 +64,6 @@ pwm* libsoc_pwm_request (unsigned int chip, unsigned int pwm_num,
 	    case LS_WEAK:
 	    {
 	      return NULL;
-	      break;
 	    }
 
     	case LS_SHARED:

@@ -76,7 +76,6 @@ libsoc_gpio_request (unsigned int gpio_id, enum gpio_mode mode)
 	case LS_WEAK:
 	  {
 	    return NULL;
-	    break;
 	  }
 
 	case LS_SHARED:
