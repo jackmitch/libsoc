@@ -51,7 +51,6 @@ gpio *
 libsoc_gpio_request (unsigned int gpio_id, enum gpio_mode mode)
 {
   gpio *new_gpio;
-  int fd;
   char tmp_str[STR_BUF];
   int shared = 0;
 
@@ -92,7 +91,7 @@ libsoc_gpio_request (unsigned int gpio_id, enum gpio_mode mode)
     }
   else
     {
-      fd = file_open ("/sys/class/gpio/export", O_SYNC | O_WRONLY);
+      int fd = file_open ("/sys/class/gpio/export", O_SYNC | O_WRONLY);
 
       if (fd < 0)
 	return NULL;
@@ -469,7 +468,6 @@ __libsoc_new_interrupt_callback_thread (void *void_gpio)
   pfd[0].revents = 0;
 
   char buffer[1];
-  int ready;
 
   // Read data for clean initial poll
   read (pfd[0].fd, buffer, 1);
@@ -482,7 +480,7 @@ __libsoc_new_interrupt_callback_thread (void *void_gpio)
 
   while (1)
     {
-      ready = poll (pfd, 1, -1);
+      int ready = poll (pfd, 1, -1);
 
       switch (ready)
 	{
