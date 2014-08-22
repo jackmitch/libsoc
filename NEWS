@@ -1,3 +1,13 @@
+22/08/13 - 0.6.3
+----------------
+
+- Initialise GPIO function pointer to NULL
+- Style fixes
+- Small scope optimisations
+- Juggling of include files to more relevant places
+
+- Special Thanks to Yegor Yefremov <yegorslists@googlemail.com>
+
 16/06/13 - 0.6.2
 ----------------
 
