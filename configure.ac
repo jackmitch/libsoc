@@ -18,5 +18,5 @@ AS_IF([test "x$enable_debug" != "xno"], [
   AC_DEFINE([DEBUG])
 ])
 
-AC_CONFIG_FILES(Makefile lib/Makefile)
+AC_CONFIG_FILES(Makefile lib/Makefile libsoc.pc)
 AC_OUTPUT
