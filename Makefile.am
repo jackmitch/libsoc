@@ -1,3 +1,4 @@
+ACLOCAL_AMFLAGS = -I config/m4
 AUTOMAKE_OPTIONS = subdir-objects
 
 pkgconfigdir = $(libdir)/pkgconfig
