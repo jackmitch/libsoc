@@ -29,6 +29,7 @@ test/spi_test
 test/i2c_test
 test/pwm_test
 libtool
+libsoc.pc
 *.lo
 *.o
 *.swp
