@@ -1,4 +1,14 @@
-22/08/13 - 0.6.3
+14/06/2015 - 0.6.4
+----------------
+
+- Fix autotools warnings
+- Enable silent build
+- Add packageconfig support
+
+- Special Thanks to Yegor Yefremov <yegorslists@googlemail.com>
+
+
+22/08/2014 - 0.6.3
 ----------------
 
 - Initialise GPIO function pointer to NULL
@@ -8,7 +18,7 @@
 
 - Special Thanks to Yegor Yefremov <yegorslists@googlemail.com>
 
-16/06/13 - 0.6.2
+16/06/2014 - 0.6.2
 ----------------
 
 - Moved some required headers to include files
@@ -18,7 +28,7 @@
 
 - Special Thanks to Yegor Yefremov <yegorslists@googlemail.com>
 
-22/5/14 - 0.6.1
+22/05/2014 - 0.6.1
 --------------
 
 - Add support for BOTH edge interrupts
@@ -26,7 +36,7 @@
 - Add C++ ifdef support
 - Include sysfs gpio bug fix for OMAP platforms
 
-2/2/14 - 0.6
+02/02/2014 - 0.6
 ------------
 
 - PWM sysfs support (Linux 3.12+)
@@ -34,19 +44,19 @@
 - Enabled debugging by default; you will now have to specifically
   switch it off (./configure --disable-debug)
 
-6/12/13 - 0.5
+06/12/2013 - 0.5
 ----------------------
 
 - Basic I2C support
 - Add SPI header to include_header in configure.ac
 
-06/10/13 - 0.4
+06/10/2013 - 0.4
 --------------
 
 - Basic SPI support
   - See lib/include/libsoc_spi.h
 
-13/09/13 - 0.3
+13/09/2013 - 0.3
 --------------
 
 - Non-blocking GPIO interrupts
@@ -92,7 +102,7 @@
   *             on free.
   */
   
-03/09/13 - 0.2
+03/09/2013 - 0.2
 --------------
 
 - GPIO blocking interrupt support
@@ -113,7 +123,7 @@
 
 - Improved error and debug handling
 
-31/08/13 - 0.1
+31/08/2013 - 0.1
 --------------
 
 - basic sysfs GPIO support
