@@ -429,6 +429,7 @@ libsoc_gpio_wait_interrupt (gpio * gpio, int timeout)
   pfd[0].revents = 0;
 
   // Read data for clean initial poll
+  lseek (pfd[0].fd, 0, SEEK_SET);
   read (pfd[0].fd, buffer, 1);
 
   int ready = poll (pfd, 1, timeout);
