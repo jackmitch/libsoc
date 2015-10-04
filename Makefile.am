@@ -7,3 +7,6 @@ EXTRA_DIST = libsoc.pc.in
 CLEANFILES = libsoc.pc
 
 SUBDIRS=lib
+if BOARD
+SUBDIRS += contrib/board_files
+endif
