@@ -2,11 +2,10 @@ clean_all.sh
 build_all.sh
 sync_all.sh
 
-Makefile
-Makefile.in
 aclocal.m4
 arm-oe-linux-gnueabi-libtool
 autom4te.cache/
+bindings/python/gpio.py
 compile
 config.guess
 config.log
@@ -15,13 +14,10 @@ config.sub
 configure
 depcomp
 install-sh
-lib/.deps/
-lib/.libs/
-lib/Makefile
-lib/Makefile.in
-lib/libsoc.la
-lib/libsoc_la-gpio.lo
-lib/libsoc_la-gpio.o
+*.deps/
+*.libs
+*Makefile
+*Makefile.in
 ltmain.sh
 missing
 test/gpio_test
@@ -30,6 +26,8 @@ test/i2c_test
 test/pwm_test
 libtool
 libsoc.pc
+*.la
 *.lo
 *.o
+*.pyc
 *.swp

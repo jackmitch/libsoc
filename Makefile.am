@@ -10,3 +10,6 @@ SUBDIRS=lib
 if BOARD
 SUBDIRS += contrib/board_files
 endif
+if PYTHON
+SUBDIRS += bindings/python
+endif

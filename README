@@ -68,6 +68,7 @@ included to setup the build. Exact steps:
                   the fastest operation but at the cost of any debug
                   print outs. Ommiting this flag will leave debug
                   enabled.
+--enable-python : enable python language bindings to libsoc API.
 --enable-board  : install board specific GPIO pin mappings file. This
                   enables the use of the libsoc_board_gpio_id function
                   to look up GPIO ID's based on how the pin is named for
