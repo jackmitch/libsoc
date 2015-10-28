@@ -6,6 +6,7 @@ from _libsoc import (
     DIRECTION_INPUT, DIRECTION_OUTPUT,
     EDGE_BOTH, EDGE_FALLING, EDGE_NONE, EDGE_RISING,
     LS_SHARED, LS_GREEDY, LS_WEAK,
+    start_gpio_cb,
 )
 
 
@@ -13,7 +14,8 @@ class GPIO(object):
     _lib = ctypes.CDLL('@prefix@/lib/libsoc.so')
     _board_config = None
 
-    def __init__(self, id, direction, edge=EDGE_NONE, mode=LS_SHARED):
+    def __init__(self, id, direction, edge=EDGE_NONE, mode=LS_SHARED,
+                 callback=None):
         self.id = id
         if not isinstance(id, int):
             raise TypeError('Invalid gpio id must be an "int"')
@@ -28,6 +30,7 @@ class GPIO(object):
         self.mode = mode
         self.direction = direction
         self.edge = edge
+        self.callback = callback
         self._gpio = None
 
     def open(self):
@@ -39,9 +42,13 @@ class GPIO(object):
         if self.direction == DIRECTION_INPUT:
             if GPIO._lib.libsoc_gpio_set_edge(self._gpio, self.edge) != 0:
                 raise IOError('Error setting edge for GPIO_%d' % self.id)
+            if self.callback:
+                start_gpio_cb(self._gpio, self.callback)
 
     def close(self):
         if self._gpio:
+            if self.direction == DIRECTION_INPUT and self.callback:
+                GPIO._lib.libsoc_gpio_callback_interrupt_cancel(self._gpio)
             GPIO._lib.libsoc_gpio_free(self._gpio)
             self._gpio = None
 

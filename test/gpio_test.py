@@ -24,6 +24,14 @@ def test_wait_for_interrupt(gpio_in, gpio_out):
     gpio_in.wait_for_interrupt(1000)
 
 
+class gpio_cb(object):
+    def __init__(self):
+        self.hits = 0
+
+    def callback(self):
+        self.hits += 1
+
+
 def main(gpio_in, gpio_out):
     gpio_in = gpio.GPIO(gpio_in, gpio.DIRECTION_INPUT)
     gpio_out = gpio.GPIO(gpio_out, gpio.DIRECTION_OUTPUT)
@@ -54,6 +62,21 @@ def main(gpio_in, gpio_out):
 
         test_wait_for_interrupt(gpio_in, gpio_out)
 
+    cb = gpio_cb()
+    gpio_in = gpio.GPIO(gpio_in.id, gpio.DIRECTION_INPUT,
+                        edge=gpio.EDGE_FALLING, callback=cb.callback)
+
+    interrupts = 10
+    with gpio.activate_gpios((gpio_in, gpio_out)):
+        gpio.GPIO.set_debug(False)
+        for i in range(interrupts):
+            # create falling interrupt
+            gpio_out.set_high()
+            gpio_out.set_low()
+            time.sleep(0.01)
+        gpio.GPIO.set_debug(True)
+    print('Interrupts triggered: %d, interrupts caught: %d' % (
+        interrupts, cb.hits))
 
 if __name__ == '__main__':
     import os

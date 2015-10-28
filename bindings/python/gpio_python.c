@@ -2,8 +2,51 @@
 
 #include "libsoc_gpio.h"
 
+static PyObject *python_cb = NULL;
+
+static int
+gpio_cb(void* arg)
+{
+  int rc = EXIT_SUCCESS;
+  PyGILState_STATE state = PyGILState_Ensure();
+  PyObject *result = PyObject_CallObject(python_cb, NULL);
+  if (!result)
+    rc = EXIT_FAILURE;
+  Py_DECREF(result);
+  PyGILState_Release(state);
+  return rc;
+}
+
+
+static PyObject *
+start_gpio_cb(PyObject *self, PyObject *args)
+{
+  unsigned long gpio_addr;
+  PyObject *temp;
+
+  if (PyArg_ParseTuple(args, "kO", &gpio_addr, &temp))
+    {
+      if (!PyCallable_Check(temp))
+        {
+          PyErr_SetString(PyExc_TypeError, "parameter must be callable");
+          return NULL;
+        }
+      Py_XINCREF(temp);       /* Add a reference to new callback */
+      Py_XDECREF(python_cb);  /* Dispose of previous callback */
+      python_cb = temp;       /* Remember new callback */
+
+      libsoc_gpio_callback_interrupt((gpio*)gpio_addr, gpio_cb, NULL);
+      Py_INCREF(Py_None);
+      return Py_None;
+    }
+  return NULL;
+}
+
 static PyMethodDef functions[] = {
-    {NULL, NULL, 0, NULL}        /* Sentinel */
+  {"start_gpio_cb", start_gpio_cb, METH_VARARGS,
+   "Runs libsoc_gpio_callback_interrupt with logic for the python callback"},
+
+  {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
 PyMODINIT_FUNC
