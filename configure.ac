@@ -20,6 +20,10 @@ AS_IF([test "x$enable_debug" != "xno"], [
   AC_DEFINE([DEBUG])
 ])
 
+AC_ARG_WITH([board-configs],
+    AS_HELP_STRING([--with-board-configs], [Install all board config files]))
+AM_CONDITIONAL([BOARD_CONFIGS], [test "x$with_board_configs" = xyes])
+
 AC_ARG_ENABLE([board],
     AS_HELP_STRING([--enable-board=BOARD], [Enable installation of board config]))
 

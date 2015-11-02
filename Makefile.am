@@ -6,7 +6,4 @@ pkgconfig_DATA = libsoc.pc
 EXTRA_DIST = libsoc.pc.in
 CLEANFILES = libsoc.pc
 
-SUBDIRS=lib
-if BOARD
-SUBDIRS += contrib/board_files
-endif
+SUBDIRS=lib contrib/board_files
