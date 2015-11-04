@@ -24,7 +24,7 @@ AC_ARG_ENABLE([board],
     AS_HELP_STRING([--enable-board=BOARD], [Enable installation of board config]))
 
 AS_IF([test "x$enable_board" != "x"], [
-  valid_boards=`ls contrib/board_files/ | grep -v Makefile | tr '\n' ' '`
+  valid_boards=`ls $srcdir/contrib/board_files/ | grep -v Makefile | tr '\n' ' '`
   for x in $valid_boards ; do
     test "$x" = "$enable_board" && found=1
   done
