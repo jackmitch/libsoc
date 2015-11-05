@@ -62,17 +62,22 @@ included to setup the build. Exact steps:
 
 1) ./autogen.sh
 2) ./configure [--disable-debug] [--enable-board=<board>]
+               [--with-board-configs]
 3) make
 
---disable-debug : disables the debug code, turn off the debug to get
-                  the fastest operation but at the cost of any debug
-                  print outs. Ommiting this flag will leave debug
-                  enabled.
---enable-board  : install board specific GPIO pin mappings file. This
-                  enables the use of the libsoc_board_gpio_id function
-                  to look up GPIO ID's based on how the pin is named for
-                  a supported board. Supported board can be found under
-                  ./contrib/board_files
+--disable-debug      : disables the debug code, turn off the debug to
+                       get the fastest operation but at the cost of any
+                       debug print outs. Ommiting this flag will leave
+                       debug enabled.
+--enable-board       : install board specific GPIO pin mappings file.
+                       This enables the use of the libsoc_board_gpio_id
+                       function to look up GPIO ID's based on how the
+                       pin is named for a supported board. Supported
+                       board can be found under ./contrib/board_files.
+                       If --with-board-configs is also used, a symlink
+                       will be created.
+--with-board-configs : install all the contributed board configuration
+                       files to $PREFIX/share/libsoc.
 
 Dependencies
 ------------------------------------------------------------------------
