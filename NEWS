@@ -1,3 +1,11 @@
+05/11/2015 - 0.7
+----------------
+
+- Add named GPIO board support
+- Fixed autoconf syntax error
+
+- Special Thanks to Andy Doan <andy.doan@linaro.org>
+
 02/07/2015 - 0.6.5
 ----------------
 
