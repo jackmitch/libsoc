@@ -3,7 +3,7 @@
 
 int debug = 0;
 
-inline void
+void
 libsoc_debug (const char *func, char *format, ...)
 {
 #ifdef DEBUG
@@ -25,7 +25,7 @@ libsoc_debug (const char *func, char *format, ...)
 #endif
 }
 
-inline void
+void
 libsoc_warn (const char *format, ...)
 {
   va_list args;

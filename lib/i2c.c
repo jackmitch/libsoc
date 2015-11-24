@@ -11,7 +11,7 @@
 #include "libsoc_debug.h"
 #include "libsoc_file.h"
 
-inline void
+void
 libsoc_i2c_debug (const char *func, i2c * i2c, char *format, ...)
 {
 #ifdef DEBUG

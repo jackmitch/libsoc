@@ -12,7 +12,7 @@
 #include "libsoc_debug.h"
 #include "libsoc_file.h"
 
-inline void
+void
 libsoc_spi_debug (const char *func, spi * spi, char *format, ...)
 {
 #ifdef DEBUG

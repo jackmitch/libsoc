@@ -15,7 +15,7 @@
 static char pwm_polarity_strings[2][STR_BUF] = { "normal", "inversed" };
 static char pwm_enabled_strings[2][STR_BUF] = { "0", "1" };
 
-inline void libsoc_pwm_debug (const char *func, unsigned int chip,
+void libsoc_pwm_debug (const char *func, unsigned int chip,
   unsigned int pwm, char *format, ...)
 {
 #ifdef DEBUG
