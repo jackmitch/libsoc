@@ -50,7 +50,7 @@ libsoc_board_init()
           if (rc != 2)
             {
               libsoc_warn("Invalid mapping line in %s:\n%s\n", conf, line);
-              return NULL;
+              goto fail_close;
             }
           rtrim(ptr->pin);
 
@@ -68,9 +68,15 @@ libsoc_board_init()
   else
     {
       libsoc_warn("Unable to read pin mapping file: %s\n", conf);
-      return NULL;
+      goto fail;
     }
   return bc;
+
+fail_close:
+  fclose(fp);
+fail:
+  free(bc);
+  return NULL;
 }
 
 void
