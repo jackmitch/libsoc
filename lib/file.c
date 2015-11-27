@@ -67,6 +67,20 @@ int file_close(int fd)
 
 #define INT_STR_BUF 20
 
+int file_read_int_fd(int fd, int *tmp)
+{
+  char buf[INT_STR_BUF];
+
+  if (file_read(fd, buf, INT_STR_BUF) < 0)
+  {
+    return EXIT_FAILURE;
+  }
+
+  *tmp = atoi(buf);
+
+  return EXIT_SUCCESS;
+}
+
 int file_read_int_path(char *path, int *tmp)
 {
   int fd, ret;
@@ -88,16 +102,16 @@ int file_read_int_path(char *path, int *tmp)
   return EXIT_SUCCESS;
 }
 
-int file_read_int_fd(int fd, int *tmp)
+int file_write_int_fd(int fd, int val)
 {
   char buf[INT_STR_BUF];
 
-  if (file_read(fd, buf, INT_STR_BUF) < 0)
+  sprintf(buf, "%d", val);
+
+  if (file_write(fd, buf, INT_STR_BUF) < 0)
   {
     return EXIT_FAILURE;
   }
-
-  *tmp = atoi(buf);
 
   return EXIT_SUCCESS;
 }
@@ -116,20 +130,6 @@ int file_write_int_path(char *path, int val)
   ret = file_write_int_fd(fd, val);
 
   if (file_close(fd) < 0 || ret == EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
-
-  return EXIT_SUCCESS;
-}
-
-int file_write_int_fd(int fd, int val)
-{
-  char buf[INT_STR_BUF];
-
-  sprintf(buf, "%d", val);
-
-  if (file_write(fd, buf, INT_STR_BUF) < 0)
   {
     return EXIT_FAILURE;
   }

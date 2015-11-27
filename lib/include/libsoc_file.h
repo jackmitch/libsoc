@@ -14,6 +14,9 @@ int file_write_int(char *path, int val);
 int file_read_str(char *path, char *tmp, int buf_len);
 int file_write_str(char *path, char* buf, int len);
 int file_read_int(char *path, int *tmp);
+int file_read_int_fd(int fd, int *tmp);
+int file_write_int_fd(int fd, int val);
+int file_write_int_path(char *path, int val);
 
 #ifdef __cplusplus
 }
