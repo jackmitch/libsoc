@@ -18,7 +18,7 @@ const char gpio_level_strings[2][STR_BUF] = { "0", "1" };
 const char gpio_direction_strings[2][STR_BUF] = { "in", "out" };
 const char gpio_edge_strings[4][STR_BUF] = { "rising", "falling", "none", "both" };
 
-inline void
+void
 libsoc_gpio_debug (const char *func, int gpio, char *format, ...)
 {
 #ifdef DEBUG

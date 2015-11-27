@@ -5,8 +5,8 @@
 extern "C" {
 #endif
 
-inline void libsoc_debug(const char *func, char *format, ...) __attribute__((format(printf, 2, 3)));
-inline void libsoc_warn(const char *format, ...) __attribute__((format(printf, 1, 2)));
+void libsoc_debug(const char *func, char *format, ...) __attribute__((format(printf, 2, 3)));
+void libsoc_warn(const char *format, ...) __attribute__((format(printf, 1, 2)));
 int libsoc_get_debug();
 void libsoc_set_debug(int level);
 

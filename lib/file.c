@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-inline int file_open(const char *path, int flags)
+int file_open(const char *path, int flags)
 {
   int fd = open(path, flags);
 
@@ -16,7 +16,7 @@ inline int file_open(const char *path, int flags)
   return fd;
 }
 
-inline int file_write(int fd, const char *str, int len)
+int file_write(int fd, const char *str, int len)
 {
   int ret_len = write(fd, str, len);
 
@@ -29,7 +29,7 @@ inline int file_write(int fd, const char *str, int len)
   return ret_len;
 }
 
-inline int file_read(int fd, void *buf, int count)
+int file_read(int fd, void *buf, int count)
 {
   lseek (fd, 0, SEEK_SET);
 
@@ -44,7 +44,7 @@ inline int file_read(int fd, void *buf, int count)
   return ret;
 }
 
-inline int file_valid(char *path)
+int file_valid(char *path)
 {
   if (access(path, F_OK) == 0)
   {
@@ -54,7 +54,7 @@ inline int file_valid(char *path)
   return 0;
 }
 
-inline int file_close(int fd)
+int file_close(int fd)
 {
   if (close(fd) < 0)
   {
@@ -67,7 +67,7 @@ inline int file_close(int fd)
 
 #define INT_STR_BUF 20
 
-inline int file_read_int_path(char *path, int *tmp)
+int file_read_int_path(char *path, int *tmp)
 {
   int fd, ret;
 
@@ -88,7 +88,7 @@ inline int file_read_int_path(char *path, int *tmp)
   return EXIT_SUCCESS;
 }
 
-inline int file_read_int_fd(int fd, int *tmp)
+int file_read_int_fd(int fd, int *tmp)
 {
   char buf[INT_STR_BUF];
 
@@ -102,7 +102,7 @@ inline int file_read_int_fd(int fd, int *tmp)
   return EXIT_SUCCESS;
 }
 
-inline int file_write_int_path(char *path, int val)
+int file_write_int_path(char *path, int val)
 {
   int fd, ret;
 
@@ -123,7 +123,7 @@ inline int file_write_int_path(char *path, int val)
   return EXIT_SUCCESS;
 }
 
-inline int file_write_int_fd(int fd, int val)
+int file_write_int_fd(int fd, int val)
 {
   char buf[INT_STR_BUF];
 
@@ -137,7 +137,7 @@ inline int file_write_int_fd(int fd, int val)
   return EXIT_SUCCESS;
 }
 
-inline int file_read_str(char *path, char *tmp, int buf_len)
+int file_read_str(char *path, char *tmp, int buf_len)
 {
   int fd;
 
@@ -161,7 +161,7 @@ inline int file_read_str(char *path, char *tmp, int buf_len)
   return EXIT_SUCCESS;
 }
 
-inline int file_write_str(char *path, char* buf, int len)
+int file_write_str(char *path, char* buf, int len)
 {
   int fd;
 
@@ -184,4 +184,3 @@ inline int file_write_str(char *path, char* buf, int len)
 
   return EXIT_SUCCESS;
 }
-
