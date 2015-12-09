@@ -1,3 +1,9 @@
+09/12/2015 - 0.7.1
+
+- Fixed compilation with musl
+- Remove inline keywords as they dont play nice with GCC 5.2
+- Misc cleanups from static analysis
+
 05/11/2015 - 0.7
 ----------------
 

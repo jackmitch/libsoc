@@ -1,4 +1,4 @@
-AC_INIT([libsoc], [0.7])
+AC_INIT([libsoc], [0.7.1])
 
 AC_CONFIG_SRCDIR([lib/gpio.c])
 AC_CONFIG_MACRO_DIR([config/m4])
