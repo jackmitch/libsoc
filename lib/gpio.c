@@ -133,6 +133,11 @@ libsoc_gpio_request (unsigned int gpio_id, enum gpio_mode mode)
   new_gpio->shared = shared;
   new_gpio->callback = NULL;
 
+  // Set up a pollfd in case we are used for polling later
+  new_gpio->pfd.fd = new_gpio->value_fd;
+  new_gpio->pfd.events = POLLPRI;
+  new_gpio->pfd.revents = 0;
+
   return new_gpio;
 }
 
@@ -398,6 +403,31 @@ libsoc_gpio_get_edge (gpio * current_gpio)
 }
 
 int
+libsoc_gpio_poll (gpio * gpio, int timeout)
+{
+  int rc;
+  char c;
+
+  // do an initial read to clear interrupt,
+  rc = lseek(gpio->value_fd, 0, SEEK_SET);
+  rc = read(gpio->value_fd, &c, 1);
+
+  rc = poll(&gpio->pfd, 1, timeout);
+  if (rc == -1)
+    {
+      libsoc_gpio_debug (__func__, gpio->gpio, "poll failed");
+      perror ("libsoc-gpio-debug");
+    }
+  else if (rc == 1 && gpio->pfd.revents & POLLPRI)
+    {
+      // do a final read to clear interrupt
+      rc = read(gpio->value_fd, &c, 1);
+      return EXIT_SUCCESS;
+    }
+  return EXIT_FAILURE;
+}
+
+int
 libsoc_gpio_wait_interrupt (gpio * gpio, int timeout)
 {
   if (gpio == NULL)
@@ -421,57 +451,13 @@ libsoc_gpio_wait_interrupt (gpio * gpio, int timeout)
       return EXIT_FAILURE;
     }
 
-  struct pollfd pfd[1];
-  char buffer[1];
-
-  pfd[0].fd = gpio->value_fd;
-  pfd[0].events = POLLPRI;
-  pfd[0].revents = 0;
-
-  // Read data for clean initial poll
-  lseek (pfd[0].fd, 0, SEEK_SET);
-  read (pfd[0].fd, buffer, 1);
-
-  int ready = poll (pfd, 1, timeout);
-
-  int ret;
-
-  switch (ready)
-    {
-    case -1:
-      libsoc_gpio_debug (__func__, gpio->gpio, "poll failed");
-      perror ("libsoc-gpio-debug");
-      ret = EXIT_FAILURE;
-      break;
-
-    case 0:
-      ret = EXIT_FAILURE;
-      break;
-
-    default:
-      ret = EXIT_SUCCESS;
-      break;
-    }
-
-  return ret;
-
+  return libsoc_gpio_poll(gpio, timeout);
 }
 
 void *
 __libsoc_new_interrupt_callback_thread (void *void_gpio)
 {
   gpio *gpio = void_gpio;
-
-  struct pollfd pfd[1];
-
-  pfd[0].fd = gpio->value_fd;
-  pfd[0].events = POLLPRI;
-  pfd[0].revents = 0;
-
-  char buffer[1];
-
-  // Read data for clean initial poll
-  read (pfd[0].fd, buffer, 1);
 
   gpio->callback->ready = 1;
 
@@ -481,25 +467,11 @@ __libsoc_new_interrupt_callback_thread (void *void_gpio)
 
   while (1)
     {
-      int ready = poll (pfd, 1, -1);
-
-      switch (ready)
-	{
-	case 1:
-
-	  if (pfd[0].revents & POLLPRI)
-	    {
-	      libsoc_gpio_debug (__func__, gpio->gpio, "caught interrupt");
-	      gpio->callback->callback_fn (gpio->callback->callback_arg);
-
-	      // Read data to clear poll event
-	      read (pfd[0].fd, buffer, sizeof (buffer));
-	    }
-	  break;
-
-	default:
-	  break;
-	}
+      if (libsoc_gpio_poll(gpio, -1) == EXIT_SUCCESS)
+        {
+          libsoc_gpio_debug (__func__, gpio->gpio, "caught interrupt");
+          gpio->callback->callback_fn (gpio->callback->callback_arg);
+        }
     }
 }
 

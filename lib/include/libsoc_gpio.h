@@ -1,6 +1,7 @@
 #ifndef _LIBSOC_GPIO_H_
 #define _LIBSOC_GPIO_H_
 
+#include <poll.h>
 #include <pthread.h>
 
 #ifdef __cplusplus
@@ -39,6 +40,7 @@ typedef struct {
 	unsigned int gpio;
 	int value_fd;
 	struct gpio_callback *callback;
+	struct pollfd pfd;
 	int shared;
 } gpio;
 
