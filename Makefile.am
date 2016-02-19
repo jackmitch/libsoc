@@ -7,6 +7,7 @@ EXTRA_DIST = libsoc.pc.in
 CLEANFILES = libsoc.pc
 
 SUBDIRS=lib contrib/board_files
-if PYTHON
+
+if EN_PYTHON
 SUBDIRS += bindings/python
 endif

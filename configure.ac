@@ -26,19 +26,24 @@ AM_CONDITIONAL([BOARD_CONFIGS], [test "x$with_board_configs" = xyes])
 
 AC_ARG_ENABLE([python2],
     AS_HELP_STRING([--enable-python2], [Enable python 2 language bindings to libsoc API.]))
-AM_CONDITIONAL([PYTHON], [test "x$enable_python2" != "xno"])
-AS_IF([test "x$enable_python2" != "x"], [
+
+AS_IF([test "x$enable_python2" != x], [
   AM_PATH_PYTHON(2)
 ])
+
 AC_ARG_ENABLE([python3],
     AS_HELP_STRING([--enable-python3], [Enable python 3 language bindings to libsoc API.]))
-AM_CONDITIONAL([PYTHON], [test "x$enable_python3" != "xno"])
-AS_IF([test "x$enable_python3" != "x"], [
-  AS_IF([test "x$enable_python2" != "x"], [
+
+AS_IF([test "x$enable_python3" != x], [
+  AS_IF([test "x$enable_python2" != x], [
     AC_MSG_ERROR([--enable-python3 and --enable-python2 cannot both be selected.])
   ])
   AM_PATH_PYTHON(3)
 ])
+
+AM_CONDITIONAL([EN_PYTHON], [test "x$enable_python2" != x || test "x$enable_python3" != x])
+
+AM_COND_IF([EN_PYTHON], [PKG_CHECK_MODULES([PYTHON], [python-"$PYTHON_VERSION"])])
 
 AC_ARG_ENABLE([board],
     AS_HELP_STRING([--enable-board=BOARD], [Enable installation of board config]))
