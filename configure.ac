@@ -61,5 +61,5 @@ AM_CONDITIONAL([BOARD], [test "x$enable_board" != x])
 
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
-AC_CONFIG_FILES(Makefile lib/Makefile contrib/board_files/Makefile bindings/python/Makefile bindings/python/gpio.py libsoc.pc)
+AC_CONFIG_FILES(Makefile lib/Makefile contrib/board_files/Makefile bindings/python/Makefile libsoc.pc)
 AC_OUTPUT
