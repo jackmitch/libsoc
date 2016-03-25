@@ -9,6 +9,8 @@ static PyMethodDef functions[] = {
 static void
 _add_constants(PyObject *m)
 {
+  PyObject *mod, *func, *args, *api;
+
   PyModule_AddIntConstant(m, "DIRECTION_ERROR", DIRECTION_ERROR);
   PyModule_AddIntConstant(m, "DIRECTION_INPUT", INPUT);
   PyModule_AddIntConstant(m, "DIRECTION_OUTPUT", OUTPUT);
@@ -26,6 +28,16 @@ _add_constants(PyObject *m)
   PyModule_AddIntConstant(m, "LS_SHARED", LS_SHARED);
   PyModule_AddIntConstant(m, "LS_GREEDY", LS_GREEDY);
   PyModule_AddIntConstant(m, "LS_WEAK", LS_WEAK);
+
+  mod = PyImport_ImportModule("ctypes");
+  func = PyObject_GetAttrString(mod, "CDLL");
+  if (!PyCallable_Check(func))
+    PyErr_Print();
+
+  args = Py_BuildValue("(s)", LIBSOC_SO);
+  api = PyObject_CallObject(func, args);
+  Py_DECREF(args);
+  PyModule_AddObject(m, "api", api);
 }
 
 
