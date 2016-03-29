@@ -86,6 +86,8 @@ Dependencies
 
 - pthreads
 - libgcc
+- libpython2-dev (if --enable-python2)
+- libpython3-dev (if --enable-python3)
 
 How do I use libsoc?
 ------------------------------------------------------------------------
