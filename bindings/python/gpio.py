@@ -1,13 +1,12 @@
 import atexit
 import contextlib
-import ctypes
 import threading
 import time
 
 from ._libsoc import (
     DIRECTION_INPUT, DIRECTION_OUTPUT,
     EDGE_BOTH, EDGE_FALLING, EDGE_NONE, EDGE_RISING,
-    LS_SHARED, LS_GREEDY, LS_WEAK,
+    LS_SHARED, LS_GREEDY, LS_WEAK, api
 )
 
 
@@ -29,7 +28,6 @@ class InterruptHandler(threading.Thread):
 
 
 class GPIO(object):
-    _lib = ctypes.CDLL('@prefix@/lib/libsoc.so')
     _board_config = None
 
     def __init__(self, id, direction, edge=EDGE_NONE, mode=LS_SHARED):
@@ -52,22 +50,22 @@ class GPIO(object):
     def open(self):
         '''Opens a file descriptor to the GPIO and configures it.'''
         assert self._gpio is None
-        self._gpio = GPIO._lib.libsoc_gpio_request(self.id, self.mode)
+        self._gpio = api.libsoc_gpio_request(self.id, self.mode)
         if self._gpio == 0:  # NULL from native code
             raise IOError('Unable to open GPIO_%d' % self.id)
-        GPIO._lib.libsoc_gpio_set_direction(self._gpio, self.direction)
+        api.libsoc_gpio_set_direction(self._gpio, self.direction)
         if self.direction == DIRECTION_INPUT:
-            if GPIO._lib.libsoc_gpio_set_edge(self._gpio, self.edge) != 0:
+            if api.libsoc_gpio_set_edge(self._gpio, self.edge) != 0:
                 raise IOError('Error setting edge for GPIO_%d' % self.id)
 
     def close(self):
         '''Cleans up the memory and resources allocated by the open method.'''
         if self._gpio:
-            GPIO._lib.libsoc_gpio_free(self._gpio)
+            api.libsoc_gpio_free(self._gpio)
             self._gpio = None
 
     def get_direction(self):
-        d = GPIO._lib.libsoc_gpio_get_direction(self._gpio)
+        d = api.libsoc_gpio_get_direction(self._gpio)
         if d == -1:
             raise IOError('Error reading GPIO_%d direction: %d' % self.id)
         return d
@@ -76,9 +74,9 @@ class GPIO(object):
     def gpio_id(pin):
         '''Given a pin number on the board, return the actual GPIO ID.'''
         if not GPIO._board_config:
-            GPIO._board_config = GPIO._lib.libsoc_board_init()
-            atexit.register(GPIO._lib.libsoc_board_free, GPIO._board_config)
-        gpio = GPIO._lib.libsoc_board_gpio_id(GPIO._board_config, pin.encode())
+            GPIO._board_config = api.libsoc_board_init()
+            atexit.register(api.libsoc_board_free, GPIO._board_config)
+        gpio = api.libsoc_board_gpio_id(GPIO._board_config, pin.encode())
         if gpio == -1:
             raise ValueError('Invalid GPIO pin name(%s)' % pin)
         return gpio
@@ -88,31 +86,31 @@ class GPIO(object):
         v = 0
         if enabled:
             v = 1
-        GPIO._lib.libsoc_set_debug(v)
+        api.libsoc_set_debug(v)
 
     def set_high(self):
         assert self.direction == DIRECTION_OUTPUT
-        GPIO._lib.libsoc_gpio_set_level(self._gpio, 1)
+        api.libsoc_gpio_set_level(self._gpio, 1)
 
     def set_low(self):
         assert self.direction == DIRECTION_OUTPUT
-        GPIO._lib.libsoc_gpio_set_level(self._gpio, 0)
+        api.libsoc_gpio_set_level(self._gpio, 0)
 
     def is_high(self):
-        l = GPIO._lib.libsoc_gpio_get_level(self._gpio)
+        l = api.libsoc_gpio_get_level(self._gpio)
         if l == -1:
             raise IOError('Error reading GPIO_%d level' % self.id)
         return l == 1
 
     def wait_for_interrupt(self, timeout):
         assert self.direction == DIRECTION_INPUT
-        if self._lib.libsoc_gpio_wait_interrupt(self._gpio, timeout) != 0:
+        if api.libsoc_gpio_wait_interrupt(self._gpio, timeout) != 0:
             raise IOError('Error waiting for interrupt on GPIO_%d' % self.id)
 
     def get_edge(self):
         '''Return the edge the GPIO is configured with.'''
         assert self.direction == DIRECTION_INPUT
-        e = GPIO._lib.libsoc_gpio_get_edge(self._gpio)
+        e = api.libsoc_gpio_get_edge(self._gpio)
         if e == -1:
             raise IOError('Error reading GPIO_%d edge' % self.id)
         return e
@@ -123,7 +121,7 @@ class GPIO(object):
         polling. Returns True if an interrupt occurred, False on an error or
         timeout
         '''
-        return GPIO._lib.libsoc_gpio_poll(self._gpio, timeout_ms) == 0
+        return api.libsoc_gpio_poll(self._gpio, timeout_ms) == 0
 
     def start_interrupt_handler(self, interrupt_callback):
         '''Returns a thread that continuosly polls the GPIO. If an interrupt is
