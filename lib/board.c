@@ -2,16 +2,92 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "libsoc_board.h"
 #include "libsoc_debug.h"
+
+#define HIKEY DATA_DIR"/hikey/libsoc_gpio.conf"
+#define DRAGONBOARD410C DATA_DIR"/dragonboard410c/libsoc_gpio.conf"
+#define BUBBLEGUM DATA_DIR"/bubblegum/libsoc_gpio.conf"
+#define BEAGLEBONE DATA_DIR"/beaglebone/libsoc_gpio.conf"
+
+static const char *
+_probe_cpuinfo()
+{
+  FILE *fp;
+  char line[128];
+  const char *name = NULL;
+
+  fp = fopen("/proc/cpuinfo", "r");
+  if (fp)
+    {
+      while(fgets(line, sizeof(line), fp))
+        {
+          if (strncmp(line, "Hardware", 8) == 0)
+            {
+              if (strstr(line, "Generic AM33XX"))
+                  name = BEAGLEBONE;
+            }
+        }
+      fclose(fp);
+    }
+
+  return name;
+}
+
+static const char *
+_probe_dt()
+{
+  FILE *fp;
+  char buff[64];
+  const char *name = NULL;
+
+  fp = fopen("/proc/device-tree/model", "r");
+  if (fp)
+    {
+      if (fgets(buff, sizeof(buff), fp))
+        {
+          if(!strcmp(buff, "HiKey Development Board"))
+            name = HIKEY;
+          else if(!strcmp(buff, "Qualcomm Technologies, Inc. APQ 8016 SBC"))
+            name = DRAGONBOARD410C;
+          else if(!strcmp(buff, "s900"))
+            name = BUBBLEGUM;
+        }
+      fclose(fp);
+    }
+
+  return name;
+}
+
+static const char *
+_probe_for_config()
+{
+  const char *name = _probe_dt();
+  if (!name)
+    name = _probe_cpuinfo();
+  return name;
+}
 
 static const char *
 _get_conf_file()
 {
   const char *name = getenv("LIBSOC_GPIO_CONF");
   if (name == NULL)
-    name = GPIO_CONF;
+    {
+      name = GPIO_CONF;
+      if (access(name, F_OK))
+        {
+          const char *probed = _probe_for_config();
+          if (!probed)
+            {
+              libsoc_warn("GPIO mapping file(%s) does not exist\n", name);
+              return NULL;
+            }
+          name = probed;
+        }
+    }
   return name;
 }
 
@@ -37,6 +113,9 @@ libsoc_board_init()
   pin_mapping *ptr;
   char *tmp;
   const char *conf = _get_conf_file();
+
+  if (!conf)
+    return NULL;
 
   bc = calloc(sizeof(board_config), 1);
 
