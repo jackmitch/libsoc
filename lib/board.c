@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "libsoc_board.h"
 #include "libsoc_debug.h"
@@ -11,7 +12,14 @@ _get_conf_file()
 {
   const char *name = getenv("LIBSOC_GPIO_CONF");
   if (name == NULL)
-    name = GPIO_CONF;
+    {
+      name = GPIO_CONF;
+      if (!access(name))
+        {
+          libsoc_warn("GPIO mapping file(%s) does not exist\n", name);
+          return NULL;
+        }
+    }
   return name;
 }
 
@@ -37,6 +45,9 @@ libsoc_board_init()
   pin_mapping *ptr;
   char *tmp;
   const char *conf = _get_conf_file();
+
+  if (!conf)
+    return NULL;
 
   bc = calloc(sizeof(board_config), 1);
 
