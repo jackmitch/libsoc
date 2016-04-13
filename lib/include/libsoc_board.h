@@ -5,28 +5,16 @@
 extern "C" {
 #endif
 
-/**
- * \struct pin_mapping
- * \brief a linked list of pin-name to gpio id mappings for a given board
- * \param char[16] - the pin name used by the board, ie "P49"
- * \param unsigned int - the gpio id of the given pin
- * \param pin_mapping* - the next mapping in the list for the board
- */
-
-typedef struct pin_mapping {
-  char pin[16];
-  unsigned int gpio;
-  struct pin_mapping *next;
-} pin_mapping;
+#include "libsoc_conffile.h"
 
 /**
  * \struct board_config
  * \brief a struct to hold board specific information
- * \param pin_mappings* - the head of the linked list of pin-mappings
+ * \param conf* - the board config file
  */
 
 typedef struct {
-  pin_mapping *pin_mappings;
+  conffile *conf;
 } board_config;
 
 /**

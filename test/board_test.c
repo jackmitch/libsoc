@@ -14,7 +14,7 @@ int main(void)
   board_config *config;
   unsigned int id;
 
-  _write(fd, "# comment line\n");
+  _write(fd, "[GPIO]\n");
   _write(fd, "GPIO_FOO= 123\n");
   _write(fd, "\n");
   _write(fd, "GPIO_BAR =42 \n");
