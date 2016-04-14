@@ -1,4 +1,7 @@
+#include <dirent.h>
+#include <limits.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include "libsoc_board.h"
@@ -12,6 +15,75 @@ _get_conf_file()
   if (name == NULL)
     name = GPIO_CONF;
   return name;
+}
+
+static int
+_probe_config(conffile *conf)
+{
+  const char *dtfile = conffile_get(conf, "board", "dtfile", "/proc/device-tree/model");
+  const char *match = conffile_get(conf, "board", "model", NULL);
+  if (match)
+    {
+      char *probed = file_read_contents(dtfile);
+      if (probed)
+        {
+          int rc = strcmp(probed, match);
+	  free(probed);
+	  return !rc;
+        }
+    }
+  else
+    {
+      libsoc_debug(__func__, "No 'model' value found in 'board' section");
+    }
+  return 0;
+}
+
+static board_config *
+_probe()
+{
+  board_config *bc = NULL;
+  conffile *conf = NULL;
+  const char *confs_dir = DATA_DIR;
+  char tmp[PATH_MAX];
+  DIR *dirp;
+  struct dirent *dp;
+
+  if ((dirp = opendir(confs_dir)) != NULL)
+    {
+      do
+        {
+          if ((dp = readdir(dirp)) != NULL)
+            {
+              char *ext = strrchr(dp->d_name, '.');
+              if (ext && !strcmp(ext, ".conf"))
+                {
+		  strcpy(tmp, confs_dir);
+		  strcat(tmp, "/");
+		  strcat(tmp, dp->d_name);
+		  conf = conffile_load(tmp);
+		  if (conf)
+		    {
+		      libsoc_debug(__func__, "probing %s for board support", tmp);
+                      if(_probe_config(conf))
+		        {
+			  libsoc_debug(__func__, "probing match for %s", tmp);
+                          bc = calloc(1, sizeof(board_config));
+                          bc->conf = conf;
+			}
+		      else
+		        conffile_free(conf);
+		    }
+                }
+            }
+        } while (dp != NULL && bc == NULL);
+      closedir(dirp);
+    }
+  else
+    {
+      libsoc_warn("Unable to read directory: %s", confs_dir);
+    }
+  return bc;
 }
 
 board_config*
@@ -32,7 +104,9 @@ libsoc_board_init()
     }
     else
     {
-      libsoc_warn("Board config(%s) does not exist\n", conf);
+      bc = _probe();
+      if (!bc)
+        libsoc_warn("Board config(%s) does not exist and could not be probed", conf);
     }
 
   return bc;
