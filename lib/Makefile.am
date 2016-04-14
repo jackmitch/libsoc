@@ -21,4 +21,4 @@ libsoc_la_CPPFLAGS = -I${top_srcdir}/lib/include
 ## interface : source : age
 
 libsoc_la_LDFLAGS = -version-info 5:1:3
-AM_CFLAGS = -DDATA_DIR=\"$(DESTDIR)$(pkgdatadir)\" -DGPIO_CONF=\"@sysconfdir@/libsoc_gpio.conf\"
+AM_CFLAGS = -DDATA_DIR=\"$(DESTDIR)$(pkgdatadir)\" -DLIBSOC_CONF=\"@sysconfdir@/libsoc.conf\"

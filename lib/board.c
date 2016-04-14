@@ -11,9 +11,9 @@
 static const char *
 _get_conf_file()
 {
-  const char *name = getenv("LIBSOC_GPIO_CONF");
+  const char *name = getenv("LIBSOC_CONF");
   if (name == NULL)
-    name = GPIO_CONF;
+    name = LIBSOC_CONF;
   return name;
 }
 
