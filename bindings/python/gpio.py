@@ -137,6 +137,8 @@ class GPIO(object):
 
 @contextlib.contextmanager
 def request_gpios(gpios):
+    if not isinstance(gpios, tuple) and not isinstance(gpios, list):
+        gpios = (gpios,)
     try:
         for g in gpios:
             g.open()
