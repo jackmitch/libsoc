@@ -58,13 +58,17 @@ void conffile_free(conffile *conf);
 
 /**
  * \fn const char *conffile_get(conffile *conf, const char *sectname, const char *key, const char *defval)
- * \brief Returns the value for the given section and key
+ * \brief Find the key in the given section of conffile and return its value.
+ * \return The value found in the conffile or defval if one is not found.
  */
 const char* conffile_get(conffile *conf, const char *sectname, const char *key, const char *defval);
 
 /**
  * \fn int *conffile_get_int(conffile *conf, const char *sectname, const char *key, int defval)
- * \brief Returns the value for the given section and key
+ * \brief Find the key in the given section of conffile and return its integer
+ * value.
+ * \brief Returns the value for the given section and key or defval if the key
+ * isn't found or is not numeric.
  */
 int conffile_get_int(conffile *conf, const char *sectname, const char *key, int defval);
 
