@@ -1,97 +1,123 @@
+#include <dirent.h>
+#include <limits.h>
 #include <stdlib.h>
-#include <stdio.h>
-#include <ctype.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "libsoc_board.h"
 #include "libsoc_debug.h"
+#include "libsoc_file.h"
 
 static const char *
 _get_conf_file()
 {
-  const char *name = getenv("LIBSOC_GPIO_CONF");
+  const char *name = getenv("LIBSOC_CONF");
   if (name == NULL)
-    name = GPIO_CONF;
+    name = LIBSOC_CONF;
   return name;
 }
 
-static void
-rtrim(char *buff)
+static int
+_probe_config(conffile *conf)
 {
-  size_t len = strlen(buff);
-  while (len-- > 0)
+  const char *dtfile = conffile_get(conf, "board", "dtfile", "/proc/device-tree/model");
+  const char *match = conffile_get(conf, "board", "model", NULL);
+  if (match)
     {
-      if (isspace(buff[len]))
-        buff[len] = '\0';
+      char *probed = file_read_contents(dtfile);
+      if (probed)
+        {
+          int rc = strcmp(probed, match);
+	  free(probed);
+	  return !rc;
+        }
     }
+  else
+    {
+      libsoc_debug(__func__, "No 'model' value found in 'board' section");
+    }
+  return 0;
+}
+
+static board_config *
+_probe()
+{
+  board_config *bc = NULL;
+  conffile *conf = NULL;
+  const char *confs_dir = DATA_DIR;
+  char tmp[PATH_MAX];
+  DIR *dirp;
+  struct dirent *dp;
+
+  if ((dirp = opendir(confs_dir)) != NULL)
+    {
+      do
+        {
+          if ((dp = readdir(dirp)) != NULL)
+            {
+              char *ext = strrchr(dp->d_name, '.');
+              if (ext && !strcmp(ext, ".conf"))
+                {
+		  strcpy(tmp, confs_dir);
+		  strcat(tmp, "/");
+		  strcat(tmp, dp->d_name);
+		  conf = conffile_load(tmp);
+		  if (conf)
+		    {
+		      libsoc_debug(__func__, "probing %s for board support", tmp);
+                      if(_probe_config(conf))
+		        {
+			  libsoc_debug(__func__, "probing match for %s", tmp);
+                          bc = calloc(1, sizeof(board_config));
+                          bc->conf = conf;
+			}
+		      else
+		        conffile_free(conf);
+		    }
+                }
+            }
+        } while (dp != NULL && bc == NULL);
+      closedir(dirp);
+    }
+  else
+    {
+      libsoc_warn("Unable to read directory: %s", confs_dir);
+    }
+  return bc;
 }
 
 board_config*
 libsoc_board_init()
 {
-  int rc;
-  FILE *fp;
-  char line[256];
-  board_config *bc;
-  pin_mapping *cur = NULL;
-  pin_mapping *ptr;
-  char *tmp;
+  board_config *bc = NULL;
   const char *conf = _get_conf_file();
 
-  bc = calloc(sizeof(board_config), 1);
-
-  fp = fopen(conf, "r");
-  if (fp)
+  if (!access(conf, F_OK))
     {
-      while(fgets(line, sizeof(line), fp))
+      bc = calloc(sizeof(board_config), 1);
+      bc->conf = conffile_load(conf);
+      if (!bc->conf)
         {
-          if (*line == '#' || *line == '\0' || *line == '\n') continue;
-          ptr = calloc(sizeof(pin_mapping), 1);
-          rc = sscanf(line, "%15[^=]=%d", ptr->pin, &ptr->gpio);
-          if (rc != 2)
-            {
-              libsoc_warn("Invalid mapping line in %s:\n%s\n", conf, line);
-              goto fail_close;
-            }
-          rtrim(ptr->pin);
-
-          if (!cur)
-            {
-              bc->pin_mappings = cur = ptr;
-            }
-          else
-            {
-              cur->next = ptr;
-              cur = cur->next;
-            }
+          free(bc);
+          bc = NULL;
         }
     }
-  else
+    else
     {
-      libsoc_warn("Unable to read pin mapping file: %s\n", conf);
-      goto fail;
+      bc = _probe();
+      if (!bc)
+        libsoc_warn("Board config(%s) does not exist and could not be probed", conf);
     }
-  return bc;
 
-fail_close:
-  fclose(fp);
-fail:
-  free(bc);
-  return NULL;
+  return bc;
 }
 
 void
 libsoc_board_free(board_config *config)
 {
-  pin_mapping *ptr;
   if (config)
     {
-        while(config->pin_mappings)
-          {
-            ptr = config->pin_mappings->next;
-            free(config->pin_mappings);
-            config->pin_mappings = ptr;
-          }
+        conffile_free(config->conf);
         free(config);
     }
 }
@@ -99,16 +125,5 @@ libsoc_board_free(board_config *config)
 unsigned int
 libsoc_board_gpio_id(board_config *config, const char* pin)
 {
-  pin_mapping *ptr = NULL;
-  if (!config)
-    return -1;
-
-  ptr = config->pin_mappings;
-  while(ptr)
-    {
-      if (!strcmp(pin, ptr->pin))
-        return ptr->gpio;
-      ptr = ptr->next;
-    }
-  return -1;
+  return conffile_get_int(config->conf, "GPIO", pin, -1);
 }

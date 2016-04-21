@@ -17,6 +17,7 @@ int file_read_int(char *path, int *tmp);
 int file_read_int_fd(int fd, int *tmp);
 int file_write_int_fd(int fd, int val);
 int file_write_int_path(char *path, int val);
+char* file_read_contents(const char *path);
 
 #ifdef __cplusplus
 }

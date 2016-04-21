@@ -2,6 +2,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/stat.h>
 
 int file_open(const char *path, int flags)
 {
@@ -32,7 +33,6 @@ int file_write(int fd, const char *str, int len)
 int file_read(int fd, void *buf, int count)
 {
   lseek (fd, 0, SEEK_SET);
-
   int ret = read(fd, buf, count);
 
   if (ret < 0)
@@ -183,4 +183,32 @@ int file_write_str(char *path, char* buf, int len)
   }
 
   return EXIT_SUCCESS;
+}
+
+char* file_read_contents(const char *path)
+{
+  int fd;
+  struct stat st;
+  char *buf;
+
+  if (stat(path, &st))
+  {
+    perror("libsoc-file-debug");
+    return NULL;
+  }
+
+  fd = file_open(path, O_RDONLY);
+  if (fd < 0)
+    return NULL;
+
+  buf = malloc(st.st_size);
+  if (buf)
+  {
+    if (file_read(fd, buf, st.st_size) != st.st_size)
+    {
+      free(buf);
+      return NULL;
+    }
+  }
+  return buf;
 }
