@@ -7,6 +7,7 @@ arm-oe-linux-gnueabi-libtool
 autom4te.cache/
 bindings/python/gpio.py
 compile
+config/
 config.guess
 config.log
 config.status
