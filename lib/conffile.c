@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "libsoc_debug.h"
 #include "libsoc_conffile.h"
 
 static char *
