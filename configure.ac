@@ -28,14 +28,17 @@ AC_ARG_ENABLE([python],
     AS_HELP_STRING([--enable-python=PYTHON_VERSION],
     [Enable Python language bindings to libsoc API. Either version 2 or 3.]))
 
-AS_CASE(["$enable_python"],
-  [2|3], [
-    AM_PATH_PYTHON("$enable_python")
-    PKG_CHECK_MODULES([PYTHON], [python-"$PYTHON_VERSION"])
-    AM_CONDITIONAL([HAVE_PYTHON], [test "$PYTHON" != :])
-  ],
-  [AC_MSG_NOTICE([Python version should be either 2 or 3.])]
-)
+AS_IF([test "x$enable_python" != x], [
+	AS_CASE(["$enable_python"],
+	  [2|3], [
+	    AM_PATH_PYTHON("$enable_python")
+	    PKG_CHECK_MODULES([PYTHON], [python-"$PYTHON_VERSION"])
+	  ],
+	  [AC_MSG_ERROR([Python version should be either 2 or 3.])]
+	)
+])
+
+AM_CONDITIONAL([HAVE_PYTHON], [test "x$PYTHON" != x])
 
 AC_ARG_ENABLE([board],
     AS_HELP_STRING([--enable-board=BOARD], [Enable installation of board config]))
