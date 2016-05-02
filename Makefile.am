@@ -8,6 +8,6 @@ CLEANFILES = libsoc.pc
 
 SUBDIRS=lib contrib/board_files
 
-if EN_PYTHON
+if HAVE_PYTHON
 SUBDIRS += bindings/python
 endif
