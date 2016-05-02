@@ -27,19 +27,27 @@ What peripherals does it support?
 
 Current Support:
 
+C API
+-----
+
 - Manual GPIO Manipulation through sysfs (Value, Edge, Direction, Exporting)
 - Blocking GPIO Interrupts with timeout
 - Non-blocking GPIO Interrupts with callback mechanism (pthread based)
 - SPI transfers using spidev
 - I2C transfers using ioctls
 - PWM support through sysfs (Linux 3.12+)
+- Automatic board probing via installed config files
 
-Future ideas are:
+Python Bindings
+---------------
 
-- A/D Converters
-- UART
+- Manual GPIO Manipulation through sysfs (Value, Edge, Direction, Exporting)
+- Blocking GPIO Interrupts with timeout
+- Non-blocking GPIO Interrupts with callback mechanism
+- I2C transfers
 
-Please see the roadmap folder for more information
+Please see the roadmap folder and Github issue tracker for future ideas
+and feature requests.
 
 Does libsoc support the SoC on my board?
 ------------------------------------------------------------------------
@@ -62,22 +70,25 @@ included to setup the build. Exact steps:
 
 1) ./autogen.sh
 2) ./configure [--disable-debug] [--enable-board=<board>]
-               [--with-board-configs]
+               [--with-board-configs] [--enable-python=<version>]
 3) make
 
 --disable-debug      : disables the debug code, turn off the debug to
                        get the fastest operation but at the cost of any
                        debug print outs. Ommiting this flag will leave
                        debug enabled.
---enable-python2     : enable python2 language bindings to libsoc API.
---enable-python3     : enable python3 language bindings to libsoc API.
---enable-board       : install board specific GPIO pin mappings file.
+
+--enable-python=VER  : enable specified python language bindings to
+		       libsoc API.
+
+--enable-board=BOARD : install board specific GPIO pin mappings file.
                        This enables the use of the libsoc_board_gpio_id
                        function to look up GPIO ID's based on how the
                        pin is named for a supported board. Supported
                        board can be found under ./contrib/board_files.
                        If --with-board-configs is also used, a symlink
                        will be created.
+
 --with-board-configs : install all the contributed board configuration
                        files to $PREFIX/share/libsoc.
 
@@ -86,6 +97,7 @@ Dependencies
 
 - pthreads
 - libgcc
+- python[2|3]-dev (optional for python bindings)
 
 How do I use libsoc?
 ------------------------------------------------------------------------
@@ -93,6 +105,10 @@ How do I use libsoc?
 The libsoc public functions are documented in the include files in the
 lib/include directory. There are also test programs in the test/
 directory which give examples of use.
+
+Python bindings are in bindings/python and are commented in a similar
+manner. There is also test code in the test/ directory which give
+examples of use.
 
 Can I help?
 ------------------------------------------------------------------------
