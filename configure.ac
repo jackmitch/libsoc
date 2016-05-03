@@ -26,16 +26,27 @@ AM_CONDITIONAL([BOARD_CONFIGS], [test "x$with_board_configs" = xyes])
 
 AC_ARG_ENABLE([python],
     AS_HELP_STRING([--enable-python=PYTHON_VERSION],
-    [Enable Python language bindings to libsoc API. Either version 2 or 3.]))
+    [Enable Python language bindings to libsoc API. PYTHON_VERSION can be empty for autodetect, the value 2 or 3 to search
+	the PATH environment variable for python2 or python3, or an absolute path to a python binary]),
+    [python_arg=$enable_python], [python_arg="no"])
 
-AS_IF([test "x$enable_python" != x], [
-	AS_CASE(["$enable_python"],
+AS_IF([test "x$python_arg" != xno], [
+
+	AS_CASE(["$python_arg"],
 	  [2|3], [
-	    AM_PATH_PYTHON("$enable_python")
-	    PKG_CHECK_MODULES([PYTHON], [python-"$PYTHON_VERSION"])
+	    PYTHON="python$python_arg"
 	  ],
-	  [AC_MSG_ERROR([Python version should be either 2 or 3.])]
+	  [yes], [],
+	  [PYTHON="$python_arg"]
 	)
+
+	AM_PATH_PYTHON()
+
+	if ! which "$PYTHON"; then
+		AC_MSG_ERROR([Python interpreter $PYTHON does not exist])
+	fi
+
+	PKG_CHECK_MODULES([PYTHON], [python-"$PYTHON_VERSION"])
 ])
 
 AM_CONDITIONAL([HAVE_PYTHON], [test "x$PYTHON" != x])
