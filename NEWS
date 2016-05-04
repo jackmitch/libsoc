@@ -1,4 +1,14 @@
+04/05/2016 - 0.8
+----------------
+
+- Automatic board probing support via config file
+- Python GPIO and I2C bindings
+- test_configure.sh test script to catch configure regressions
+
+- Special Thanks to Andy Doan <andy.doan@linaro.org>
+
 09/12/2015 - 0.7.1
+------------------
 
 - Fixed compilation with musl
 - Remove inline keywords as they dont play nice with GCC 5.2
