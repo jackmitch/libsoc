@@ -9,6 +9,7 @@ install-data-local:
 # Delete current libsoc.conf if it exists, then symlink the selected board
 	files=libsoc.conf ;\
 	dir='$(DESTDIR)$(sysconfdir)'; $(am__uninstall_files_from_dir) ;\
+	install -d $(sysconfdir)
 	ln -s "$(DESTDIR)$(pkgdatadir)/@board@.conf" "$(sysconfdir)/libsoc.conf"
 endif
 
@@ -22,10 +23,10 @@ if BOARD
 endif
 else
 if BOARD
+
 # Just copy the one board config to etc.
 install-data-local:
-	files=libsoc.conf ;\
-	cp "$(srcdir)/@board@.conf" "$(sysconfdir)/libsoc.conf"
+	install -D "${srcdir}/@board@.conf" "$(sysconfdir)/libsoc.conf"
 uninstall-local:
 	files=libsoc.conf ;\
 	dir='$(DESTDIR)$(sysconfdir)'; $(am__uninstall_files_from_dir) ;
