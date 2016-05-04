@@ -1,6 +1,7 @@
-BOARD_FILES = $(shell cd $(srcdir); find ./ -name \*.conf | grep -v example)
-
 if BOARD_CONFIGS
+
+BOARD_FILES = $(filter-out example.conf, $(wildcard *.conf))
+
 libsocdir = $(pkgdatadir)
 libsoc_DATA = $(BOARD_FILES)
 
