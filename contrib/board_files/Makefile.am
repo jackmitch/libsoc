@@ -1,6 +1,6 @@
 if BOARD_CONFIGS
 
-BOARD_FILES = $(filter-out example.conf, $(wildcard *.conf))
+BOARD_FILES = $(filter-out example.conf, $(wildcard $(srcdir)/*.conf))
 
 libsocdir = $(pkgdatadir)
 libsoc_DATA = $(BOARD_FILES)
