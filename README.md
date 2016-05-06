@@ -1,0 +1,1 @@
+static-docs/docs/index.md

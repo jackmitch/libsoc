@@ -1,0 +1,10 @@
+site_name: libsoc
+repo_url: http://github.com/jackmitch/libsoc
+site_description: libsoc library documentation
+
+theme: cinder
+
+pages:
+- Introduction: index.md
+- C API: c.md
+- Python Bindings: python.md
