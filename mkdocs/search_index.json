@@ -1,0 +1,79 @@
+{
+    "docs": [
+        {
+            "location": "/",
+            "text": "Introduction\n\n\n\n\nWhat is libsoc\n\n\nlibsoc is a C library to interface with common peripherals found in\nSystem on Chips (SoC) through generic Linux Kernel interfaces.\n\n\nIt is aimed at new Linux users, and intends to be a stepping stone to\nenable a user to get started quickly. It is optimised for reliability\nrather than speed. While the library should be fast, no guarantees are\nmade on it's determinism and it should not be used in time critical\nroutines.\n\n\nWhy libsoc\n\n\nlibsoc was born due to the influx of new embedded Linux boards becoming\navailable cheap, and to hobbyists. There are currently numerous\nlibraries that do interfacing with common SoC peripherals, but they all\ntend to be centred around a particular board or SoC. This leads to board\nspecific hacks and in some cases direct bypassing of the Linux Kernel.\n\n\nlibsoc aims to be generic and compatible with any SoC that has drivers\nexposing the correct interfaces for the defined peripheral.\n\n\nSupport\n\n\n\n\nSoC Support\n\n\nIf your SoC exposes it's I/O subsystems using the generic Linux kernel\ninterfaces then yes, libsoc supports your SoC!\n\n\nLanguage Support\n\n\nThe library is written in C and has a native C API. A subset of the API\nis also supported with Python bindings.\n\n\nC API\n\n\n\n\nManual GPIO Manipulation through sysfs (Value, Edge, Direction, Exporting)\n\n\nBlocking GPIO Interrupts with timeout\n\n\nNon-blocking GPIO Interrupts with callback mechanism (pthread based)\n\n\nSPI transfers using spidev\n\n\nI2C transfers using ioctls\n\n\nPWM support through sysfs (Linux 3.12+)\n\n\nAutomatic board probing via installed config files\n\n\n\n\nPython Bindings\n\n\n\n\nManual GPIO Manipulation through sysfs (Value, Edge, Direction, Exporting)\n\n\nBlocking GPIO Interrupts with timeout\n\n\nNon-blocking GPIO Interrupts with callback mechanism\n\n\nI2C transfers\n\n\n\n\nBuilding\n\n\n\n\nlibsoc is built and installed using the autotools build system. This means it\nfollows the traditional linux methodology of autoreconf, configure, make.\n\n\nFirst, check if your distro packages libsoc. If it does it is easiest to install\nyour distros version of libsoc through it's provided package manager. Depending\non your distro this may be \napt-get\n, \nyum\n, \npacman\n, etc. Consult your distro\ndocumentation for more info.\n\n\nManually Building\n\n\nFirst clone libsoc from its git repository.\n\n\ngit clone https://github.com/jackmitch/libsoc.git libsoc.git\n\n\n\nEnter the libsoc.git directory\n\n\ncd libsoc.git\n\n\n\nRun \nautoreconf\n to generate the libsoc configure scripts\n\n\nautoreconf -i\n\n\n\nConfigure the libsoc library with the required features\n\n\n./configure\n\n    [--disable-debug]\n    [--enable-python=<path|version>]\n    [--enable-board=<board>]\n    [--with-board-configs]\n\n\n\n\n--disable-debug\n\ndisables the debug code, turn off the debug to\nget the fastest operation but at the cost of any\ndebug print outs. Omitting this flag will leave\ndebug enabled.\n\n\n\n\n--enable-python=<path|version>\n\nenable Python language bindings to libsoc API.\nValue can be empty for autodetect, the value 2\nor 3 to search the PATH environment variable\nfor python2 or python3, or an absolute path to\na python binary.\n\n\n\n\n--enable-board=<board>\n\ninstall a specific board config file to\n$(sysdir)/libsoc.conf. This enables the use of\nthe board pin name lookup functions and\nautomatic board config probing. Supported boards\ncan be found under ./contrib/board_files. If\n--with-board-configs is also used, a symlink\nwill be created instead of copying a single file.\n\n\n\n\n--with-board-configs\n\ninstall all the contributed board configuration\nfiles to $PREFIX/share/libsoc.\n\n\n\n\nLicencing\n\n\nlibsoc is licenced under the LGPLv2.1, please see the COPYING file for\nfurther details.\n\n\nContributing\n\n\nlibsoc is open-source software and as such you are welcome to browse the\ncode and either add features, or fix bugs. Please submit pull requests,\nand bugs to \nlibsoc@github\n.\nIf you have any comments or questions, I can be contacted by email at the\naddress \njack@embed.me.uk\n.",
+            "title": "Introduction"
+        },
+        {
+            "location": "/#introduction",
+            "text": "",
+            "title": "Introduction"
+        },
+        {
+            "location": "/#what-is-libsoc",
+            "text": "libsoc is a C library to interface with common peripherals found in\nSystem on Chips (SoC) through generic Linux Kernel interfaces.  It is aimed at new Linux users, and intends to be a stepping stone to\nenable a user to get started quickly. It is optimised for reliability\nrather than speed. While the library should be fast, no guarantees are\nmade on it's determinism and it should not be used in time critical\nroutines.",
+            "title": "What is libsoc"
+        },
+        {
+            "location": "/#why-libsoc",
+            "text": "libsoc was born due to the influx of new embedded Linux boards becoming\navailable cheap, and to hobbyists. There are currently numerous\nlibraries that do interfacing with common SoC peripherals, but they all\ntend to be centred around a particular board or SoC. This leads to board\nspecific hacks and in some cases direct bypassing of the Linux Kernel.  libsoc aims to be generic and compatible with any SoC that has drivers\nexposing the correct interfaces for the defined peripheral.",
+            "title": "Why libsoc"
+        },
+        {
+            "location": "/#support",
+            "text": "",
+            "title": "Support"
+        },
+        {
+            "location": "/#soc-support",
+            "text": "If your SoC exposes it's I/O subsystems using the generic Linux kernel\ninterfaces then yes, libsoc supports your SoC!",
+            "title": "SoC Support"
+        },
+        {
+            "location": "/#language-support",
+            "text": "The library is written in C and has a native C API. A subset of the API\nis also supported with Python bindings.",
+            "title": "Language Support"
+        },
+        {
+            "location": "/#c-api",
+            "text": "Manual GPIO Manipulation through sysfs (Value, Edge, Direction, Exporting)  Blocking GPIO Interrupts with timeout  Non-blocking GPIO Interrupts with callback mechanism (pthread based)  SPI transfers using spidev  I2C transfers using ioctls  PWM support through sysfs (Linux 3.12+)  Automatic board probing via installed config files",
+            "title": "C API"
+        },
+        {
+            "location": "/#python-bindings",
+            "text": "Manual GPIO Manipulation through sysfs (Value, Edge, Direction, Exporting)  Blocking GPIO Interrupts with timeout  Non-blocking GPIO Interrupts with callback mechanism  I2C transfers",
+            "title": "Python Bindings"
+        },
+        {
+            "location": "/#building",
+            "text": "libsoc is built and installed using the autotools build system. This means it\nfollows the traditional linux methodology of autoreconf, configure, make.  First, check if your distro packages libsoc. If it does it is easiest to install\nyour distros version of libsoc through it's provided package manager. Depending\non your distro this may be  apt-get ,  yum ,  pacman , etc. Consult your distro\ndocumentation for more info.",
+            "title": "Building"
+        },
+        {
+            "location": "/#manually-building",
+            "text": "First clone libsoc from its git repository.  git clone https://github.com/jackmitch/libsoc.git libsoc.git  Enter the libsoc.git directory  cd libsoc.git  Run  autoreconf  to generate the libsoc configure scripts  autoreconf -i  Configure the libsoc library with the required features  ./configure\n\n    [--disable-debug]\n    [--enable-python=<path|version>]\n    [--enable-board=<board>]\n    [--with-board-configs]  --disable-debug\n\ndisables the debug code, turn off the debug to\nget the fastest operation but at the cost of any\ndebug print outs. Omitting this flag will leave\ndebug enabled.  --enable-python=<path|version>\n\nenable Python language bindings to libsoc API.\nValue can be empty for autodetect, the value 2\nor 3 to search the PATH environment variable\nfor python2 or python3, or an absolute path to\na python binary.  --enable-board=<board>\n\ninstall a specific board config file to\n$(sysdir)/libsoc.conf. This enables the use of\nthe board pin name lookup functions and\nautomatic board config probing. Supported boards\ncan be found under ./contrib/board_files. If\n--with-board-configs is also used, a symlink\nwill be created instead of copying a single file.  --with-board-configs\n\ninstall all the contributed board configuration\nfiles to $PREFIX/share/libsoc.",
+            "title": "Manually Building"
+        },
+        {
+            "location": "/#licencing",
+            "text": "libsoc is licenced under the LGPLv2.1, please see the COPYING file for\nfurther details.",
+            "title": "Licencing"
+        },
+        {
+            "location": "/#contributing",
+            "text": "libsoc is open-source software and as such you are welcome to browse the\ncode and either add features, or fix bugs. Please submit pull requests,\nand bugs to  libsoc@github .\nIf you have any comments or questions, I can be contacted by email at the\naddress  jack@embed.me.uk .",
+            "title": "Contributing"
+        },
+        {
+            "location": "/c/",
+            "text": "",
+            "title": "C API"
+        },
+        {
+            "location": "/python/",
+            "text": "",
+            "title": "Python Bindings"
+        }
+    ]
+}
