@@ -187,7 +187,7 @@ int main(void)
   // Wait 10 seconds for falling interrupt to occur on GPIO_INPUT
   int ret = libsoc_gpio_wait_interrupt(gpio_input, 10000);
   
-  if (ret == EXIT_SUCCESS)
+  if (ret == LS_INT_TRIGGERED)
   {
     printf("Interrupt caught!\n");
   }

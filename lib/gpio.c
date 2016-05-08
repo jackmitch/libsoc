@@ -417,14 +417,15 @@ libsoc_gpio_poll (gpio * gpio, int timeout)
     {
       libsoc_gpio_debug (__func__, gpio->gpio, "poll failed");
       perror ("libsoc-gpio-debug");
+      return LS_INT_ERROR;
     }
   else if (rc == 1 && gpio->pfd.revents & POLLPRI)
     {
       // do a final read to clear interrupt
       rc = read(gpio->value_fd, &c, 1);
-      return EXIT_SUCCESS;
+      return LS_INT_TRIGGERED;
     }
-  return EXIT_FAILURE;
+  return LS_INT_TIMEOUT;
 }
 
 int
@@ -433,13 +434,13 @@ libsoc_gpio_wait_interrupt (gpio * gpio, int timeout)
   if (gpio == NULL)
     {
       libsoc_gpio_debug (__func__, -1, "invalid gpio pointer");
-      return EDGE_ERROR;
+      return LS_INT_ERROR;
     }
 
   if (libsoc_gpio_get_direction (gpio) != INPUT)
     {
       libsoc_gpio_debug (__func__, gpio->gpio, "gpio is not set as input");
-      return EXIT_FAILURE;
+      return LS_INT_ERROR;
     }
 
   gpio_edge test_edge = libsoc_gpio_get_edge (gpio);
@@ -448,7 +449,7 @@ libsoc_gpio_wait_interrupt (gpio * gpio, int timeout)
     {
       libsoc_gpio_debug (__func__, gpio->gpio,
 			 "edge must be FALLING, RISING or BOTH");
-      return EXIT_FAILURE;
+      return LS_INT_ERROR;
     }
 
   return libsoc_gpio_poll(gpio, timeout);
@@ -467,7 +468,7 @@ __libsoc_new_interrupt_callback_thread (void *void_gpio)
 
   while (1)
     {
-      if (libsoc_gpio_poll(gpio, -1) == EXIT_SUCCESS)
+      if (libsoc_gpio_poll(gpio, -1) == LS_INT_TRIGGERED)
         {
           libsoc_gpio_debug (__func__, gpio->gpio, "caught interrupt");
           gpio->callback->callback_fn (gpio->callback->callback_arg);
