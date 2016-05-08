@@ -158,15 +158,6 @@ int libsoc_gpio_set_level(gpio * current_gpio, gpio_level level);
 gpio_level libsoc_gpio_get_level(gpio * current_gpio);
 
 /**
- * \fn void libsoc_gpio_set_debug 
- * \brief sets the debug level of the gpio functions, library must have 
- *  been compiled with DEBUG support enabled
- * \param int level - 1 or 0, 1 to enable debug 0 to disable
- */
-
-void libsoc_gpio_set_debug(int level);
-
-/**
  * \fn gpio_edge libsoc_gpio_get_edge(gpio* current_gpio)
  * \brief gets the current gpio edge value
  * \param gpio* current_gpio - pointer to gpio struct on which to get the edge
