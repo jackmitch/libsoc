@@ -1,0 +1,16 @@
+These files are the static content and configuration for the mkdocs
+documentation deployment on http://jackmitch.github.io/libsoc.
+
+To build the docs yo umust first install the mkdocs python package and
+mkdocs cinder theme. These can be installed via pip.
+
+pip install mkdocs mkdocs-cinder
+
+The documentation can be served locally from this directory using the
+command
+
+mkdocs serve
+
+To add documentation create a pull request and it will be built and
+deployed at the next release, or sooner if it is just changes to current
+API documentation or features.
