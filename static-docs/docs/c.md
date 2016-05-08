@@ -91,6 +91,24 @@ Used for setting and reading the edge of the GPIO pin.
 
 	GPIO interrupt is triggered on both a falling and rising edge
 
+---
+
+### gpio_int_ret
+
+Return type for blocked GPIO interrupts.
+
+* **LS_INT_ERROR**
+
+	Error condition
+
+* **LS_INT_TRIGGERED**
+
+	Interrupt was triggered
+
+* **LS_INT_TIMEOUT**
+
+	GPIO poll timedout
+
 ## Functions
 ---
 ### libsoc_gpio_request
@@ -261,7 +279,8 @@ Block for a set amount of seconds (or indefinitly) waiting for an interrupt on a
 to occur. If you wish to use a non-blocking interrupt mechanism see
 [libsoc_gpio_callback_interrupt](#libsoc_gpio_callback_interrupt).
 
-Returns EDGE_ERROR/EXIT_FAULURE on failure, EXIT_SUCCESS on success.
+Returns LS_INT_ERROR on failure, LS_INT_TRIGGERED on captured interrupt, LS_INT_TIMEOUT
+if no interrupt was captured in the specified time.
 
 ---
 ### libsoc_gpio_callback_interrupt
