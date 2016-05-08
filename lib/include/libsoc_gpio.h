@@ -93,11 +93,11 @@ typedef enum {
  *             on free.
  */
 
-enum gpio_mode {
+typedef enum gpio_mode {
 	LS_SHARED,
 	LS_GREEDY,
 	LS_WEAK,
-};
+} gpio_mode;
 
 /**
  * \fn gpio* libsoc_gpio_request(unsigned int gpio_id)

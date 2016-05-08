@@ -48,7 +48,7 @@ libsoc_gpio_debug (const char *func, int gpio, char *format, ...)
 }
 
 gpio *
-libsoc_gpio_request (unsigned int gpio_id, enum gpio_mode mode)
+libsoc_gpio_request (unsigned int gpio_id, gpio_mode mode)
 {
   gpio *new_gpio;
   char tmp_str[STR_BUF];
