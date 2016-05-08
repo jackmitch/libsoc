@@ -103,6 +103,15 @@
                     </li>
                 
                 
+                    <li>
+                        <a href="http://github.com/jackmitch/libsoc">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
             </ul>
         </div>
     </div>
@@ -113,11 +122,340 @@
         <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
+        <li class="first-level active"><a href="#gpio">GPIO</a></li>
+        
+            <li class="second-level"><a href="#data-types">Data Types</a></li>
+            
+                <li class="third-level"><a href="#gpio_mode">gpio_mode</a></li>
+            
+                <li class="third-level"><a href="#gpio_direction">gpio_direction</a></li>
+            
+                <li class="third-level"><a href="#gpio_level">gpio_level</a></li>
+            
+                <li class="third-level"><a href="#gpio_edge">gpio_edge</a></li>
+            
+        
+            <li class="second-level"><a href="#functions">Functions</a></li>
+            
+                <li class="third-level"><a href="#libsoc_gpio_request">libsoc_gpio_request</a></li>
+            
+                <li class="third-level"><a href="#libsoc_gpio_free">libsoc_gpio_free</a></li>
+            
+                <li class="third-level"><a href="#libsoc_gpio_set_direction">libsoc_gpio_set_direction</a></li>
+            
+                <li class="third-level"><a href="#libsoc_gpio_get_direction">libsoc_gpio_get_direction</a></li>
+            
+                <li class="third-level"><a href="#libsoc_gpio_set_level">libsoc_gpio_set_level</a></li>
+            
+                <li class="third-level"><a href="#libsoc_gpio_get_level">libsoc_gpio_get_level</a></li>
+            
+                <li class="third-level"><a href="#libsoc_gpio_set_edge">libsoc_gpio_set_edge</a></li>
+            
+                <li class="third-level"><a href="#libsoc_gpio_get_edge">libsoc_gpio_get_edge</a></li>
+            
+                <li class="third-level"><a href="#libsoc_gpio_wait_interrupt">libsoc_gpio_wait_interrupt</a></li>
+            
+                <li class="third-level"><a href="#libsoc_gpio_callback_interrupt">libsoc_gpio_callback_interrupt</a></li>
+            
+                <li class="third-level"><a href="#libsoc_gpio_callback_interrupt_cancel">libsoc_gpio_callback_interrupt_cancel</a></li>
+            
+        
+    
+        <li class="first-level "><a href="#spi">SPI</a></li>
+        
+    
+        <li class="first-level "><a href="#i2c">I2C</a></li>
+        
+    
+        <li class="first-level "><a href="#pwm">PWM</a></li>
+        
+    
     </ul>
 </div></div>
         <div class="col-md-9" role="main">
 
-</div>
+<h1 id="gpio">GPIO</h1>
+<hr />
+<h2 id="data-types">Data Types</h2>
+<hr />
+<h3 id="gpio_mode">gpio_mode</h3>
+<p>Determines the way in which libsoc handles exporting and unexporting
+GPIOs in the Linux subsystem.</p>
+<ul>
+<li>
+<p><strong>LS_SHARED</strong></p>
+<p>if the gpio is already exported then it will not unexport
+the GPIO on free. If it is not exported, then it will
+unexport on free.</p>
+</li>
+<li>
+<p><strong>LS_GREEDY</strong></p>
+<p>will succeed if the GPIO is already exported, but will 
+always unexport the GPIO on free.</p>
+</li>
+<li>
+<p><strong>LS_WEAK</strong></p>
+<p>will fail if GPIO is already exported, will always unexport
+on free.</p>
+</li>
+</ul>
+<hr />
+<h3 id="gpio_direction">gpio_direction</h3>
+<p>Used for setting and reading the direction of the GPIO pin.</p>
+<ul>
+<li>
+<p><strong>DIRECTION_ERROR</strong></p>
+<p>Returned when the GPIO direction could not be read</p>
+</li>
+<li>
+<p><strong>INPUT</strong></p>
+<p>GPIO input mode, it's input value can be read</p>
+</li>
+<li>
+<p><strong>OUTPUT</strong></p>
+<p>GPIO output mode, it's output value can be written</p>
+</li>
+</ul>
+<hr />
+<h3 id="gpio_level">gpio_level</h3>
+<p>Used for setting and reading the level of the GPIO pin.</p>
+<ul>
+<li>
+<p><strong>LEVEL_ERROR</strong></p>
+<p>Returned when the GPIO level could not be read</p>
+</li>
+<li>
+<p><strong>LOW</strong></p>
+<p>GPIO value low, usually logic 0 on the pin, but could be 1 if
+the gpio is inverted.</p>
+</li>
+<li>
+<p><strong>HIGH</strong></p>
+<p>GPIO value high, usually logic 1 on the pin, but could be 0 if
+the gpio is inverted.</p>
+</li>
+</ul>
+<hr />
+<h3 id="gpio_edge">gpio_edge</h3>
+<p>Used for setting and reading the edge of the GPIO pin.</p>
+<ul>
+<li>
+<p><strong>EDGE_ERROR</strong></p>
+<p>Returned when the GPIO edge could not be read</p>
+</li>
+<li>
+<p><strong>RISING</strong></p>
+<p>GPIO interrupt is triggered on a rising edge, e.g. logic level
+0 followed by 1</p>
+</li>
+<li>
+<p><strong>FALLING</strong></p>
+<p>GPIO interrupt is triggered on a falling edge, e.g. logic level
+1 followed by 0</p>
+</li>
+<li>
+<p><strong>NONE</strong></p>
+<p>GPIO interrupt edge is not set</p>
+</li>
+<li>
+<p><strong>BOTH</strong></p>
+<p>GPIO interrupt is triggered on both a falling and rising edge</p>
+</li>
+</ul>
+<h2 id="functions">Functions</h2>
+<hr />
+<h3 id="libsoc_gpio_request">libsoc_gpio_request</h3>
+<pre><code class="C">gpio * libsoc_gpio_request(unsigned int gpio_id, gpio_mode mode)
+</code></pre>
+
+<ul>
+<li>
+<p><em>unsigned int</em> <strong>gpio_id</strong></p>
+<p>the Linux ID number for the GPIO you wish to use</p>
+</li>
+<li>
+<p><em><a href="#gpio_mode">gpio_mode</a></em> <strong>mode</strong></p>
+<p>the mode in which libsoc handles the GPIO file descriptor</p>
+</li>
+</ul>
+<p>Request a GPIO by it's Linux ID number and set the <a href="#gpio_mode">gpio_mode</a>
+under which libsoc will hold the file descriptor. Returns a malloced gpio struct
+which will need to be freed by <a href="#libsoc_gpio_free">libsoc_gpio_free</a> when no
+longer needed.</p>
+<p>Returns NULL on failure.</p>
+<hr />
+<h3 id="libsoc_gpio_free">libsoc_gpio_free</h3>
+<pre><code class="c">int libsoc_gpio_free(gpio * gpio)
+</code></pre>
+
+<ul>
+<li>
+<p><em>gpioi*</em> <strong>gpio</strong></p>
+<p>the previously requested gpio that you wish to release</p>
+</li>
+</ul>
+<p>Free the memory associated with a previously requested GPIO and close the file
+descriptors.</p>
+<p>Returns EXIT_SUCCESS/EXIT_FAILURE.</p>
+<hr />
+<h3 id="libsoc_gpio_set_direction">libsoc_gpio_set_direction</h3>
+<pre><code class="c">int libsoc_gpio_set_direction(gpio * current_gpio, gpio_direction direction)
+</code></pre>
+
+<ul>
+<li>
+<p><em>gpio*</em> <strong>current_gpio</strong></p>
+<p>requested gpio that you wish to set the direction of</p>
+</li>
+<li>
+<p><em><a href="#gpio_direction">gpio_direction</a></em> <strong>direction</strong></p>
+<p>direction you wish to set the gpio to</p>
+</li>
+</ul>
+<p>Set the direction of a GPIO, INPUT for reading a GPIO, OUTPUT for setting a
+GPIO.</p>
+<p>Returns EXIT_SUCCESS/EXIT_FAILURE.</p>
+<hr />
+<h3 id="libsoc_gpio_get_direction">libsoc_gpio_get_direction</h3>
+<pre><code class="c">gpio_direction libsoc_gpio_get_direction(gpio * current_gpio)
+</code></pre>
+
+<ul>
+<li>
+<p><em>gpio*</em> <strong>current_gpio</strong></p>
+<p>requested gpio that you wish to get the direction of</p>
+</li>
+</ul>
+<p>Get the current <a href="#gpio_direction">gpio_direction</a> of a requested GPIO.</p>
+<p>Returns <a href="#gpio_direction">gpio_direction</a>, DIRECTION_ERROR on failure,
+INPUT/OUTPUT on success.</p>
+<hr />
+<h3 id="libsoc_gpio_set_level">libsoc_gpio_set_level</h3>
+<pre><code class="c">int libsoc_gpio_set_level(gpio * current_gpio, gpio_level level)
+</code></pre>
+
+<ul>
+<li>
+<p><em>gpio *</em> <strong>current_gpio</strong></p>
+<p>requested gpio you wish to set the level of</p>
+</li>
+<li>
+<p><em><a href="#gpio_level">gpio_level</a></em> <strong>level</strong></p>
+<p>level you wish to set the gpio to</p>
+</li>
+</ul>
+<p>Set the output level of a requested GPIO to HIGH or LOW.</p>
+<p>Returns EXIT_SUCCESS/EXIT_FAILURE.</p>
+<hr />
+<h3 id="libsoc_gpio_get_level">libsoc_gpio_get_level</h3>
+<pre><code class="c">gpio_level libsoc_gpio_get_level(gpio * current_gpio)
+</code></pre>
+
+<ul>
+<li>
+<p><em>gpio *</em> <strong>current_gpio</strong></p>
+<p>requested gpio you wish to get the level of</p>
+</li>
+</ul>
+<p>Get the current <a href="#gpio_level">gpio_level</a> of a requested GPIO.</p>
+<p>Returns <a href="#gpio_level">gpio_level</a>, LEVEL_ERROR on failure,
+LOW/HIGH on success.</p>
+<hr />
+<h3 id="libsoc_gpio_set_edge">libsoc_gpio_set_edge</h3>
+<pre><code class="c">int libsoc_gpio_set_edge(gpio * current_gpio, gpio_edge edge)
+</code></pre>
+
+<ul>
+<li>
+<p><em>gpio *</em> <strong>current_gpio</strong></p>
+<p>requested gpio you wish to set the edge of</p>
+</li>
+<li>
+<p><em><a href="#gpio_edge">gpio_edge</a></em> <strong>edge</strong></p>
+<p>edge you wish to set the gpio to</p>
+</li>
+</ul>
+<p>Set the edge type of a requested GPIO. The edge is the type of signal
+change that will trigger interrupt detection. See <a href="#gpio_edge">gpio_edge</a>
+for explanations of the different types of edges and how they work.</p>
+<p>Returns EXIT_SUCCESS/EXIT_FAILURE.</p>
+<hr />
+<h3 id="libsoc_gpio_get_edge">libsoc_gpio_get_edge</h3>
+<pre><code class="c">gpio_edge libsoc_gpio_get_edge(gpio * current_gpio)
+</code></pre>
+
+<ul>
+<li>
+<p><em>gpio *</em> <strong>current_gpio</strong></p>
+<p>requested gpio you wish to get the edge of</p>
+</li>
+</ul>
+<p>Get the current <a href="#gpio_edge">gpio_edge</a> of a requested GPIO.</p>
+<p>Returns <a href="#gpio_level">gpio_edge</a>, EDGE_ERROR on failure,
+RISING/FALLING/BOTH/NONE on success.</p>
+<hr />
+<h3 id="libsoc_gpio_wait_interrupt">libsoc_gpio_wait_interrupt</h3>
+<pre><code class="c">int libsoc_gpio_wait_interrupt(gpio * gpio, int timeout)
+</code></pre>
+
+<ul>
+<li>
+<p><em>gpio *</em> <strong>gpio</strong></p>
+<p>requested gpio you wish to wait for an interrupt on</p>
+</li>
+<li>
+<p><em>int</em> <strong>timeout</strong></p>
+<p>the number of seconds to wait for the interrupt, -1 for block indefinitly</p>
+</li>
+</ul>
+<p>Block for a set amount of seconds (or indefinitly) waiting for an interrupt on a GPIO
+to occur. If you wish to use a non-blocking interrupt mechanism see
+<a href="#libsoc_gpio_callback_interrupt">libsoc_gpio_callback_interrupt</a>.</p>
+<p>Returns EDGE_ERROR/EXIT_FAULURE on failure, EXIT_SUCCESS on success.</p>
+<hr />
+<h3 id="libsoc_gpio_callback_interrupt">libsoc_gpio_callback_interrupt</h3>
+<pre><code class="c">int libsoc_gpio_callback_interrupt(gpio * gpio, int (*callback_fn) (void *), void *arg)
+</code></pre>
+
+<ul>
+<li>
+<p><em>gpio *</em> <strong>gpio</strong></p>
+<p>requested gpio you wish to set an interrupt handler for</p>
+</li>
+<li>
+<p><em>int (*callback_fn) (void *)</em> <strong>function</strong></p>
+<p>name of the function to use as the interrupt handler. Must match the prototype
+int<em> function(void</em> ptr)</p>
+</li>
+<li>
+<p><em>void *</em> <strong>arg</strong></p>
+<p>void casted pointer you wish to be passed to your interrupt handler</p>
+</li>
+</ul>
+<p>Setup an interrupt handler on a GPIO. This will start a new pthread with an infinite poll
+on the GPIO waiting for the interrupt. When an interrupt is detected the supplied function
+will run in the thread, and then return to waiting for an interrupt.</p>
+<p>Only one interrupt will be queued if it arrives while your supplied function is being run,
+so it is possible to miss interrupts if they happen too fast.</p>
+<p>Returns EXIT_SUCCESS/EXIT_FAILURE.</p>
+<hr />
+<h3 id="libsoc_gpio_callback_interrupt_cancel">libsoc_gpio_callback_interrupt_cancel</h3>
+<pre><code class="c">int libsoc_gpio_callback_interrupt_cancel(gpio * gpio)
+</code></pre>
+
+<ul>
+<li>
+<p><em>gpio *</em> <strong>gpio</strong></p>
+<p>the gpio on which to cancel a waiting interrupt handler</p>
+</li>
+</ul>
+<p>Cancel a previously set interrupt handler on a GPIO. This uses the pthread_cancel function,
+so it may cancel mid way through your interrupt handler function.</p>
+<p>Returns EXIT_SUCCESS/EXIT_FAILURE.</p>
+<hr />
+<h1 id="spi">SPI</h1>
+<h1 id="i2c">I2C</h1>
+<h1 id="pwm">PWM</h1></div>
         
     </div>
 
