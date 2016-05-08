@@ -142,6 +142,19 @@ Install the library using make
 make install
 ```
 
+## Documentation
+
+Written documentation can be found at
+[http://jackmitch.github.io/libsoc](http://jackmitch.github.io/libsoc).
+
+Test cases can be found in the 
+[test/](https://github.com/jackmitch/libsoc/tree/master/test) directory
+from the root of the project.
+
+All functions and types are also documented directly in the code in the
+application header files under
+[lib/include](https://github.com/jackmitch/libsoc/tree/master/lib/include).
+
 ## Licencing
 
 libsoc is licenced under the LGPLv2.1, please see the COPYING file for
