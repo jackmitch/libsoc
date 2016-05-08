@@ -134,6 +134,8 @@
             
                 <li class="third-level"><a href="#gpio_edge">gpio_edge</a></li>
             
+                <li class="third-level"><a href="#gpio_int_ret">gpio_int_ret</a></li>
+            
         
             <li class="second-level"><a href="#functions">Functions</a></li>
             
@@ -260,6 +262,23 @@ the gpio is inverted.</p>
 <li>
 <p><strong>BOTH</strong></p>
 <p>GPIO interrupt is triggered on both a falling and rising edge</p>
+</li>
+</ul>
+<hr />
+<h3 id="gpio_int_ret">gpio_int_ret</h3>
+<p>Return type for blocked GPIO interrupts.</p>
+<ul>
+<li>
+<p><strong>LS_INT_ERROR</strong></p>
+<p>Error condition</p>
+</li>
+<li>
+<p><strong>LS_INT_TRIGGERED</strong></p>
+<p>Interrupt was triggered</p>
+</li>
+<li>
+<p><strong>LS_INT_TIMEOUT</strong></p>
+<p>GPIO poll timedout</p>
 </li>
 </ul>
 <h2 id="functions">Functions</h2>
@@ -411,7 +430,8 @@ RISING/FALLING/BOTH/NONE on success.</p>
 <p>Block for a set amount of seconds (or indefinitly) waiting for an interrupt on a GPIO
 to occur. If you wish to use a non-blocking interrupt mechanism see
 <a href="#libsoc_gpio_callback_interrupt">libsoc_gpio_callback_interrupt</a>.</p>
-<p>Returns EDGE_ERROR/EXIT_FAULURE on failure, EXIT_SUCCESS on success.</p>
+<p>Returns LS_INT_ERROR on failure, LS_INT_TRIGGERED on captured interrupt, LS_INT_TIMEOUT
+if no interrupt was captured in the specified time.</p>
 <hr />
 <h3 id="libsoc_gpio_callback_interrupt">libsoc_gpio_callback_interrupt</h3>
 <pre><code class="c">int libsoc_gpio_callback_interrupt(gpio * gpio, int (*callback_fn) (void *), void *arg)
