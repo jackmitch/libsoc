@@ -291,7 +291,7 @@ libsoc_gpio_set_level (gpio * current_gpio, gpio_level level)
 gpio_level
 libsoc_gpio_get_level (gpio * current_gpio)
 {
-  char level[STR_BUF];
+  char level[2];
 
   if (current_gpio == NULL)
     {
@@ -301,14 +301,14 @@ libsoc_gpio_get_level (gpio * current_gpio)
 
   lseek (current_gpio->value_fd, 0, SEEK_SET);
 
-  if (read (current_gpio->value_fd, level, STR_BUF) < 0)
+  if (read (current_gpio->value_fd, level, 2) != 2)
   {
     libsoc_gpio_debug (__func__, current_gpio->gpio, "level read failed");
     perror ("libgpio");
     return LEVEL_ERROR;
   }
 
-  if (strncmp (level, "0", 1) <= 0)
+  if (level[0] == '0')
     {
       libsoc_gpio_debug (__func__, current_gpio->gpio, "read level as low");
       return LOW;
