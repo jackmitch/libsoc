@@ -130,7 +130,7 @@ under which libsoc will hold the file descriptor. Returns a malloced gpio struct
 which will need to be freed by [libsoc_gpio_free](#libsoc_gpio_free) when no
 longer needed.
 
-Returns NULL on failure.
+Returns `NULL` on failure.
 
 ---
 
@@ -147,7 +147,7 @@ int libsoc_gpio_free(gpio * gpio)
 Free the memory associated with a previously requested GPIO and close the file
 descriptors.
 
-Returns EXIT_SUCCESS/EXIT_FAILURE.
+Returns `EXIT_SUCCESS`/`EXIT_FAILURE`
 
 ---
 
@@ -165,10 +165,10 @@ int libsoc_gpio_set_direction(gpio * current_gpio, gpio_direction direction)
 
 	direction you wish to set the gpio to
 
-Set the direction of a GPIO, INPUT for reading a GPIO, OUTPUT for setting a
+Set the direction of a GPIO, `INPUT` for reading a GPIO, `OUTPUT` for setting a
 GPIO.
 
-Returns EXIT_SUCCESS/EXIT_FAILURE.
+Returns `EXIT_SUCCESS`/`EXIT_FAILURE`
 
 ---
 ### libsoc_gpio_get_direction
@@ -183,8 +183,8 @@ gpio_direction libsoc_gpio_get_direction(gpio * current_gpio)
 
 Get the current [gpio_direction](#gpio_direction) of a requested GPIO.
 
-Returns [gpio_direction](#gpio_direction), DIRECTION_ERROR on failure,
-INPUT/OUTPUT on success.
+Returns [gpio_direction](#gpio_direction), `DIRECTION_ERROR` on failure,
+`INPUT`/`OUTPUT` on success.
 
 ---
 ### libsoc_gpio_set_level
@@ -201,10 +201,10 @@ int libsoc_gpio_set_level(gpio * current_gpio, gpio_level level)
 
 	level you wish to set the gpio to
 
-Set the output level of a requested GPIO to HIGH or LOW.
+Set the output level of a requested GPIO to `HIGH` or `LOW`.
 
 
-Returns EXIT_SUCCESS/EXIT_FAILURE.
+Returns `EXIT_SUCCESS`/`EXIT_FAILURE`
 
 ---
 ### libsoc_gpio_get_level
@@ -219,8 +219,8 @@ gpio_level libsoc_gpio_get_level(gpio * current_gpio)
 
 Get the current [gpio_level](#gpio_level) of a requested GPIO.
 
-Returns [gpio_level](#gpio_level), LEVEL_ERROR on failure,
-LOW/HIGH on success.
+Returns [gpio_level](#gpio_level), `LEVEL_ERROR` on failure,
+`LOW`/`HIGH` on success.
 
 ---
 ### libsoc_gpio_set_edge
@@ -241,7 +241,7 @@ Set the edge type of a requested GPIO. The edge is the type of signal
 change that will trigger interrupt detection. See [gpio_edge](#gpio_edge)
 for explanations of the different types of edges and how they work.
 
-Returns EXIT_SUCCESS/EXIT_FAILURE.
+Returns `EXIT_SUCCESS`/`EXIT_FAILURE`
 
 ---
 
@@ -257,8 +257,8 @@ gpio_edge libsoc_gpio_get_edge(gpio * current_gpio)
 
 Get the current [gpio_edge](#gpio_edge) of a requested GPIO.
 
-Returns [gpio_edge](#gpio_level), EDGE_ERROR on failure,
-RISING/FALLING/BOTH/NONE on success.
+Returns [gpio_edge](#gpio_edge), `EDGE_ERROR` on failure,
+`RISING`/`FALLING`/`BOTH`/`NONE` on success.
 
 ---
 ### libsoc_gpio_wait_interrupt
@@ -275,12 +275,12 @@ int libsoc_gpio_wait_interrupt(gpio * gpio, int timeout)
 
 	the number of seconds to wait for the interrupt, -1 for block indefinitly
 
-Block for a set amount of seconds (or indefinitly) waiting for an interrupt on a GPIO
-to occur. If you wish to use a non-blocking interrupt mechanism see
+Block for a set amount of seconds (or indefinitly) waiting for an interrupt on a
+GPIO to occur. If you wish to use a non-blocking interrupt mechanism see
 [libsoc_gpio_callback_interrupt](#libsoc_gpio_callback_interrupt).
 
-Returns LS_INT_ERROR on failure, LS_INT_TRIGGERED on captured interrupt, LS_INT_TIMEOUT
-if no interrupt was captured in the specified time.
+Returns `LS_INT_ERROR` on failure, `LS_INT_TRIGGERED` on captured interrupt,
+`LS_INT_TIMEOUT` if no interrupt was captured in the specified time.
 
 ---
 ### libsoc_gpio_callback_interrupt
@@ -296,7 +296,7 @@ int libsoc_gpio_callback_interrupt(gpio * gpio, int (*callback_fn) (void *), voi
 - *int (\*callback_fn) (void \*)* **function**
 
 	name of the function to use as the interrupt handler. Must match the prototype
-	int* function(void* ptr)
+	`int* function(void* ptr)`
 
 - *void \** **arg**
 
@@ -309,7 +309,7 @@ will run in the thread, and then return to waiting for an interrupt.
 Only one interrupt will be queued if it arrives while your supplied function is being run,
 so it is possible to miss interrupts if they happen too fast.
 
-Returns EXIT_SUCCESS/EXIT_FAILURE.
+Returns `EXIT_SUCCESS`/`EXIT_FAILURE`
 
 ---
 ### libsoc_gpio_callback_interrupt_cancel
@@ -325,7 +325,7 @@ int libsoc_gpio_callback_interrupt_cancel(gpio * gpio)
 Cancel a previously set interrupt handler on a GPIO. This uses the pthread_cancel function,
 so it may cancel mid way through your interrupt handler function.
 
-Returns EXIT_SUCCESS/EXIT_FAILURE.
+Returns `EXIT_SUCCESS`/`EXIT_FAILURE`
 
 ---
 
