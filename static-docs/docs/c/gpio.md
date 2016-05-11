@@ -326,9 +326,3 @@ Cancel a previously set interrupt handler on a GPIO. This uses the pthread_cance
 so it may cancel mid way through your interrupt handler function.
 
 Returns `EXIT_SUCCESS`/`EXIT_FAILURE`
-
----
-
-# SPI
-# I2C
-# PWM

@@ -6,5 +6,10 @@ theme: cinder
 
 pages:
 - Introduction: index.md
-- C API: c.md
-- Python Bindings: python.md
+- C API:
+  - GPIO: c/gpio.md
+  - SPI (WIP): c/spi.md
+  - I2C (WIP): c/i2c.md
+  - PWM (WIP): c/pwm.md
+  - DEBUG (WIP): c/debug.md
+- Python Bindings (WIP): python.md

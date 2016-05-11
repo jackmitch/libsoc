@@ -38,7 +38,7 @@ interfaces then yes, libsoc supports your SoC!
 The library is written in C and has a native C API. A subset of the API
 is also supported with Python bindings.
 
-#### [C API](http://jackmitch.github.io/libsoc/c)
+#### [C API](http://jackmitch.github.io/libsoc/c/gpio)
 
 - Manual GPIO Manipulation through sysfs (Value, Edge, Direction, Exporting)
 - Blocking GPIO Interrupts with timeout
