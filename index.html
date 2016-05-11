@@ -71,14 +71,47 @@
                 
                 
                 
-                    <li >
-                        <a href="c/">C API</a>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">C API <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="c/gpio/">GPIO</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="c/spi/">SPI (WIP)</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="c/i2c/">I2C (WIP)</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="c/pwm/">PWM (WIP)</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="c/debug/">DEBUG (WIP)</a>
+</li>
+
+                        
+                        </ul>
                     </li>
                 
                 
                 
                     <li >
-                        <a href="python/">Python Bindings</a>
+                        <a href="python/">Python Bindings (WIP)</a>
                     </li>
                 
                 
@@ -98,7 +131,7 @@
                         </a>
                     </li>
                     <li >
-                        <a rel="prev" href="c/">
+                        <a rel="prev" href="c/gpio/">
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -190,7 +223,7 @@ interfaces then yes, libsoc supports your SoC!</p>
 <h3 id="language-support">Language Support</h3>
 <p>The library is written in C and has a native C API. A subset of the API
 is also supported with Python bindings.</p>
-<h4 id="c-api"><a href="http://jackmitch.github.io/libsoc/c">C API</a></h4>
+<h4 id="c-api"><a href="http://jackmitch.github.io/libsoc/c/gpio">C API</a></h4>
 <ul>
 <li>Manual GPIO Manipulation through sysfs (Value, Edge, Direction, Exporting)</li>
 <li>Blocking GPIO Interrupts with timeout</li>
@@ -346,5 +379,5 @@ address <a href="mailto:jack@embed.me.uk">jack@embed.me.uk</a>.</p></div>
 
 <!--
 MkDocs version : 0.15.3
-Build Date UTC : 2016-05-11 11:01:01.029526
+Build Date UTC : 2016-05-11 11:26:09.592783
 -->

@@ -71,124 +71,129 @@
             "title": "Contributing"
         },
         {
-            "location": "/c/",
-            "text": "GPIO\n\n\n\n\nData Types\n\n\n\n\ngpio_mode\n\n\nDetermines the way in which libsoc handles exporting and unexporting\nGPIOs in the Linux subsystem.\n\n\n\n\n\n\nLS_SHARED\n\n\nif the gpio is already exported then it will not unexport\nthe GPIO on free. If it is not exported, then it will\nunexport on free.\n\n\n\n\n\n\nLS_GREEDY\n\n\nwill succeed if the GPIO is already exported, but will \nalways unexport the GPIO on free.\n\n\n\n\n\n\nLS_WEAK\n\n\nwill fail if GPIO is already exported, will always unexport\non free.\n\n\n\n\n\n\n\n\ngpio_direction\n\n\nUsed for setting and reading the direction of the GPIO pin.\n\n\n\n\n\n\nDIRECTION_ERROR\n\n\nReturned when the GPIO direction could not be read\n\n\n\n\n\n\nINPUT\n\n\nGPIO input mode, it's input value can be read\n\n\n\n\n\n\nOUTPUT\n\n\nGPIO output mode, it's output value can be written\n\n\n\n\n\n\n\n\ngpio_level\n\n\nUsed for setting and reading the level of the GPIO pin.\n\n\n\n\n\n\nLEVEL_ERROR\n\n\nReturned when the GPIO level could not be read\n\n\n\n\n\n\nLOW\n\n\nGPIO value low, usually logic 0 on the pin, but could be 1 if\nthe gpio is inverted.\n\n\n\n\n\n\nHIGH\n\n\nGPIO value high, usually logic 1 on the pin, but could be 0 if\nthe gpio is inverted.\n\n\n\n\n\n\n\n\ngpio_edge\n\n\nUsed for setting and reading the edge of the GPIO pin.\n\n\n\n\n\n\nEDGE_ERROR\n\n\nReturned when the GPIO edge could not be read\n\n\n\n\n\n\nRISING\n\n\nGPIO interrupt is triggered on a rising edge, e.g. logic level\n0 followed by 1\n\n\n\n\n\n\nFALLING\n\n\nGPIO interrupt is triggered on a falling edge, e.g. logic level\n1 followed by 0\n\n\n\n\n\n\nNONE\n\n\nGPIO interrupt edge is not set\n\n\n\n\n\n\nBOTH\n\n\nGPIO interrupt is triggered on both a falling and rising edge\n\n\n\n\n\n\n\n\ngpio_int_ret\n\n\nReturn type for blocked GPIO interrupts.\n\n\n\n\n\n\nLS_INT_ERROR\n\n\nError condition\n\n\n\n\n\n\nLS_INT_TRIGGERED\n\n\nInterrupt was triggered\n\n\n\n\n\n\nLS_INT_TIMEOUT\n\n\nGPIO poll timedout\n\n\n\n\n\n\nFunctions\n\n\n\n\nlibsoc_gpio_request\n\n\ngpio * libsoc_gpio_request(unsigned int gpio_id, gpio_mode mode)\n\n\n\n\n\n\n\n\nunsigned int\n \ngpio_id\n\n\nthe Linux ID number for the GPIO you wish to use\n\n\n\n\n\n\ngpio_mode\n \nmode\n\n\nthe mode in which libsoc handles the GPIO file descriptor\n\n\n\n\n\n\nRequest a GPIO by it's Linux ID number and set the \ngpio_mode\n\nunder which libsoc will hold the file descriptor. Returns a malloced gpio struct\nwhich will need to be freed by \nlibsoc_gpio_free\n when no\nlonger needed.\n\n\nReturns \nNULL\n on failure.\n\n\n\n\nlibsoc_gpio_free\n\n\nint libsoc_gpio_free(gpio * gpio)\n\n\n\n\n\n\n\n\ngpioi*\n \ngpio\n\n\nthe previously requested gpio that you wish to release\n\n\n\n\n\n\nFree the memory associated with a previously requested GPIO and close the file\ndescriptors.\n\n\nReturns \nEXIT_SUCCESS\n/\nEXIT_FAILURE\n\n\n\n\nlibsoc_gpio_set_direction\n\n\nint libsoc_gpio_set_direction(gpio * current_gpio, gpio_direction direction)\n\n\n\n\n\n\n\n\ngpio*\n \ncurrent_gpio\n\n\nrequested gpio that you wish to set the direction of\n\n\n\n\n\n\ngpio_direction\n \ndirection\n\n\ndirection you wish to set the gpio to\n\n\n\n\n\n\nSet the direction of a GPIO, \nINPUT\n for reading a GPIO, \nOUTPUT\n for setting a\nGPIO.\n\n\nReturns \nEXIT_SUCCESS\n/\nEXIT_FAILURE\n\n\n\n\nlibsoc_gpio_get_direction\n\n\ngpio_direction libsoc_gpio_get_direction(gpio * current_gpio)\n\n\n\n\n\n\n\n\ngpio*\n \ncurrent_gpio\n\n\nrequested gpio that you wish to get the direction of\n\n\n\n\n\n\nGet the current \ngpio_direction\n of a requested GPIO.\n\n\nReturns \ngpio_direction\n, \nDIRECTION_ERROR\n on failure,\n\nINPUT\n/\nOUTPUT\n on success.\n\n\n\n\nlibsoc_gpio_set_level\n\n\nint libsoc_gpio_set_level(gpio * current_gpio, gpio_level level)\n\n\n\n\n\n\n\n\ngpio *\n \ncurrent_gpio\n\n\nrequested gpio you wish to set the level of\n\n\n\n\n\n\ngpio_level\n \nlevel\n\n\nlevel you wish to set the gpio to\n\n\n\n\n\n\nSet the output level of a requested GPIO to \nHIGH\n or \nLOW\n.\n\n\nReturns \nEXIT_SUCCESS\n/\nEXIT_FAILURE\n\n\n\n\nlibsoc_gpio_get_level\n\n\ngpio_level libsoc_gpio_get_level(gpio * current_gpio)\n\n\n\n\n\n\n\n\ngpio *\n \ncurrent_gpio\n\n\nrequested gpio you wish to get the level of\n\n\n\n\n\n\nGet the current \ngpio_level\n of a requested GPIO.\n\n\nReturns \ngpio_level\n, \nLEVEL_ERROR\n on failure,\n\nLOW\n/\nHIGH\n on success.\n\n\n\n\nlibsoc_gpio_set_edge\n\n\nint libsoc_gpio_set_edge(gpio * current_gpio, gpio_edge edge)\n\n\n\n\n\n\n\n\ngpio *\n \ncurrent_gpio\n\n\nrequested gpio you wish to set the edge of\n\n\n\n\n\n\ngpio_edge\n \nedge\n\n\nedge you wish to set the gpio to\n\n\n\n\n\n\nSet the edge type of a requested GPIO. The edge is the type of signal\nchange that will trigger interrupt detection. See \ngpio_edge\n\nfor explanations of the different types of edges and how they work.\n\n\nReturns \nEXIT_SUCCESS\n/\nEXIT_FAILURE\n\n\n\n\nlibsoc_gpio_get_edge\n\n\ngpio_edge libsoc_gpio_get_edge(gpio * current_gpio)\n\n\n\n\n\n\n\n\ngpio *\n \ncurrent_gpio\n\n\nrequested gpio you wish to get the edge of\n\n\n\n\n\n\nGet the current \ngpio_edge\n of a requested GPIO.\n\n\nReturns \ngpio_edge\n, \nEDGE_ERROR\n on failure,\n\nRISING\n/\nFALLING\n/\nBOTH\n/\nNONE\n on success.\n\n\n\n\nlibsoc_gpio_wait_interrupt\n\n\nint libsoc_gpio_wait_interrupt(gpio * gpio, int timeout)\n\n\n\n\n\n\n\n\ngpio *\n \ngpio\n\n\nrequested gpio you wish to wait for an interrupt on\n\n\n\n\n\n\nint\n \ntimeout\n\n\nthe number of seconds to wait for the interrupt, -1 for block indefinitly\n\n\n\n\n\n\nBlock for a set amount of seconds (or indefinitly) waiting for an interrupt on a\nGPIO to occur. If you wish to use a non-blocking interrupt mechanism see\n\nlibsoc_gpio_callback_interrupt\n.\n\n\nReturns \nLS_INT_ERROR\n on failure, \nLS_INT_TRIGGERED\n on captured interrupt,\n\nLS_INT_TIMEOUT\n if no interrupt was captured in the specified time.\n\n\n\n\nlibsoc_gpio_callback_interrupt\n\n\nint libsoc_gpio_callback_interrupt(gpio * gpio, int (*callback_fn) (void *), void *arg)\n\n\n\n\n\n\n\n\ngpio *\n \ngpio\n\n\nrequested gpio you wish to set an interrupt handler for\n\n\n\n\n\n\nint (*callback_fn) (void *)\n \nfunction\n\n\nname of the function to use as the interrupt handler. Must match the prototype\n\nint* function(void* ptr)\n\n\n\n\n\n\nvoid *\n \narg\n\n\nvoid casted pointer you wish to be passed to your interrupt handler\n\n\n\n\n\n\nSetup an interrupt handler on a GPIO. This will start a new pthread with an infinite poll\non the GPIO waiting for the interrupt. When an interrupt is detected the supplied function\nwill run in the thread, and then return to waiting for an interrupt.\n\n\nOnly one interrupt will be queued if it arrives while your supplied function is being run,\nso it is possible to miss interrupts if they happen too fast.\n\n\nReturns \nEXIT_SUCCESS\n/\nEXIT_FAILURE\n\n\n\n\nlibsoc_gpio_callback_interrupt_cancel\n\n\nint libsoc_gpio_callback_interrupt_cancel(gpio * gpio)\n\n\n\n\n\n\n\n\ngpio *\n \ngpio\n\n\nthe gpio on which to cancel a waiting interrupt handler\n\n\n\n\n\n\nCancel a previously set interrupt handler on a GPIO. This uses the pthread_cancel function,\nso it may cancel mid way through your interrupt handler function.\n\n\nReturns \nEXIT_SUCCESS\n/\nEXIT_FAILURE\n\n\n\n\nSPI\n\n\nI2C\n\n\nPWM",
-            "title": "C API"
+            "location": "/c/gpio/",
+            "text": "GPIO\n\n\n\n\nData Types\n\n\n\n\ngpio_mode\n\n\nDetermines the way in which libsoc handles exporting and unexporting\nGPIOs in the Linux subsystem.\n\n\n\n\n\n\nLS_SHARED\n\n\nif the gpio is already exported then it will not unexport\nthe GPIO on free. If it is not exported, then it will\nunexport on free.\n\n\n\n\n\n\nLS_GREEDY\n\n\nwill succeed if the GPIO is already exported, but will \nalways unexport the GPIO on free.\n\n\n\n\n\n\nLS_WEAK\n\n\nwill fail if GPIO is already exported, will always unexport\non free.\n\n\n\n\n\n\n\n\ngpio_direction\n\n\nUsed for setting and reading the direction of the GPIO pin.\n\n\n\n\n\n\nDIRECTION_ERROR\n\n\nReturned when the GPIO direction could not be read\n\n\n\n\n\n\nINPUT\n\n\nGPIO input mode, it's input value can be read\n\n\n\n\n\n\nOUTPUT\n\n\nGPIO output mode, it's output value can be written\n\n\n\n\n\n\n\n\ngpio_level\n\n\nUsed for setting and reading the level of the GPIO pin.\n\n\n\n\n\n\nLEVEL_ERROR\n\n\nReturned when the GPIO level could not be read\n\n\n\n\n\n\nLOW\n\n\nGPIO value low, usually logic 0 on the pin, but could be 1 if\nthe gpio is inverted.\n\n\n\n\n\n\nHIGH\n\n\nGPIO value high, usually logic 1 on the pin, but could be 0 if\nthe gpio is inverted.\n\n\n\n\n\n\n\n\ngpio_edge\n\n\nUsed for setting and reading the edge of the GPIO pin.\n\n\n\n\n\n\nEDGE_ERROR\n\n\nReturned when the GPIO edge could not be read\n\n\n\n\n\n\nRISING\n\n\nGPIO interrupt is triggered on a rising edge, e.g. logic level\n0 followed by 1\n\n\n\n\n\n\nFALLING\n\n\nGPIO interrupt is triggered on a falling edge, e.g. logic level\n1 followed by 0\n\n\n\n\n\n\nNONE\n\n\nGPIO interrupt edge is not set\n\n\n\n\n\n\nBOTH\n\n\nGPIO interrupt is triggered on both a falling and rising edge\n\n\n\n\n\n\n\n\ngpio_int_ret\n\n\nReturn type for blocked GPIO interrupts.\n\n\n\n\n\n\nLS_INT_ERROR\n\n\nError condition\n\n\n\n\n\n\nLS_INT_TRIGGERED\n\n\nInterrupt was triggered\n\n\n\n\n\n\nLS_INT_TIMEOUT\n\n\nGPIO poll timedout\n\n\n\n\n\n\nFunctions\n\n\n\n\nlibsoc_gpio_request\n\n\ngpio * libsoc_gpio_request(unsigned int gpio_id, gpio_mode mode)\n\n\n\n\n\n\n\n\nunsigned int\n \ngpio_id\n\n\nthe Linux ID number for the GPIO you wish to use\n\n\n\n\n\n\ngpio_mode\n \nmode\n\n\nthe mode in which libsoc handles the GPIO file descriptor\n\n\n\n\n\n\nRequest a GPIO by it's Linux ID number and set the \ngpio_mode\n\nunder which libsoc will hold the file descriptor. Returns a malloced gpio struct\nwhich will need to be freed by \nlibsoc_gpio_free\n when no\nlonger needed.\n\n\nReturns \nNULL\n on failure.\n\n\n\n\nlibsoc_gpio_free\n\n\nint libsoc_gpio_free(gpio * gpio)\n\n\n\n\n\n\n\n\ngpioi*\n \ngpio\n\n\nthe previously requested gpio that you wish to release\n\n\n\n\n\n\nFree the memory associated with a previously requested GPIO and close the file\ndescriptors.\n\n\nReturns \nEXIT_SUCCESS\n/\nEXIT_FAILURE\n\n\n\n\nlibsoc_gpio_set_direction\n\n\nint libsoc_gpio_set_direction(gpio * current_gpio, gpio_direction direction)\n\n\n\n\n\n\n\n\ngpio*\n \ncurrent_gpio\n\n\nrequested gpio that you wish to set the direction of\n\n\n\n\n\n\ngpio_direction\n \ndirection\n\n\ndirection you wish to set the gpio to\n\n\n\n\n\n\nSet the direction of a GPIO, \nINPUT\n for reading a GPIO, \nOUTPUT\n for setting a\nGPIO.\n\n\nReturns \nEXIT_SUCCESS\n/\nEXIT_FAILURE\n\n\n\n\nlibsoc_gpio_get_direction\n\n\ngpio_direction libsoc_gpio_get_direction(gpio * current_gpio)\n\n\n\n\n\n\n\n\ngpio*\n \ncurrent_gpio\n\n\nrequested gpio that you wish to get the direction of\n\n\n\n\n\n\nGet the current \ngpio_direction\n of a requested GPIO.\n\n\nReturns \ngpio_direction\n, \nDIRECTION_ERROR\n on failure,\n\nINPUT\n/\nOUTPUT\n on success.\n\n\n\n\nlibsoc_gpio_set_level\n\n\nint libsoc_gpio_set_level(gpio * current_gpio, gpio_level level)\n\n\n\n\n\n\n\n\ngpio *\n \ncurrent_gpio\n\n\nrequested gpio you wish to set the level of\n\n\n\n\n\n\ngpio_level\n \nlevel\n\n\nlevel you wish to set the gpio to\n\n\n\n\n\n\nSet the output level of a requested GPIO to \nHIGH\n or \nLOW\n.\n\n\nReturns \nEXIT_SUCCESS\n/\nEXIT_FAILURE\n\n\n\n\nlibsoc_gpio_get_level\n\n\ngpio_level libsoc_gpio_get_level(gpio * current_gpio)\n\n\n\n\n\n\n\n\ngpio *\n \ncurrent_gpio\n\n\nrequested gpio you wish to get the level of\n\n\n\n\n\n\nGet the current \ngpio_level\n of a requested GPIO.\n\n\nReturns \ngpio_level\n, \nLEVEL_ERROR\n on failure,\n\nLOW\n/\nHIGH\n on success.\n\n\n\n\nlibsoc_gpio_set_edge\n\n\nint libsoc_gpio_set_edge(gpio * current_gpio, gpio_edge edge)\n\n\n\n\n\n\n\n\ngpio *\n \ncurrent_gpio\n\n\nrequested gpio you wish to set the edge of\n\n\n\n\n\n\ngpio_edge\n \nedge\n\n\nedge you wish to set the gpio to\n\n\n\n\n\n\nSet the edge type of a requested GPIO. The edge is the type of signal\nchange that will trigger interrupt detection. See \ngpio_edge\n\nfor explanations of the different types of edges and how they work.\n\n\nReturns \nEXIT_SUCCESS\n/\nEXIT_FAILURE\n\n\n\n\nlibsoc_gpio_get_edge\n\n\ngpio_edge libsoc_gpio_get_edge(gpio * current_gpio)\n\n\n\n\n\n\n\n\ngpio *\n \ncurrent_gpio\n\n\nrequested gpio you wish to get the edge of\n\n\n\n\n\n\nGet the current \ngpio_edge\n of a requested GPIO.\n\n\nReturns \ngpio_edge\n, \nEDGE_ERROR\n on failure,\n\nRISING\n/\nFALLING\n/\nBOTH\n/\nNONE\n on success.\n\n\n\n\nlibsoc_gpio_wait_interrupt\n\n\nint libsoc_gpio_wait_interrupt(gpio * gpio, int timeout)\n\n\n\n\n\n\n\n\ngpio *\n \ngpio\n\n\nrequested gpio you wish to wait for an interrupt on\n\n\n\n\n\n\nint\n \ntimeout\n\n\nthe number of seconds to wait for the interrupt, -1 for block indefinitly\n\n\n\n\n\n\nBlock for a set amount of seconds (or indefinitly) waiting for an interrupt on a\nGPIO to occur. If you wish to use a non-blocking interrupt mechanism see\n\nlibsoc_gpio_callback_interrupt\n.\n\n\nReturns \nLS_INT_ERROR\n on failure, \nLS_INT_TRIGGERED\n on captured interrupt,\n\nLS_INT_TIMEOUT\n if no interrupt was captured in the specified time.\n\n\n\n\nlibsoc_gpio_callback_interrupt\n\n\nint libsoc_gpio_callback_interrupt(gpio * gpio, int (*callback_fn) (void *), void *arg)\n\n\n\n\n\n\n\n\ngpio *\n \ngpio\n\n\nrequested gpio you wish to set an interrupt handler for\n\n\n\n\n\n\nint (*callback_fn) (void *)\n \nfunction\n\n\nname of the function to use as the interrupt handler. Must match the prototype\n\nint* function(void* ptr)\n\n\n\n\n\n\nvoid *\n \narg\n\n\nvoid casted pointer you wish to be passed to your interrupt handler\n\n\n\n\n\n\nSetup an interrupt handler on a GPIO. This will start a new pthread with an infinite poll\non the GPIO waiting for the interrupt. When an interrupt is detected the supplied function\nwill run in the thread, and then return to waiting for an interrupt.\n\n\nOnly one interrupt will be queued if it arrives while your supplied function is being run,\nso it is possible to miss interrupts if they happen too fast.\n\n\nReturns \nEXIT_SUCCESS\n/\nEXIT_FAILURE\n\n\n\n\nlibsoc_gpio_callback_interrupt_cancel\n\n\nint libsoc_gpio_callback_interrupt_cancel(gpio * gpio)\n\n\n\n\n\n\n\n\ngpio *\n \ngpio\n\n\nthe gpio on which to cancel a waiting interrupt handler\n\n\n\n\n\n\nCancel a previously set interrupt handler on a GPIO. This uses the pthread_cancel function,\nso it may cancel mid way through your interrupt handler function.\n\n\nReturns \nEXIT_SUCCESS\n/\nEXIT_FAILURE",
+            "title": "GPIO"
         },
         {
-            "location": "/c/#gpio",
+            "location": "/c/gpio/#gpio",
             "text": "",
             "title": "GPIO"
         },
         {
-            "location": "/c/#data-types",
+            "location": "/c/gpio/#data-types",
             "text": "",
             "title": "Data Types"
         },
         {
-            "location": "/c/#gpio_mode",
+            "location": "/c/gpio/#gpio_mode",
             "text": "Determines the way in which libsoc handles exporting and unexporting\nGPIOs in the Linux subsystem.    LS_SHARED  if the gpio is already exported then it will not unexport\nthe GPIO on free. If it is not exported, then it will\nunexport on free.    LS_GREEDY  will succeed if the GPIO is already exported, but will \nalways unexport the GPIO on free.    LS_WEAK  will fail if GPIO is already exported, will always unexport\non free.",
             "title": "gpio_mode"
         },
         {
-            "location": "/c/#gpio_direction",
+            "location": "/c/gpio/#gpio_direction",
             "text": "Used for setting and reading the direction of the GPIO pin.    DIRECTION_ERROR  Returned when the GPIO direction could not be read    INPUT  GPIO input mode, it's input value can be read    OUTPUT  GPIO output mode, it's output value can be written",
             "title": "gpio_direction"
         },
         {
-            "location": "/c/#gpio_level",
+            "location": "/c/gpio/#gpio_level",
             "text": "Used for setting and reading the level of the GPIO pin.    LEVEL_ERROR  Returned when the GPIO level could not be read    LOW  GPIO value low, usually logic 0 on the pin, but could be 1 if\nthe gpio is inverted.    HIGH  GPIO value high, usually logic 1 on the pin, but could be 0 if\nthe gpio is inverted.",
             "title": "gpio_level"
         },
         {
-            "location": "/c/#gpio_edge",
+            "location": "/c/gpio/#gpio_edge",
             "text": "Used for setting and reading the edge of the GPIO pin.    EDGE_ERROR  Returned when the GPIO edge could not be read    RISING  GPIO interrupt is triggered on a rising edge, e.g. logic level\n0 followed by 1    FALLING  GPIO interrupt is triggered on a falling edge, e.g. logic level\n1 followed by 0    NONE  GPIO interrupt edge is not set    BOTH  GPIO interrupt is triggered on both a falling and rising edge",
             "title": "gpio_edge"
         },
         {
-            "location": "/c/#gpio_int_ret",
+            "location": "/c/gpio/#gpio_int_ret",
             "text": "Return type for blocked GPIO interrupts.    LS_INT_ERROR  Error condition    LS_INT_TRIGGERED  Interrupt was triggered    LS_INT_TIMEOUT  GPIO poll timedout",
             "title": "gpio_int_ret"
         },
         {
-            "location": "/c/#functions",
+            "location": "/c/gpio/#functions",
             "text": "",
             "title": "Functions"
         },
         {
-            "location": "/c/#libsoc_gpio_request",
+            "location": "/c/gpio/#libsoc_gpio_request",
             "text": "gpio * libsoc_gpio_request(unsigned int gpio_id, gpio_mode mode)    unsigned int   gpio_id  the Linux ID number for the GPIO you wish to use    gpio_mode   mode  the mode in which libsoc handles the GPIO file descriptor    Request a GPIO by it's Linux ID number and set the  gpio_mode \nunder which libsoc will hold the file descriptor. Returns a malloced gpio struct\nwhich will need to be freed by  libsoc_gpio_free  when no\nlonger needed.  Returns  NULL  on failure.",
             "title": "libsoc_gpio_request"
         },
         {
-            "location": "/c/#libsoc_gpio_free",
+            "location": "/c/gpio/#libsoc_gpio_free",
             "text": "int libsoc_gpio_free(gpio * gpio)    gpioi*   gpio  the previously requested gpio that you wish to release    Free the memory associated with a previously requested GPIO and close the file\ndescriptors.  Returns  EXIT_SUCCESS / EXIT_FAILURE",
             "title": "libsoc_gpio_free"
         },
         {
-            "location": "/c/#libsoc_gpio_set_direction",
+            "location": "/c/gpio/#libsoc_gpio_set_direction",
             "text": "int libsoc_gpio_set_direction(gpio * current_gpio, gpio_direction direction)    gpio*   current_gpio  requested gpio that you wish to set the direction of    gpio_direction   direction  direction you wish to set the gpio to    Set the direction of a GPIO,  INPUT  for reading a GPIO,  OUTPUT  for setting a\nGPIO.  Returns  EXIT_SUCCESS / EXIT_FAILURE",
             "title": "libsoc_gpio_set_direction"
         },
         {
-            "location": "/c/#libsoc_gpio_get_direction",
+            "location": "/c/gpio/#libsoc_gpio_get_direction",
             "text": "gpio_direction libsoc_gpio_get_direction(gpio * current_gpio)    gpio*   current_gpio  requested gpio that you wish to get the direction of    Get the current  gpio_direction  of a requested GPIO.  Returns  gpio_direction ,  DIRECTION_ERROR  on failure, INPUT / OUTPUT  on success.",
             "title": "libsoc_gpio_get_direction"
         },
         {
-            "location": "/c/#libsoc_gpio_set_level",
+            "location": "/c/gpio/#libsoc_gpio_set_level",
             "text": "int libsoc_gpio_set_level(gpio * current_gpio, gpio_level level)    gpio *   current_gpio  requested gpio you wish to set the level of    gpio_level   level  level you wish to set the gpio to    Set the output level of a requested GPIO to  HIGH  or  LOW .  Returns  EXIT_SUCCESS / EXIT_FAILURE",
             "title": "libsoc_gpio_set_level"
         },
         {
-            "location": "/c/#libsoc_gpio_get_level",
+            "location": "/c/gpio/#libsoc_gpio_get_level",
             "text": "gpio_level libsoc_gpio_get_level(gpio * current_gpio)    gpio *   current_gpio  requested gpio you wish to get the level of    Get the current  gpio_level  of a requested GPIO.  Returns  gpio_level ,  LEVEL_ERROR  on failure, LOW / HIGH  on success.",
             "title": "libsoc_gpio_get_level"
         },
         {
-            "location": "/c/#libsoc_gpio_set_edge",
+            "location": "/c/gpio/#libsoc_gpio_set_edge",
             "text": "int libsoc_gpio_set_edge(gpio * current_gpio, gpio_edge edge)    gpio *   current_gpio  requested gpio you wish to set the edge of    gpio_edge   edge  edge you wish to set the gpio to    Set the edge type of a requested GPIO. The edge is the type of signal\nchange that will trigger interrupt detection. See  gpio_edge \nfor explanations of the different types of edges and how they work.  Returns  EXIT_SUCCESS / EXIT_FAILURE",
             "title": "libsoc_gpio_set_edge"
         },
         {
-            "location": "/c/#libsoc_gpio_get_edge",
+            "location": "/c/gpio/#libsoc_gpio_get_edge",
             "text": "gpio_edge libsoc_gpio_get_edge(gpio * current_gpio)    gpio *   current_gpio  requested gpio you wish to get the edge of    Get the current  gpio_edge  of a requested GPIO.  Returns  gpio_edge ,  EDGE_ERROR  on failure, RISING / FALLING / BOTH / NONE  on success.",
             "title": "libsoc_gpio_get_edge"
         },
         {
-            "location": "/c/#libsoc_gpio_wait_interrupt",
+            "location": "/c/gpio/#libsoc_gpio_wait_interrupt",
             "text": "int libsoc_gpio_wait_interrupt(gpio * gpio, int timeout)    gpio *   gpio  requested gpio you wish to wait for an interrupt on    int   timeout  the number of seconds to wait for the interrupt, -1 for block indefinitly    Block for a set amount of seconds (or indefinitly) waiting for an interrupt on a\nGPIO to occur. If you wish to use a non-blocking interrupt mechanism see libsoc_gpio_callback_interrupt .  Returns  LS_INT_ERROR  on failure,  LS_INT_TRIGGERED  on captured interrupt, LS_INT_TIMEOUT  if no interrupt was captured in the specified time.",
             "title": "libsoc_gpio_wait_interrupt"
         },
         {
-            "location": "/c/#libsoc_gpio_callback_interrupt",
+            "location": "/c/gpio/#libsoc_gpio_callback_interrupt",
             "text": "int libsoc_gpio_callback_interrupt(gpio * gpio, int (*callback_fn) (void *), void *arg)    gpio *   gpio  requested gpio you wish to set an interrupt handler for    int (*callback_fn) (void *)   function  name of the function to use as the interrupt handler. Must match the prototype int* function(void* ptr)    void *   arg  void casted pointer you wish to be passed to your interrupt handler    Setup an interrupt handler on a GPIO. This will start a new pthread with an infinite poll\non the GPIO waiting for the interrupt. When an interrupt is detected the supplied function\nwill run in the thread, and then return to waiting for an interrupt.  Only one interrupt will be queued if it arrives while your supplied function is being run,\nso it is possible to miss interrupts if they happen too fast.  Returns  EXIT_SUCCESS / EXIT_FAILURE",
             "title": "libsoc_gpio_callback_interrupt"
         },
         {
-            "location": "/c/#libsoc_gpio_callback_interrupt_cancel",
+            "location": "/c/gpio/#libsoc_gpio_callback_interrupt_cancel",
             "text": "int libsoc_gpio_callback_interrupt_cancel(gpio * gpio)    gpio *   gpio  the gpio on which to cancel a waiting interrupt handler    Cancel a previously set interrupt handler on a GPIO. This uses the pthread_cancel function,\nso it may cancel mid way through your interrupt handler function.  Returns  EXIT_SUCCESS / EXIT_FAILURE",
             "title": "libsoc_gpio_callback_interrupt_cancel"
         },
         {
-            "location": "/c/#spi",
+            "location": "/c/spi/",
             "text": "",
-            "title": "SPI"
+            "title": "SPI (WIP)"
         },
         {
-            "location": "/c/#i2c",
+            "location": "/c/i2c/",
             "text": "",
-            "title": "I2C"
+            "title": "I2C (WIP)"
         },
         {
-            "location": "/c/#pwm",
+            "location": "/c/pwm/",
             "text": "",
-            "title": "PWM"
+            "title": "PWM (WIP)"
+        },
+        {
+            "location": "/c/debug/",
+            "text": "",
+            "title": "DEBUG (WIP)"
         },
         {
             "location": "/python/",
             "text": "",
-            "title": "Python Bindings"
+            "title": "Python Bindings (WIP)"
         }
     ]
 }

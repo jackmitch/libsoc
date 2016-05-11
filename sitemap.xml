@@ -10,11 +10,37 @@
     
 
     
+        
     <url>
-     <loc>None/c/</loc>
+     <loc>None/c/gpio/</loc>
      <lastmod>2016-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
+    <url>
+     <loc>None/c/spi/</loc>
+     <lastmod>2016-05-11</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>None/c/i2c/</loc>
+     <lastmod>2016-05-11</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>None/c/pwm/</loc>
+     <lastmod>2016-05-11</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>None/c/debug/</loc>
+     <lastmod>2016-05-11</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
     
 
     
