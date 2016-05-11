@@ -62,11 +62,11 @@ typedef enum {
  *             on free.
  */
 
-enum shared_mode {
+typedef enum {
 	LS_SHARED,
 	LS_GREEDY,
 	LS_WEAK,
-};
+} shared_mode;
 
 /**
  * \fn pwm* libsoc_pwm_request(unsigned int pwm_chip, unsigned int pwm_num)
@@ -80,7 +80,7 @@ enum shared_mode {
  */
 
 pwm* libsoc_pwm_request(unsigned int pwm_chip, unsigned int pwm_num,
-  enum shared_mode mode);
+  shared_mode mode);
 
 /**
  * \fn int libsoc_pwm_free(pwm* pwm)

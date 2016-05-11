@@ -37,7 +37,7 @@ void libsoc_pwm_debug (const char *func, unsigned int chip,
 }
 
 pwm* libsoc_pwm_request (unsigned int chip, unsigned int pwm_num,
-  enum shared_mode mode)
+  shared_mode mode)
 {
   pwm *new_pwm;
   char tmp_str[STR_BUF];
