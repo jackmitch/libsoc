@@ -2,7 +2,7 @@
 import threading
 import time
 
-from libsoc import api, gpio
+from libsoc import gpio
 
 
 def test_wait_for_interrupt(gpio_in, gpio_out):
@@ -18,7 +18,7 @@ def test_wait_for_interrupt(gpio_in, gpio_out):
     t = threading.Thread(target=signaller, args=(gpio_out, event))
     t.start()
 
-    api.libsoc_gpio_set_edge(gpio_in._gpio, gpio.EDGE_FALLING)
+    gpio_in.set_edge(gpio.EDGE_FALLING)
     event.set()
     # wait up to one second for the interrupt
     gpio_in.wait_for_interrupt(1000)
@@ -32,7 +32,7 @@ def test_interrupt_handler(gpio_in, gpio_out):
             self.hits += 1
 
     gpio_out.set_low()
-    api.libsoc_gpio_set_edge(gpio_in._gpio, gpio.EDGE_FALLING)
+    gpio_in.set_direction(gpio.DIRECTION_INPUT, gpio.EDGE_FALLING)
 
     cb = int_handler()
     h = gpio_in.start_interrupt_handler(cb.cb)
@@ -72,7 +72,7 @@ def main(gpio_input_id, gpio_output_id):
         edges = (gpio.EDGE_RISING, gpio.EDGE_FALLING,
                  gpio.EDGE_BOTH, gpio.EDGE_NONE)
         for edge in edges:
-            api.libsoc_gpio_set_edge(gpio_in._gpio, edge)
+            gpio_in.set_edge(edge)
             assert edge == gpio_in.get_edge()
 
         test_wait_for_interrupt(gpio_in, gpio_out)

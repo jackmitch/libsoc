@@ -36,16 +36,18 @@ class GPIO(object):
             raise TypeError('Invalid gpio id must be an "int"')
         if mode not in (LS_SHARED, LS_GREEDY, LS_WEAK):
             raise ValueError('Invalid GPIO mode: %d' % mode)
+        self._validate_direction(direction, edge)
+        self.mode = mode
+        self._gpio = None
+
+    def _validate_direction(self, direction, edge=EDGE_NONE):
         if direction not in (DIRECTION_INPUT, DIRECTION_OUTPUT):
             raise ValueError('Invalid GPIO direction: %d' % direction)
         edges = (EDGE_RISING, EDGE_FALLING, EDGE_NONE, EDGE_BOTH)
         if direction == DIRECTION_INPUT and edge not in edges:
             raise ValueError('Invalid GPIO edge: %d' % edge)
-
-        self.mode = mode
         self.direction = direction
         self.edge = edge
-        self._gpio = None
 
     def open(self):
         '''Opens a file descriptor to the GPIO and configures it.'''
@@ -53,16 +55,25 @@ class GPIO(object):
         self._gpio = api.libsoc_gpio_request(self.id, self.mode)
         if self._gpio == 0:  # NULL from native code
             raise IOError('Unable to open GPIO_%d' % self.id)
-        api.libsoc_gpio_set_direction(self._gpio, self.direction)
-        if self.direction == DIRECTION_INPUT:
-            if api.libsoc_gpio_set_edge(self._gpio, self.edge) != 0:
-                raise IOError('Error setting edge for GPIO_%d' % self.id)
+        self.set_direction(self.direction, self.edge)
 
     def close(self):
         '''Cleans up the memory and resources allocated by the open method.'''
         if self._gpio:
             api.libsoc_gpio_free(self._gpio)
             self._gpio = None
+
+    def set_direction(self, direction, edge):
+        self._validate_direction(direction, edge)
+        api.libsoc_gpio_set_direction(self._gpio, self.direction)
+        if self.direction == DIRECTION_INPUT:
+            if api.libsoc_gpio_set_edge(self._gpio, self.edge) != 0:
+                raise IOError('Error setting edge for GPIO_%d' % self.id)
+
+    def set_edge(self, edge):
+        self._validate_direction(self.direction, edge)
+        if api.libsoc_gpio_set_edge(self._gpio, self.edge) != 0:
+            raise IOError('Error setting edge for GPIO_%d' % self.id)
 
     def get_direction(self):
         d = api.libsoc_gpio_get_direction(self._gpio)
