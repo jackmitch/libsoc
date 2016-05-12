@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">   
+    <link rel="shortcut icon" href="../../img/favicon.ico">
+
+    <title>PWM (WIP) - libsoc</title>
+
+    <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
+    <link href='//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href="../../css/base.css" rel="stylesheet">
+    <link href="../../css/cinder.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/highlight.css">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
+    <script>
+    WebFont.load({
+        google: {
+            families: ['Open Sans', 'PT Sans']
+        }
+    });
+    </script>
+
+    
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="../..">libsoc</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../..">Introduction</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">C API <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../gpio/">GPIO</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../spi/">SPI (WIP)</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../i2c/">I2C (WIP)</a>
+</li>
+
+                        
+                            
+<li class="active">
+    <a href="./">PWM (WIP)</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../debug/">DEBUG (WIP)</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../python/">Python Bindings (WIP)</a>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="next" href="../i2c/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../debug/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a href="http://github.com/jackmitch/libsoc">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <div class="container">
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="first-level active"><a href="#pwm">PWM</a></li>
+        
+            <li class="second-level"><a href="#data-types">Data Types</a></li>
+            
+                <li class="third-level"><a href="#shared_mode">shared_mode</a></li>
+            
+                <li class="third-level"><a href="#pwm_enabled">pwm_enabled</a></li>
+            
+                <li class="third-level"><a href="#pwm_polarity">pwm_polarity</a></li>
+            
+        
+            <li class="second-level"><a href="#functions">Functions</a></li>
+            
+                <li class="third-level"><a href="#libsoc_pwm_request">libsoc_pwm_request</a></li>
+            
+                <li class="third-level"><a href="#libsoc_pwm_free">libsoc_pwm_free</a></li>
+            
+                <li class="third-level"><a href="#libsoc_pwm_set_enabled">libsoc_pwm_set_enabled</a></li>
+            
+                <li class="third-level"><a href="#libsoc_pwm_get_enabled">libsoc_pwm_get_enabled</a></li>
+            
+        
+            <li class="second-level"><a href="#requested-pwm-that-you-wish-to-get-the-state-of">requested pwm that you wish to get the state of</a></li>
+            
+                <li class="third-level"><a href="#libsoc_pwm_set_polarity">libsoc_pwm_set_polarity</a></li>
+            
+                <li class="third-level"><a href="#libsoc_pwm_get_polarity">libsoc_pwm_get_polarity</a></li>
+            
+                <li class="third-level"><a href="#libsoc_pwm_set_duty_cycle">libsoc_pwm_set_duty_cycle</a></li>
+            
+                <li class="third-level"><a href="#libsoc_pwm_get_duty_cycle">libsoc_pwm_get_duty_cycle</a></li>
+            
+                <li class="third-level"><a href="#libsoc_pwm_set_period">libsoc_pwm_set_period</a></li>
+            
+                <li class="third-level"><a href="#libsoc_pwm_get_period">libsoc_pwm_get_period</a></li>
+            
+        
+    
+    </ul>
+</div></div>
+        <div class="col-md-9" role="main">
+
+<h1 id="pwm">PWM</h1>
+<hr />
+<h2 id="data-types">Data Types</h2>
+<hr />
+<h3 id="shared_mode">shared_mode</h3>
+<p>Determines the way in which libsoc handles exporting and unexporting
+PWMs in the Linux subsystem.</p>
+<ul>
+<li>
+<p><strong>LS_SHARED</strong></p>
+<p>if the pwm is already exported then it will not unexport
+the pwm on free. If it is not exported, then it will
+unexport on free.</p>
+</li>
+<li>
+<p><strong>LS_GREEDY</strong></p>
+<p>will succeed if the pwm is already exported, but will
+always unexport the pwm on free.</p>
+</li>
+<li>
+<p><strong>LS_WEAK</strong></p>
+<p>will fail if pwm is already exported, will always unexport
+on free.</p>
+</li>
+</ul>
+<h3 id="pwm_enabled">pwm_enabled</h3>
+<p>Used for setting and reading the enabled state of the PWM device</p>
+<ul>
+<li>
+<p><strong>ENABLED_ERROR</strong></p>
+<p>Returned when the enabled state could not be read</p>
+</li>
+<li>
+<p><strong>DISABLED</strong></p>
+<p>PWM disabled mode, the pwm is not currently running</p>
+</li>
+<li>
+<p><strong>ENABLED</strong></p>
+<p>PWM enabled mode, the pwm is currently running</p>
+</li>
+</ul>
+<hr />
+<h3 id="pwm_polarity">pwm_polarity</h3>
+<p>Used for setting and reading the polarity of the PWM device</p>
+<ul>
+<li>
+<p><strong>POLARITY_ERROR</strong></p>
+<p>Returned when the polarity could not be read</p>
+</li>
+<li>
+<p><strong>NORMAL</strong></p>
+<p>Polarity mode is normal</p>
+</li>
+<li>
+<p><strong>INVERSED</strong></p>
+<p>Polarity mode is inversed</p>
+</li>
+</ul>
+<h2 id="functions">Functions</h2>
+<hr />
+<h3 id="libsoc_pwm_request">libsoc_pwm_request</h3>
+<pre><code class="c">pwm* libsoc_pwm_request(unsigned int pwm_chip, unsigned int pwm_num, enum shared_mode mode)
+</code></pre>
+
+<ul>
+<li>
+<p><em>unsigned int</em> <strong>pwm_chip</strong></p>
+<p>the pwm chip number which controls the pwm you wish to use</p>
+</li>
+<li>
+<p><em>unsigned int</em> <strong>pwm_num</strong></p>
+<p>the pwm number within your specified pwm chip</p>
+</li>
+<li>
+<p><em>shared_mode</em> <strong>mode</strong></p>
+<p>the mode in which libsoc handles the PWM file descriptor</p>
+</li>
+</ul>
+<p>Request a pwm by specifying its pwm chip number and the pwm number it is on that chip.
+Set <a href="#shared_mode">shared_mode</a> to handle how libsoc manages the file descriptor.
+Returns a malloced pwm struct which will need to be freed by <a href="#libsoc_pwm_free">libsoc_pwm_free</a>
+when no longer needed.</p>
+<hr />
+<h3 id="libsoc_pwm_free">libsoc_pwm_free</h3>
+<pre><code class="c">int libsoc_pwm_free(pwm *pwm)
+</code></pre>
+
+<ul>
+<li>
+<p><em>pwm*</em> <strong>pwm</strong></p>
+<p>the previously requested pwm that you wish to release</p>
+</li>
+</ul>
+<hr />
+<h3 id="libsoc_pwm_set_enabled">libsoc_pwm_set_enabled</h3>
+<pre><code class="c">int libsoc_pwm_set_enabled(pwm *pwm, pwm_enabled enabled)
+</code></pre>
+
+<ul>
+<li>
+<p><em>pwm*</em> <strong>pwm</strong></p>
+<p>requested pwm that you wish to set enabled/disabled</p>
+</li>
+<li>
+<p><em>pwm_enabled</em> <strong>enabled</strong></p>
+</li>
+</ul>
+<hr />
+<h3 id="libsoc_pwm_get_enabled">libsoc_pwm_get_enabled</h3>
+<hr />
+<pre><code class="c">pwm_enabled libsoc_pwm_get_enabled(pwm *pwm)
+</code></pre>
+
+<ul>
+<li>
+<p><em>pwm*</em> <strong>pwm</strong></p>
+<h2 id="requested-pwm-that-you-wish-to-get-the-state-of">requested pwm that you wish to get the state of</h2>
+</li>
+</ul>
+<h3 id="libsoc_pwm_set_polarity">libsoc_pwm_set_polarity</h3>
+<pre><code class="c">int libsoc_pwm_set_polarity(pwm *pwm, pwm_polarity polarity)
+</code></pre>
+
+<ul>
+<li>
+<p><em>pwm*</em> <strong>pwm</strong></p>
+<p>requested pwm that you wish to set the polarity of</p>
+</li>
+<li>
+<p><em>pwm_polarity</em> <strong>polarity</strong></p>
+</li>
+</ul>
+<hr />
+<h3 id="libsoc_pwm_get_polarity">libsoc_pwm_get_polarity</h3>
+<pre><code class="c">pwm_polarity libsoc_pwm_get_polarity(pwm *pwm)
+</code></pre>
+
+<hr />
+<ul>
+<li>
+<p><em>pwm*</em> <strong>pwm</strong></p>
+<p>requested pwm that you wish to get the polarity of</p>
+</li>
+</ul>
+<h3 id="libsoc_pwm_set_duty_cycle">libsoc_pwm_set_duty_cycle</h3>
+<pre><code class="c">int libsoc_pwm_set_duty_cycle(pwm *pwm, unsigned int duty)
+</code></pre>
+
+<ul>
+<li>
+<p><em>pwm*</em> <strong>pwm</strong></p>
+<p>requested pwm that you wish to set the duty cycle of</p>
+</li>
+<li>
+<p><em>unsigned int</em> <strong>duty</strong></p>
+</li>
+</ul>
+<hr />
+<h3 id="libsoc_pwm_get_duty_cycle">libsoc_pwm_get_duty_cycle</h3>
+<pre><code class="c">int libsoc_pwm_get_duty_cycle(pwm *pwm)
+</code></pre>
+
+<ul>
+<li>
+<p><em>pwm*</em> <strong>pwm</strong></p>
+<p>requested pwm that you wish to get the duty cycle of</p>
+</li>
+</ul>
+<hr />
+<h3 id="libsoc_pwm_set_period">libsoc_pwm_set_period</h3>
+<pre><code class="c">int libsoc_pwm_set_period(pwm *pwm, unsigned int period)
+</code></pre>
+
+<ul>
+<li>
+<p><em>pwm*</em> <strong>pwm</strong></p>
+<p>requested pwm that you wish to set the period of</p>
+</li>
+<li>
+<p><em>unsigned int</em> <strong>period</strong></p>
+</li>
+</ul>
+<hr />
+<h3 id="libsoc_pwm_get_period">libsoc_pwm_get_period</h3>
+<pre><code class="c">int libsoc_pwm_get_period(pwm *pwm)
+</code></pre>
+
+<ul>
+<li>
+<p><em>pwm*</em> <strong>pwm</strong></p>
+<p>requested pwm that you wish to get the period of</p>
+</li>
+</ul></div>
+        
+    </div>
+
+    <footer class="col-md-12 text-center">
+        <hr>
+        <p>
+        <small>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p></small>
+    </footer>
+
+    <script src="../../js/jquery-1.10.2.min.js"></script>
+    <script src="../../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../../js/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script>
+    var base_url = '../..';
+    </script>
+    <script data-main="../../mkdocs/js/search.js" src="../../mkdocs/js/require.js"></script>
+    <script src="../../js/base.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        From here you can search these documents. Enter your search terms below.
+                    </p>
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                        </div>
+                    </form>
+                    <div id="mkdocs-search-results"></div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </body>
+
+</html>

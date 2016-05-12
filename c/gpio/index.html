@@ -5,18 +5,18 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">   
-    <link rel="shortcut icon" href="../img/favicon.ico">
+    <link rel="shortcut icon" href="../../img/favicon.ico">
 
-    <title>C API - libsoc</title>
+    <title>GPIO - libsoc</title>
 
-    <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
     <link href='//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
     <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
-    <link href="../css/base.css" rel="stylesheet">
-    <link href="../css/cinder.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/highlight.css">
+    <link href="../../css/base.css" rel="stylesheet">
+    <link href="../../css/cinder.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/highlight.css">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -54,7 +54,7 @@
             
 
             <!-- Main title -->
-            <a class="navbar-brand" href="..">libsoc</a>
+            <a class="navbar-brand" href="../..">libsoc</a>
         </div>
 
         <!-- Expanded navigation -->
@@ -65,19 +65,52 @@
                 
                 
                     <li >
-                        <a href="..">Introduction</a>
+                        <a href="../..">Introduction</a>
                     </li>
                 
                 
                 
-                    <li class="active">
-                        <a href="./">C API</a>
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">C API <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li class="active">
+    <a href="./">GPIO</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../spi/">SPI (WIP)</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../i2c/">I2C (WIP)</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../pwm/">PWM (WIP)</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../debug/">DEBUG (WIP)</a>
+</li>
+
+                        
+                        </ul>
                     </li>
                 
                 
                 
                     <li >
-                        <a href="../python/">Python Bindings</a>
+                        <a href="../../python/">Python Bindings (WIP)</a>
                     </li>
                 
                 
@@ -92,12 +125,12 @@
                 </li>
                 
                     <li >
-                        <a rel="next" href="..">
+                        <a rel="next" href="../..">
                             <i class="fa fa-arrow-left"></i> Previous
                         </a>
                     </li>
                     <li >
-                        <a rel="prev" href="../python/">
+                        <a rel="prev" href="../spi/">
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -161,15 +194,6 @@
             
                 <li class="third-level"><a href="#libsoc_gpio_callback_interrupt_cancel">libsoc_gpio_callback_interrupt_cancel</a></li>
             
-        
-    
-        <li class="first-level "><a href="#spi">SPI</a></li>
-        
-    
-        <li class="first-level "><a href="#i2c">I2C</a></li>
-        
-    
-        <li class="first-level "><a href="#pwm">PWM</a></li>
         
     
     </ul>
@@ -301,7 +325,7 @@ the gpio is inverted.</p>
 under which libsoc will hold the file descriptor. Returns a malloced gpio struct
 which will need to be freed by <a href="#libsoc_gpio_free">libsoc_gpio_free</a> when no
 longer needed.</p>
-<p>Returns NULL on failure.</p>
+<p>Returns <code>NULL</code> on failure.</p>
 <hr />
 <h3 id="libsoc_gpio_free">libsoc_gpio_free</h3>
 <pre><code class="c">int libsoc_gpio_free(gpio * gpio)
@@ -315,7 +339,7 @@ longer needed.</p>
 </ul>
 <p>Free the memory associated with a previously requested GPIO and close the file
 descriptors.</p>
-<p>Returns EXIT_SUCCESS/EXIT_FAILURE.</p>
+<p>Returns <code>EXIT_SUCCESS</code>/<code>EXIT_FAILURE</code></p>
 <hr />
 <h3 id="libsoc_gpio_set_direction">libsoc_gpio_set_direction</h3>
 <pre><code class="c">int libsoc_gpio_set_direction(gpio * current_gpio, gpio_direction direction)
@@ -331,9 +355,9 @@ descriptors.</p>
 <p>direction you wish to set the gpio to</p>
 </li>
 </ul>
-<p>Set the direction of a GPIO, INPUT for reading a GPIO, OUTPUT for setting a
+<p>Set the direction of a GPIO, <code>INPUT</code> for reading a GPIO, <code>OUTPUT</code> for setting a
 GPIO.</p>
-<p>Returns EXIT_SUCCESS/EXIT_FAILURE.</p>
+<p>Returns <code>EXIT_SUCCESS</code>/<code>EXIT_FAILURE</code></p>
 <hr />
 <h3 id="libsoc_gpio_get_direction">libsoc_gpio_get_direction</h3>
 <pre><code class="c">gpio_direction libsoc_gpio_get_direction(gpio * current_gpio)
@@ -346,8 +370,8 @@ GPIO.</p>
 </li>
 </ul>
 <p>Get the current <a href="#gpio_direction">gpio_direction</a> of a requested GPIO.</p>
-<p>Returns <a href="#gpio_direction">gpio_direction</a>, DIRECTION_ERROR on failure,
-INPUT/OUTPUT on success.</p>
+<p>Returns <a href="#gpio_direction">gpio_direction</a>, <code>DIRECTION_ERROR</code> on failure,
+<code>INPUT</code>/<code>OUTPUT</code> on success.</p>
 <hr />
 <h3 id="libsoc_gpio_set_level">libsoc_gpio_set_level</h3>
 <pre><code class="c">int libsoc_gpio_set_level(gpio * current_gpio, gpio_level level)
@@ -363,8 +387,8 @@ INPUT/OUTPUT on success.</p>
 <p>level you wish to set the gpio to</p>
 </li>
 </ul>
-<p>Set the output level of a requested GPIO to HIGH or LOW.</p>
-<p>Returns EXIT_SUCCESS/EXIT_FAILURE.</p>
+<p>Set the output level of a requested GPIO to <code>HIGH</code> or <code>LOW</code>.</p>
+<p>Returns <code>EXIT_SUCCESS</code>/<code>EXIT_FAILURE</code></p>
 <hr />
 <h3 id="libsoc_gpio_get_level">libsoc_gpio_get_level</h3>
 <pre><code class="c">gpio_level libsoc_gpio_get_level(gpio * current_gpio)
@@ -377,8 +401,8 @@ INPUT/OUTPUT on success.</p>
 </li>
 </ul>
 <p>Get the current <a href="#gpio_level">gpio_level</a> of a requested GPIO.</p>
-<p>Returns <a href="#gpio_level">gpio_level</a>, LEVEL_ERROR on failure,
-LOW/HIGH on success.</p>
+<p>Returns <a href="#gpio_level">gpio_level</a>, <code>LEVEL_ERROR</code> on failure,
+<code>LOW</code>/<code>HIGH</code> on success.</p>
 <hr />
 <h3 id="libsoc_gpio_set_edge">libsoc_gpio_set_edge</h3>
 <pre><code class="c">int libsoc_gpio_set_edge(gpio * current_gpio, gpio_edge edge)
@@ -397,7 +421,7 @@ LOW/HIGH on success.</p>
 <p>Set the edge type of a requested GPIO. The edge is the type of signal
 change that will trigger interrupt detection. See <a href="#gpio_edge">gpio_edge</a>
 for explanations of the different types of edges and how they work.</p>
-<p>Returns EXIT_SUCCESS/EXIT_FAILURE.</p>
+<p>Returns <code>EXIT_SUCCESS</code>/<code>EXIT_FAILURE</code></p>
 <hr />
 <h3 id="libsoc_gpio_get_edge">libsoc_gpio_get_edge</h3>
 <pre><code class="c">gpio_edge libsoc_gpio_get_edge(gpio * current_gpio)
@@ -410,8 +434,8 @@ for explanations of the different types of edges and how they work.</p>
 </li>
 </ul>
 <p>Get the current <a href="#gpio_edge">gpio_edge</a> of a requested GPIO.</p>
-<p>Returns <a href="#gpio_level">gpio_edge</a>, EDGE_ERROR on failure,
-RISING/FALLING/BOTH/NONE on success.</p>
+<p>Returns <a href="#gpio_edge">gpio_edge</a>, <code>EDGE_ERROR</code> on failure,
+<code>RISING</code>/<code>FALLING</code>/<code>BOTH</code>/<code>NONE</code> on success.</p>
 <hr />
 <h3 id="libsoc_gpio_wait_interrupt">libsoc_gpio_wait_interrupt</h3>
 <pre><code class="c">int libsoc_gpio_wait_interrupt(gpio * gpio, int timeout)
@@ -427,11 +451,11 @@ RISING/FALLING/BOTH/NONE on success.</p>
 <p>the number of seconds to wait for the interrupt, -1 for block indefinitly</p>
 </li>
 </ul>
-<p>Block for a set amount of seconds (or indefinitly) waiting for an interrupt on a GPIO
-to occur. If you wish to use a non-blocking interrupt mechanism see
+<p>Block for a set amount of seconds (or indefinitly) waiting for an interrupt on a
+GPIO to occur. If you wish to use a non-blocking interrupt mechanism see
 <a href="#libsoc_gpio_callback_interrupt">libsoc_gpio_callback_interrupt</a>.</p>
-<p>Returns LS_INT_ERROR on failure, LS_INT_TRIGGERED on captured interrupt, LS_INT_TIMEOUT
-if no interrupt was captured in the specified time.</p>
+<p>Returns <code>LS_INT_ERROR</code> on failure, <code>LS_INT_TRIGGERED</code> on captured interrupt,
+<code>LS_INT_TIMEOUT</code> if no interrupt was captured in the specified time.</p>
 <hr />
 <h3 id="libsoc_gpio_callback_interrupt">libsoc_gpio_callback_interrupt</h3>
 <pre><code class="c">int libsoc_gpio_callback_interrupt(gpio * gpio, int (*callback_fn) (void *), void *arg)
@@ -445,7 +469,7 @@ if no interrupt was captured in the specified time.</p>
 <li>
 <p><em>int (*callback_fn) (void *)</em> <strong>function</strong></p>
 <p>name of the function to use as the interrupt handler. Must match the prototype
-int<em> function(void</em> ptr)</p>
+<code>int* function(void* ptr)</code></p>
 </li>
 <li>
 <p><em>void *</em> <strong>arg</strong></p>
@@ -457,7 +481,7 @@ on the GPIO waiting for the interrupt. When an interrupt is detected the supplie
 will run in the thread, and then return to waiting for an interrupt.</p>
 <p>Only one interrupt will be queued if it arrives while your supplied function is being run,
 so it is possible to miss interrupts if they happen too fast.</p>
-<p>Returns EXIT_SUCCESS/EXIT_FAILURE.</p>
+<p>Returns <code>EXIT_SUCCESS</code>/<code>EXIT_FAILURE</code></p>
 <hr />
 <h3 id="libsoc_gpio_callback_interrupt_cancel">libsoc_gpio_callback_interrupt_cancel</h3>
 <pre><code class="c">int libsoc_gpio_callback_interrupt_cancel(gpio * gpio)
@@ -471,11 +495,7 @@ so it is possible to miss interrupts if they happen too fast.</p>
 </ul>
 <p>Cancel a previously set interrupt handler on a GPIO. This uses the pthread_cancel function,
 so it may cancel mid way through your interrupt handler function.</p>
-<p>Returns EXIT_SUCCESS/EXIT_FAILURE.</p>
-<hr />
-<h1 id="spi">SPI</h1>
-<h1 id="i2c">I2C</h1>
-<h1 id="pwm">PWM</h1></div>
+<p>Returns <code>EXIT_SUCCESS</code>/<code>EXIT_FAILURE</code></p></div>
         
     </div>
 
@@ -485,15 +505,15 @@ so it may cancel mid way through your interrupt handler function.</p>
         <small>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p></small>
     </footer>
 
-    <script src="../js/jquery-1.10.2.min.js"></script>
-    <script src="../js/bootstrap-3.0.3.min.js"></script>
-    <script src="../js/highlight.pack.js"></script>
+    <script src="../../js/jquery-1.10.2.min.js"></script>
+    <script src="../../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../../js/highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
     <script>
-    var base_url = '..';
+    var base_url = '../..';
     </script>
-    <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
-    <script src="../js/base.js"></script>
+    <script data-main="../../mkdocs/js/search.js" src="../../mkdocs/js/require.js"></script>
+    <script src="../../js/base.js"></script>
 
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
         <div class="modal-dialog">
