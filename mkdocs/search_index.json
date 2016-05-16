@@ -182,8 +182,8 @@
         },
         {
             "location": "/c/pwm/",
-            "text": "PWM\n\n\n\n\nData Types\n\n\n\n\nshared_mode\n\n\nDetermines the way in which libsoc handles exporting and unexporting\nPWMs in the Linux subsystem.\n\n\n\n\n\n\nLS_SHARED\n\n\nif the pwm is already exported then it will not unexport\nthe pwm on free. If it is not exported, then it will\nunexport on free.\n\n\n\n\n\n\nLS_GREEDY\n\n\nwill succeed if the pwm is already exported, but will\nalways unexport the pwm on free.\n\n\n\n\n\n\nLS_WEAK\n\n\nwill fail if pwm is already exported, will always unexport\non free.\n\n\n\n\n\n\npwm_enabled\n\n\nUsed for setting and reading the enabled state of the PWM device\n\n\n\n\n\n\nENABLED_ERROR\n\n\nReturned when the enabled state could not be read\n\n\n\n\n\n\nDISABLED\n\n\nPWM disabled mode, the pwm is not currently running\n\n\n\n\n\n\nENABLED\n\n\nPWM enabled mode, the pwm is currently running\n\n\n\n\n\n\n\n\npwm_polarity\n\n\nUsed for setting and reading the polarity of the PWM device\n\n\n\n\n\n\nPOLARITY_ERROR\n\n\nReturned when the polarity could not be read\n\n\n\n\n\n\nNORMAL\n\n\nPolarity mode is normal\n\n\n\n\n\n\nINVERSED\n\n\nPolarity mode is inversed\n\n\n\n\n\n\nFunctions\n\n\n\n\nlibsoc_pwm_request\n\n\npwm* libsoc_pwm_request(unsigned int pwm_chip, unsigned int pwm_num, enum shared_mode mode)\n\n\n\n\n\n\n\n\nunsigned int\n \npwm_chip\n\n\nthe pwm chip number which controls the pwm you wish to use\n\n\n\n\n\n\nunsigned int\n \npwm_num\n\n\nthe pwm number within your specified pwm chip\n\n\n\n\n\n\nshared_mode\n \nmode\n\n\nthe mode in which libsoc handles the PWM file descriptor\n\n\n\n\n\n\nRequest a pwm by specifying its pwm chip number and the pwm number it is on that chip.\nSet \nshared_mode\n to handle how libsoc manages the file descriptor.\nReturns a malloced pwm struct which will need to be freed by \nlibsoc_pwm_free\n\nwhen no longer needed.\n\n\n\n\nlibsoc_pwm_free\n\n\nint libsoc_pwm_free(pwm *pwm)\n\n\n\n\n\n\n\n\npwm*\n \npwm\n\n\nthe previously requested pwm that you wish to release\n\n\n\n\n\n\n\n\nlibsoc_pwm_set_enabled\n\n\nint libsoc_pwm_set_enabled(pwm *pwm, pwm_enabled enabled)\n\n\n\n\n\n\n\n\npwm*\n \npwm\n\n\nrequested pwm that you wish to set enabled/disabled\n\n\n\n\n\n\npwm_enabled\n \nenabled\n\n\n\n\n\n\n\n\nlibsoc_pwm_get_enabled\n\n\n\n\npwm_enabled libsoc_pwm_get_enabled(pwm *pwm)\n\n\n\n\n\n\n\n\npwm*\n \npwm\n\n\nrequested pwm that you wish to get the state of\n\n\n\n\n\n\nlibsoc_pwm_set_polarity\n\n\nint libsoc_pwm_set_polarity(pwm *pwm, pwm_polarity polarity)\n\n\n\n\n\n\n\n\npwm*\n \npwm\n\n\nrequested pwm that you wish to set the polarity of\n\n\n\n\n\n\npwm_polarity\n \npolarity\n\n\n\n\n\n\n\n\nlibsoc_pwm_get_polarity\n\n\npwm_polarity libsoc_pwm_get_polarity(pwm *pwm)\n\n\n\n\n\n\n\n\n\n\npwm*\n \npwm\n\n\nrequested pwm that you wish to get the polarity of\n\n\n\n\n\n\nlibsoc_pwm_set_duty_cycle\n\n\nint libsoc_pwm_set_duty_cycle(pwm *pwm, unsigned int duty)\n\n\n\n\n\n\n\n\npwm*\n \npwm\n\n\nrequested pwm that you wish to set the duty cycle of\n\n\n\n\n\n\nunsigned int\n \nduty\n\n\n\n\n\n\n\n\nlibsoc_pwm_get_duty_cycle\n\n\nint libsoc_pwm_get_duty_cycle(pwm *pwm)\n\n\n\n\n\n\n\n\npwm*\n \npwm\n\n\nrequested pwm that you wish to get the duty cycle of\n\n\n\n\n\n\n\n\nlibsoc_pwm_set_period\n\n\nint libsoc_pwm_set_period(pwm *pwm, unsigned int period)\n\n\n\n\n\n\n\n\npwm*\n \npwm\n\n\nrequested pwm that you wish to set the period of\n\n\n\n\n\n\nunsigned int\n \nperiod\n\n\n\n\n\n\n\n\nlibsoc_pwm_get_period\n\n\nint libsoc_pwm_get_period(pwm *pwm)\n\n\n\n\n\n\n\n\npwm*\n \npwm\n\n\nrequested pwm that you wish to get the period of",
-            "title": "PWM (WIP)"
+            "text": "PWM\n\n\n\n\nData Types\n\n\n\n\nshared_mode\n\n\nDetermines the way in which libsoc handles exporting and unexporting\nPWMs in the Linux subsystem.\n\n\n\n\n\n\nLS_SHARED\n\n\nif the pwm is already exported then it will not unexport\nthe pwm on free. If it is not exported, then it will\nunexport on free.\n\n\n\n\n\n\nLS_GREEDY\n\n\nwill succeed if the pwm is already exported, but will\nalways unexport the pwm on free.\n\n\n\n\n\n\nLS_WEAK\n\n\nwill fail if pwm is already exported, will always unexport\non free.\n\n\n\n\n\n\npwm_enabled\n\n\nUsed for setting and reading the enabled state of the PWM device\n\n\n\n\n\n\nENABLED_ERROR\n\n\nReturned when the enabled state could not be read\n\n\n\n\n\n\nDISABLED\n\n\nPWM disabled mode, the pwm is not currently running\n\n\n\n\n\n\nENABLED\n\n\nPWM enabled mode, the pwm is currently running\n\n\n\n\n\n\n\n\npwm_polarity\n\n\nUsed for setting and reading the polarity of the PWM device\n\n\n\n\n\n\nPOLARITY_ERROR\n\n\nReturned when the polarity could not be read\n\n\n\n\n\n\nNORMAL\n\n\nPolarity mode is normal\n\n\n\n\n\n\nINVERSED\n\n\nPolarity mode is inversed\n\n\n\n\n\n\nFunctions\n\n\n\n\nlibsoc_pwm_request\n\n\npwm* libsoc_pwm_request(unsigned int pwm_chip, unsigned int pwm_num, enum shared_mode mode)\n\n\n\n\n\n\n\n\nunsigned int\n \npwm_chip\n\n\nthe pwm chip number which controls the pwm you wish to use\n\n\n\n\n\n\nunsigned int\n \npwm_num\n\n\nthe pwm number within your specified pwm chip\n\n\n\n\n\n\nshared_mode\n \nmode\n\n\nthe mode in which libsoc handles the PWM file descriptor\n\n\n\n\n\n\nRequest a pwm by specifying its pwm chip number and the pwm number it is on that chip.\nSet \nshared_mode\n to handle how libsoc manages the file descriptor.\nReturns a malloced pwm struct which will need to be freed by \nlibsoc_pwm_free\n\nwhen no longer needed.\n\n\n\n\nlibsoc_pwm_free\n\n\nint libsoc_pwm_free(pwm *pwm)\n\n\n\n\n\n\n\n\npwm*\n \npwm\n\n\nthe previously requested pwm that you wish to release\n\n\n\n\n\n\nFree the memory associated with a previously requested PWM device and close the file\ndescriptors.\n\n\n\n\nlibsoc_pwm_set_enabled\n\n\nint libsoc_pwm_set_enabled(pwm *pwm, pwm_enabled enabled)\n\n\n\n\n\n\n\n\npwm*\n \npwm\n\n\nrequested pwm that you wish to set enabled/disabled\n\n\n\n\n\n\npwm_enabled\n \nenabled\n\n\nstate you wish to set the pwm device to\n\n\n\n\n\n\nSet the state of a PWM device, \nENABLED\n to enable to the device, \nDISABLED\n to\ndisable the device.\n\n\n\n\nlibsoc_pwm_get_enabled\n\n\npwm_enabled libsoc_pwm_get_enabled(pwm *pwm)\n\n\n\n\n\n\n\n\npwm*\n \npwm\n\n\nrequested pwm that you wish to get the state of\n\n\n\n\n\n\nGet the current \npwm_enabled\n state of a requested PWM device.\n\n\n\n\nlibsoc_pwm_set_period\n\n\nint libsoc_pwm_set_period(pwm *pwm, unsigned int period)\n\n\n\n\n\n\n\n\npwm*\n \npwm\n\n\nrequested pwm that you wish to set the period of\n\n\n\n\n\n\nunsigned int\n \nperiod\n\n\nthe total period of the pwm signal in nanoseconds\n\n\n\n\n\n\nSet the period of a PWM device, the value is specified in nanoseconds and is the sum\nof the active and inactive time of the signal.\n\n\n\n\nlibsoc_pwm_get_period\n\n\nint libsoc_pwm_get_period(pwm *pwm)\n\n\n\n\n\n\n\n\npwm*\n \npwm\n\n\nrequested pwm that you wish to get the period of\n\n\n\n\n\n\nGet the currently set perioid of the PWM device in nanoseconds.\n\n\n\n\nlibsoc_pwm_set_duty_cycle\n\n\nint libsoc_pwm_set_duty_cycle(pwm *pwm, unsigned int duty)\n\n\n\n\n\n\n\n\npwm*\n \npwm\n\n\nrequested pwm that you wish to set the duty cycle of\n\n\n\n\n\n\nunsigned int\n \nduty\n\n\nthe duty cycle in nanoseconds\n\n\n\n\n\n\nSet the duty cycle of the specified PWM device in nanoseconds. The duty cycle is the\nactive time of the PWM signal and must be less than the period.\n\n\n\n\nlibsoc_pwm_get_duty_cycle\n\n\nint libsoc_pwm_get_duty_cycle(pwm *pwm)\n\n\n\n\n\n\n\n\npwm*\n \npwm\n\n\nrequested pwm that you wish to get the duty cycle of\n\n\n\n\n\n\nGet the currently set duty cycle of a requested PWM device in nanoseconds.\n\n\n\n\nlibsoc_pwm_set_polarity\n\n\nint libsoc_pwm_set_polarity(pwm *pwm, pwm_polarity polarity)\n\n\n\n\n\n\n\n\npwm*\n \npwm\n\n\nrequested pwm that you wish to set the polarity of\n\n\n\n\n\n\npwm_polarity\n \npolarity\n\n\npolarity you wish to set the pwm device to\n\n\n\n\n\n\nSet the polarity of a PWM device, \nNORMAL\n will give you the default polarity,\n\nINVERSED\n will give you the inverse polarity of normal.\n\n\nPolarity support is optional, ensure your PWM devices kernel driver is capable before\nrelying on this support. The value -1 will be returned on failure to set the polarity.\n\n\n\n\nlibsoc_pwm_get_polarity\n\n\npwm_polarity libsoc_pwm_get_polarity(pwm *pwm)\n\n\n\n\n\n\n\n\npwm*\n \npwm\n\n\nrequested pwm that you wish to get the polarity of\n\n\n\n\n\n\nGet the current \npwm_polarity\n of a requested PWM device.",
+            "title": "PWM"
         },
         {
             "location": "/c/pwm/#pwm",
@@ -222,53 +222,48 @@
         },
         {
             "location": "/c/pwm/#libsoc_pwm_free",
-            "text": "int libsoc_pwm_free(pwm *pwm)    pwm*   pwm  the previously requested pwm that you wish to release",
+            "text": "int libsoc_pwm_free(pwm *pwm)    pwm*   pwm  the previously requested pwm that you wish to release    Free the memory associated with a previously requested PWM device and close the file\ndescriptors.",
             "title": "libsoc_pwm_free"
         },
         {
             "location": "/c/pwm/#libsoc_pwm_set_enabled",
-            "text": "int libsoc_pwm_set_enabled(pwm *pwm, pwm_enabled enabled)    pwm*   pwm  requested pwm that you wish to set enabled/disabled    pwm_enabled   enabled",
+            "text": "int libsoc_pwm_set_enabled(pwm *pwm, pwm_enabled enabled)    pwm*   pwm  requested pwm that you wish to set enabled/disabled    pwm_enabled   enabled  state you wish to set the pwm device to    Set the state of a PWM device,  ENABLED  to enable to the device,  DISABLED  to\ndisable the device.",
             "title": "libsoc_pwm_set_enabled"
         },
         {
             "location": "/c/pwm/#libsoc_pwm_get_enabled",
-            "text": "pwm_enabled libsoc_pwm_get_enabled(pwm *pwm)    pwm*   pwm",
+            "text": "pwm_enabled libsoc_pwm_get_enabled(pwm *pwm)    pwm*   pwm  requested pwm that you wish to get the state of    Get the current  pwm_enabled  state of a requested PWM device.",
             "title": "libsoc_pwm_get_enabled"
         },
         {
-            "location": "/c/pwm/#requested-pwm-that-you-wish-to-get-the-state-of",
-            "text": "",
-            "title": "requested pwm that you wish to get the state of"
-        },
-        {
-            "location": "/c/pwm/#libsoc_pwm_set_polarity",
-            "text": "int libsoc_pwm_set_polarity(pwm *pwm, pwm_polarity polarity)    pwm*   pwm  requested pwm that you wish to set the polarity of    pwm_polarity   polarity",
-            "title": "libsoc_pwm_set_polarity"
-        },
-        {
-            "location": "/c/pwm/#libsoc_pwm_get_polarity",
-            "text": "pwm_polarity libsoc_pwm_get_polarity(pwm *pwm)     pwm*   pwm  requested pwm that you wish to get the polarity of",
-            "title": "libsoc_pwm_get_polarity"
-        },
-        {
-            "location": "/c/pwm/#libsoc_pwm_set_duty_cycle",
-            "text": "int libsoc_pwm_set_duty_cycle(pwm *pwm, unsigned int duty)    pwm*   pwm  requested pwm that you wish to set the duty cycle of    unsigned int   duty",
-            "title": "libsoc_pwm_set_duty_cycle"
-        },
-        {
-            "location": "/c/pwm/#libsoc_pwm_get_duty_cycle",
-            "text": "int libsoc_pwm_get_duty_cycle(pwm *pwm)    pwm*   pwm  requested pwm that you wish to get the duty cycle of",
-            "title": "libsoc_pwm_get_duty_cycle"
-        },
-        {
             "location": "/c/pwm/#libsoc_pwm_set_period",
-            "text": "int libsoc_pwm_set_period(pwm *pwm, unsigned int period)    pwm*   pwm  requested pwm that you wish to set the period of    unsigned int   period",
+            "text": "int libsoc_pwm_set_period(pwm *pwm, unsigned int period)    pwm*   pwm  requested pwm that you wish to set the period of    unsigned int   period  the total period of the pwm signal in nanoseconds    Set the period of a PWM device, the value is specified in nanoseconds and is the sum\nof the active and inactive time of the signal.",
             "title": "libsoc_pwm_set_period"
         },
         {
             "location": "/c/pwm/#libsoc_pwm_get_period",
-            "text": "int libsoc_pwm_get_period(pwm *pwm)    pwm*   pwm  requested pwm that you wish to get the period of",
+            "text": "int libsoc_pwm_get_period(pwm *pwm)    pwm*   pwm  requested pwm that you wish to get the period of    Get the currently set perioid of the PWM device in nanoseconds.",
             "title": "libsoc_pwm_get_period"
+        },
+        {
+            "location": "/c/pwm/#libsoc_pwm_set_duty_cycle",
+            "text": "int libsoc_pwm_set_duty_cycle(pwm *pwm, unsigned int duty)    pwm*   pwm  requested pwm that you wish to set the duty cycle of    unsigned int   duty  the duty cycle in nanoseconds    Set the duty cycle of the specified PWM device in nanoseconds. The duty cycle is the\nactive time of the PWM signal and must be less than the period.",
+            "title": "libsoc_pwm_set_duty_cycle"
+        },
+        {
+            "location": "/c/pwm/#libsoc_pwm_get_duty_cycle",
+            "text": "int libsoc_pwm_get_duty_cycle(pwm *pwm)    pwm*   pwm  requested pwm that you wish to get the duty cycle of    Get the currently set duty cycle of a requested PWM device in nanoseconds.",
+            "title": "libsoc_pwm_get_duty_cycle"
+        },
+        {
+            "location": "/c/pwm/#libsoc_pwm_set_polarity",
+            "text": "int libsoc_pwm_set_polarity(pwm *pwm, pwm_polarity polarity)    pwm*   pwm  requested pwm that you wish to set the polarity of    pwm_polarity   polarity  polarity you wish to set the pwm device to    Set the polarity of a PWM device,  NORMAL  will give you the default polarity, INVERSED  will give you the inverse polarity of normal.  Polarity support is optional, ensure your PWM devices kernel driver is capable before\nrelying on this support. The value -1 will be returned on failure to set the polarity.",
+            "title": "libsoc_pwm_set_polarity"
+        },
+        {
+            "location": "/c/pwm/#libsoc_pwm_get_polarity",
+            "text": "pwm_polarity libsoc_pwm_get_polarity(pwm *pwm)    pwm*   pwm  requested pwm that you wish to get the polarity of    Get the current  pwm_polarity  of a requested PWM device.",
+            "title": "libsoc_pwm_get_polarity"
         },
         {
             "location": "/c/debug/",

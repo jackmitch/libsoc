@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">   
     <link rel="shortcut icon" href="../../img/favicon.ico">
 
-    <title>PWM (WIP) - libsoc</title>
+    <title>PWM - libsoc</title>
 
     <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
@@ -94,7 +94,7 @@
                         
                             
 <li class="active">
-    <a href="./">PWM (WIP)</a>
+    <a href="./">PWM</a>
 </li>
 
                         
@@ -176,20 +176,17 @@
             
                 <li class="third-level"><a href="#libsoc_pwm_get_enabled">libsoc_pwm_get_enabled</a></li>
             
-        
-            <li class="second-level"><a href="#requested-pwm-that-you-wish-to-get-the-state-of">requested pwm that you wish to get the state of</a></li>
+                <li class="third-level"><a href="#libsoc_pwm_set_period">libsoc_pwm_set_period</a></li>
             
-                <li class="third-level"><a href="#libsoc_pwm_set_polarity">libsoc_pwm_set_polarity</a></li>
-            
-                <li class="third-level"><a href="#libsoc_pwm_get_polarity">libsoc_pwm_get_polarity</a></li>
+                <li class="third-level"><a href="#libsoc_pwm_get_period">libsoc_pwm_get_period</a></li>
             
                 <li class="third-level"><a href="#libsoc_pwm_set_duty_cycle">libsoc_pwm_set_duty_cycle</a></li>
             
                 <li class="third-level"><a href="#libsoc_pwm_get_duty_cycle">libsoc_pwm_get_duty_cycle</a></li>
             
-                <li class="third-level"><a href="#libsoc_pwm_set_period">libsoc_pwm_set_period</a></li>
+                <li class="third-level"><a href="#libsoc_pwm_set_polarity">libsoc_pwm_set_polarity</a></li>
             
-                <li class="third-level"><a href="#libsoc_pwm_get_period">libsoc_pwm_get_period</a></li>
+                <li class="third-level"><a href="#libsoc_pwm_get_polarity">libsoc_pwm_get_polarity</a></li>
             
         
     
@@ -290,6 +287,8 @@ when no longer needed.</p>
 <p>the previously requested pwm that you wish to release</p>
 </li>
 </ul>
+<p>Free the memory associated with a previously requested PWM device and close the file
+descriptors.</p>
 <hr />
 <h3 id="libsoc_pwm_set_enabled">libsoc_pwm_set_enabled</h3>
 <pre><code class="c">int libsoc_pwm_set_enabled(pwm *pwm, pwm_enabled enabled)
@@ -301,70 +300,24 @@ when no longer needed.</p>
 <p>requested pwm that you wish to set enabled/disabled</p>
 </li>
 <li>
-<p><em>pwm_enabled</em> <strong>enabled</strong></p>
+<p><em><a href="#pwm_enabled">pwm_enabled</a></em> <strong>enabled</strong></p>
+<p>state you wish to set the pwm device to</p>
 </li>
 </ul>
+<p>Set the state of a PWM device, <code>ENABLED</code> to enable to the device, <code>DISABLED</code> to
+disable the device.</p>
 <hr />
 <h3 id="libsoc_pwm_get_enabled">libsoc_pwm_get_enabled</h3>
-<hr />
 <pre><code class="c">pwm_enabled libsoc_pwm_get_enabled(pwm *pwm)
 </code></pre>
 
 <ul>
 <li>
 <p><em>pwm*</em> <strong>pwm</strong></p>
-<h2 id="requested-pwm-that-you-wish-to-get-the-state-of">requested pwm that you wish to get the state of</h2>
+<p>requested pwm that you wish to get the state of</p>
 </li>
 </ul>
-<h3 id="libsoc_pwm_set_polarity">libsoc_pwm_set_polarity</h3>
-<pre><code class="c">int libsoc_pwm_set_polarity(pwm *pwm, pwm_polarity polarity)
-</code></pre>
-
-<ul>
-<li>
-<p><em>pwm*</em> <strong>pwm</strong></p>
-<p>requested pwm that you wish to set the polarity of</p>
-</li>
-<li>
-<p><em>pwm_polarity</em> <strong>polarity</strong></p>
-</li>
-</ul>
-<hr />
-<h3 id="libsoc_pwm_get_polarity">libsoc_pwm_get_polarity</h3>
-<pre><code class="c">pwm_polarity libsoc_pwm_get_polarity(pwm *pwm)
-</code></pre>
-
-<hr />
-<ul>
-<li>
-<p><em>pwm*</em> <strong>pwm</strong></p>
-<p>requested pwm that you wish to get the polarity of</p>
-</li>
-</ul>
-<h3 id="libsoc_pwm_set_duty_cycle">libsoc_pwm_set_duty_cycle</h3>
-<pre><code class="c">int libsoc_pwm_set_duty_cycle(pwm *pwm, unsigned int duty)
-</code></pre>
-
-<ul>
-<li>
-<p><em>pwm*</em> <strong>pwm</strong></p>
-<p>requested pwm that you wish to set the duty cycle of</p>
-</li>
-<li>
-<p><em>unsigned int</em> <strong>duty</strong></p>
-</li>
-</ul>
-<hr />
-<h3 id="libsoc_pwm_get_duty_cycle">libsoc_pwm_get_duty_cycle</h3>
-<pre><code class="c">int libsoc_pwm_get_duty_cycle(pwm *pwm)
-</code></pre>
-
-<ul>
-<li>
-<p><em>pwm*</em> <strong>pwm</strong></p>
-<p>requested pwm that you wish to get the duty cycle of</p>
-</li>
-</ul>
+<p>Get the current <a href="#pwm_enabled">pwm_enabled</a> state of a requested PWM device.</p>
 <hr />
 <h3 id="libsoc_pwm_set_period">libsoc_pwm_set_period</h3>
 <pre><code class="c">int libsoc_pwm_set_period(pwm *pwm, unsigned int period)
@@ -377,8 +330,11 @@ when no longer needed.</p>
 </li>
 <li>
 <p><em>unsigned int</em> <strong>period</strong></p>
+<p>the total period of the pwm signal in nanoseconds</p>
 </li>
 </ul>
+<p>Set the period of a PWM device, the value is specified in nanoseconds and is the sum
+of the active and inactive time of the signal.</p>
 <hr />
 <h3 id="libsoc_pwm_get_period">libsoc_pwm_get_period</h3>
 <pre><code class="c">int libsoc_pwm_get_period(pwm *pwm)
@@ -389,7 +345,69 @@ when no longer needed.</p>
 <p><em>pwm*</em> <strong>pwm</strong></p>
 <p>requested pwm that you wish to get the period of</p>
 </li>
-</ul></div>
+</ul>
+<p>Get the currently set perioid of the PWM device in nanoseconds.</p>
+<hr />
+<h3 id="libsoc_pwm_set_duty_cycle">libsoc_pwm_set_duty_cycle</h3>
+<pre><code class="c">int libsoc_pwm_set_duty_cycle(pwm *pwm, unsigned int duty)
+</code></pre>
+
+<ul>
+<li>
+<p><em>pwm*</em> <strong>pwm</strong></p>
+<p>requested pwm that you wish to set the duty cycle of</p>
+</li>
+<li>
+<p><em>unsigned int</em> <strong>duty</strong></p>
+<p>the duty cycle in nanoseconds</p>
+</li>
+</ul>
+<p>Set the duty cycle of the specified PWM device in nanoseconds. The duty cycle is the
+active time of the PWM signal and must be less than the period.</p>
+<hr />
+<h3 id="libsoc_pwm_get_duty_cycle">libsoc_pwm_get_duty_cycle</h3>
+<pre><code class="c">int libsoc_pwm_get_duty_cycle(pwm *pwm)
+</code></pre>
+
+<ul>
+<li>
+<p><em>pwm*</em> <strong>pwm</strong></p>
+<p>requested pwm that you wish to get the duty cycle of</p>
+</li>
+</ul>
+<p>Get the currently set duty cycle of a requested PWM device in nanoseconds.</p>
+<hr />
+<h3 id="libsoc_pwm_set_polarity">libsoc_pwm_set_polarity</h3>
+<pre><code class="c">int libsoc_pwm_set_polarity(pwm *pwm, pwm_polarity polarity)
+</code></pre>
+
+<ul>
+<li>
+<p><em>pwm*</em> <strong>pwm</strong></p>
+<p>requested pwm that you wish to set the polarity of</p>
+</li>
+<li>
+<p><em>pwm_polarity</em> <strong>polarity</strong></p>
+<p>polarity you wish to set the pwm device to</p>
+</li>
+</ul>
+<p>Set the polarity of a PWM device, <code>NORMAL</code> will give you the default polarity,
+<code>INVERSED</code> will give you the inverse polarity of normal.</p>
+<p>Polarity support is optional, ensure your PWM devices kernel driver is capable before
+relying on this support. The value -1 will be returned on failure to set the polarity.</p>
+<hr />
+<h3 id="libsoc_pwm_get_polarity">libsoc_pwm_get_polarity</h3>
+<pre><code class="c">pwm_polarity libsoc_pwm_get_polarity(pwm *pwm)
+</code></pre>
+
+<ul>
+<li>
+<p><em>pwm*</em> <strong>pwm</strong></p>
+<p>requested pwm that you wish to get the polarity of</p>
+</li>
+</ul>
+<p>Get the current <a href="#pwm_polarity">pwm_polarity</a> of a requested PWM device.</p>
+<hr /></div>
         
     </div>
 
