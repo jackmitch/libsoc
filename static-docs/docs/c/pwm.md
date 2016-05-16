@@ -94,6 +94,9 @@ int libsoc_pwm_free(pwm *pwm)
 
 	the previously requested pwm that you wish to release
 
+Free the memory associated with a previously requested PWM device and close the file
+descriptors.
+
 ---
 
 ### libsoc_pwm_set_enabled
@@ -106,12 +109,16 @@ int libsoc_pwm_set_enabled(pwm *pwm, pwm_enabled enabled)
 
 	requested pwm that you wish to set enabled/disabled
 
-- *pwm_enabled* **enabled**
+- *[pwm_enabled](#pwm_enabled)* **enabled**
+
+	state you wish to set the pwm device to
+
+Set the state of a PWM device, `ENABLED` to enable to the device, `DISABLED` to
+disable the device.
 
 ---
 
 ### libsoc_pwm_get_enabled
----
 
 ```c
 pwm_enabled libsoc_pwm_get_enabled(pwm *pwm)
@@ -120,56 +127,8 @@ pwm_enabled libsoc_pwm_get_enabled(pwm *pwm)
 - *pwm\** **pwm**
 
 	requested pwm that you wish to get the state of
----
 
-### libsoc_pwm_set_polarity
-
-```c
-int libsoc_pwm_set_polarity(pwm *pwm, pwm_polarity polarity)
-```
-
-- *pwm\** **pwm**
-
-	requested pwm that you wish to set the polarity of
-
-- *pwm_polarity* **polarity**
-
----
-
-### libsoc_pwm_get_polarity
-
-```c
-pwm_polarity libsoc_pwm_get_polarity(pwm *pwm)
-```
----
-
-- *pwm\** **pwm**
-
-	requested pwm that you wish to get the polarity of
-
-### libsoc_pwm_set_duty_cycle
-
-```c
-int libsoc_pwm_set_duty_cycle(pwm *pwm, unsigned int duty)
-```
-
-- *pwm\** **pwm**
-
-	requested pwm that you wish to set the duty cycle of
-
-- *unsigned int* **duty**
-
----
-
-### libsoc_pwm_get_duty_cycle
-
-```c
-int libsoc_pwm_get_duty_cycle(pwm *pwm)
-```
-
-- *pwm\** **pwm**
-
-	requested pwm that you wish to get the duty cycle of
+Get the current [pwm_enabled](#pwm_enabled) state of a requested PWM device.
 
 ---
 
@@ -185,6 +144,11 @@ int libsoc_pwm_set_period(pwm *pwm, unsigned int period)
 
 - *unsigned int* **period**
 
+	the total period of the pwm signal in nanoseconds
+
+Set the period of a PWM device, the value is specified in nanoseconds and is the sum
+of the active and inactive time of the signal.
+
 ---
 
 ### libsoc_pwm_get_period
@@ -196,3 +160,78 @@ int libsoc_pwm_get_period(pwm *pwm)
 - *pwm\** **pwm**
 
 	requested pwm that you wish to get the period of
+
+Get the currently set perioid of the PWM device in nanoseconds.
+
+---
+
+### libsoc_pwm_set_duty_cycle
+
+```c
+int libsoc_pwm_set_duty_cycle(pwm *pwm, unsigned int duty)
+```
+
+- *pwm\** **pwm**
+
+	requested pwm that you wish to set the duty cycle of
+
+- *unsigned int* **duty**
+
+	the duty cycle in nanoseconds
+
+
+Set the duty cycle of the specified PWM device in nanoseconds. The duty cycle is the
+active time of the PWM signal and must be less than the period.
+
+---
+
+### libsoc_pwm_get_duty_cycle
+
+```c
+int libsoc_pwm_get_duty_cycle(pwm *pwm)
+```
+
+- *pwm\** **pwm**
+
+	requested pwm that you wish to get the duty cycle of
+
+Get the currently set duty cycle of a requested PWM device in nanoseconds.
+
+---
+
+### libsoc_pwm_set_polarity
+
+```c
+int libsoc_pwm_set_polarity(pwm *pwm, pwm_polarity polarity)
+```
+
+- *pwm\** **pwm**
+
+	requested pwm that you wish to set the polarity of
+
+- *pwm_polarity* **polarity**
+
+	polarity you wish to set the pwm device to
+
+Set the polarity of a PWM device, `NORMAL` will give you the default polarity,
+`INVERSED` will give you the inverse polarity of normal.
+
+Polarity support is optional, ensure your PWM devices kernel driver is capable before
+relying on this support. The value -1 will be returned on failure to set the polarity.
+
+---
+
+### libsoc_pwm_get_polarity
+
+```c
+pwm_polarity libsoc_pwm_get_polarity(pwm *pwm)
+```
+
+- *pwm\** **pwm**
+
+	requested pwm that you wish to get the polarity of
+
+Get the current [pwm_polarity](#pwm_polarity) of a requested PWM device.
+
+---
+
