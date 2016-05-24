@@ -9,7 +9,7 @@ pages:
 - C API:
   - GPIO: c/gpio.md
   - SPI (WIP): c/spi.md
-  - I2C (WIP): c/i2c.md
+  - I2C: c/i2c.md
   - PWM: c/pwm.md
   - DEBUG (WIP): c/debug.md
 - Python Bindings (WIP): python.md
