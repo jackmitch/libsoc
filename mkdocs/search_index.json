@@ -177,8 +177,43 @@
         },
         {
             "location": "/c/i2c/",
+            "text": "I2C\n\n\n\n\nFunctions\n\n\n\n\nlibsoc_i2c_init\n\n\ni2c* libsoc_i2c_init (uint8_t i2c_bus, uint8_t i2c_address)\n\n\n\n\n\n\n\n\nuint8_t\n \ni2c_bus\n\n\nthe linux enumerated bus number\n\n\n\n\n\n\nuint8_t\n \ni2c_address\n\n\nthe peripherals address on the i2c bus\n\n\n\n\n\n\nInitialises a new i2c instance at the specificed address. Returns a\nmalloced i2c struct which must be freed with\n\nlibsoc_i2c_free\n when no longer needed.\n\n\nReturns \nNULL\n on failure.\n\n\n\n\nlibsoc_i2c_free\n\n\nint libsoc_i2c_free (i2c * i2c)\n\n\n\n\n\n\n\n\ni2c*\n \ni2c\n\n\npreviously initialised i2c struct\n\n\n\n\n\n\nFree the memory associated with a previously initialised i2c struct and release\nthe hold on the i2c address.\n\n\nReturns \nEXIT_SUCCESS\n or \nEXIT_FAILURE\n\n\n\n\nlibsoc_i2c_write\n\n\nint libsoc_i2c_write (i2c * i2c, uint8_t * buffer, uint16_t len)\n\n\n\n\n\n\n\n\ni2c*\n \ni2c\n\n\npreviously initialised i2c struct\n\n\n\n\n\n\nuint8_t*\n \nbuffer\n\n\npointer to output data buffer\n\n\n\n\n\n\nuint16_t\n \nlen\n\n\nlength of data to write in bytes\n\n\n\n\n\n\nWrite \nlen\n bytes starting from the \nbuffer\n data pointer to the specified\ni2c device.\n\n\nReturns \nEXIT_SUCCESS\n or \nEXIT_FAILURE\n\n\n\n\nlibsoc_i2c_read\n\n\nint libsoc_i2c_read (i2c * i2c, uint8_t * buffer, uint16_t len)\n\n\n\n\n\n\n\n\ni2c*\n \ni2c\n\n\npreviously initialised i2c struct\n\n\n\n\n\n\nuint8_t*\n \nbuffer\n\n\npointer to input data buffer\n\n\n\n\n\n\nuint16_t\n \nlen\n\n\nlength of data to read in bytes\n\n\n\n\n\n\nRead \nlen\n bytes into the \nbuffer\n data pointer from the specified\ni2c device.\n\n\nReturns \nEXIT_SUCCESS\n or \nEXIT_FAILURE\n\n\n\n\nlibsoc_i2c_set_timeout\n\n\nint libsoc_i2c_set_timeout(i2c * i2c, int timeout)\n\n\n\n\n\n\n\n\ni2c*\n \ni2c\n\n\npreviously initialised i2c struct\n\n\n\n\n\n\nint\n \ntimeout\n\n\ni2c timeout in milliseconds/10\n\n\n\n\n\n\nSet the timeout of a i2c device in milliseconds/10. For example if a timeout of\n20ms is requred, \ntimeout\n would be set to 2.\n\n\n    // 20ms timeout, 2*10ms\n    libsoc_i2c_set_timeout(device, 2);\n\n\n\n\nReturns \nEXIT_SUCCESS\n or \nEXIT_FAILURE",
+            "title": "I2C"
+        },
+        {
+            "location": "/c/i2c/#i2c",
             "text": "",
-            "title": "I2C (WIP)"
+            "title": "I2C"
+        },
+        {
+            "location": "/c/i2c/#functions",
+            "text": "",
+            "title": "Functions"
+        },
+        {
+            "location": "/c/i2c/#libsoc_i2c_init",
+            "text": "i2c* libsoc_i2c_init (uint8_t i2c_bus, uint8_t i2c_address)    uint8_t   i2c_bus  the linux enumerated bus number    uint8_t   i2c_address  the peripherals address on the i2c bus    Initialises a new i2c instance at the specificed address. Returns a\nmalloced i2c struct which must be freed with libsoc_i2c_free  when no longer needed.  Returns  NULL  on failure.",
+            "title": "libsoc_i2c_init"
+        },
+        {
+            "location": "/c/i2c/#libsoc_i2c_free",
+            "text": "int libsoc_i2c_free (i2c * i2c)    i2c*   i2c  previously initialised i2c struct    Free the memory associated with a previously initialised i2c struct and release\nthe hold on the i2c address.  Returns  EXIT_SUCCESS  or  EXIT_FAILURE",
+            "title": "libsoc_i2c_free"
+        },
+        {
+            "location": "/c/i2c/#libsoc_i2c_write",
+            "text": "int libsoc_i2c_write (i2c * i2c, uint8_t * buffer, uint16_t len)    i2c*   i2c  previously initialised i2c struct    uint8_t*   buffer  pointer to output data buffer    uint16_t   len  length of data to write in bytes    Write  len  bytes starting from the  buffer  data pointer to the specified\ni2c device.  Returns  EXIT_SUCCESS  or  EXIT_FAILURE",
+            "title": "libsoc_i2c_write"
+        },
+        {
+            "location": "/c/i2c/#libsoc_i2c_read",
+            "text": "int libsoc_i2c_read (i2c * i2c, uint8_t * buffer, uint16_t len)    i2c*   i2c  previously initialised i2c struct    uint8_t*   buffer  pointer to input data buffer    uint16_t   len  length of data to read in bytes    Read  len  bytes into the  buffer  data pointer from the specified\ni2c device.  Returns  EXIT_SUCCESS  or  EXIT_FAILURE",
+            "title": "libsoc_i2c_read"
+        },
+        {
+            "location": "/c/i2c/#libsoc_i2c_set_timeout",
+            "text": "int libsoc_i2c_set_timeout(i2c * i2c, int timeout)    i2c*   i2c  previously initialised i2c struct    int   timeout  i2c timeout in milliseconds/10    Set the timeout of a i2c device in milliseconds/10. For example if a timeout of\n20ms is requred,  timeout  would be set to 2.      // 20ms timeout, 2*10ms\n    libsoc_i2c_set_timeout(device, 2);  Returns  EXIT_SUCCESS  or  EXIT_FAILURE",
+            "title": "libsoc_i2c_set_timeout"
         },
         {
             "location": "/c/pwm/",

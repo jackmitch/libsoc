@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">   
     <link rel="shortcut icon" href="../../img/favicon.ico">
 
-    <title>I2C (WIP) - libsoc</title>
+    <title>I2C - libsoc</title>
 
     <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
@@ -88,7 +88,7 @@
                         
                             
 <li class="active">
-    <a href="./">I2C (WIP)</a>
+    <a href="./">I2C</a>
 </li>
 
                         
@@ -155,11 +155,128 @@
         <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
+        <li class="first-level active"><a href="#i2c">I2C</a></li>
+        
+            <li class="second-level"><a href="#functions">Functions</a></li>
+            
+                <li class="third-level"><a href="#libsoc_i2c_init">libsoc_i2c_init</a></li>
+            
+                <li class="third-level"><a href="#libsoc_i2c_free">libsoc_i2c_free</a></li>
+            
+                <li class="third-level"><a href="#libsoc_i2c_write">libsoc_i2c_write</a></li>
+            
+                <li class="third-level"><a href="#libsoc_i2c_read">libsoc_i2c_read</a></li>
+            
+                <li class="third-level"><a href="#libsoc_i2c_set_timeout">libsoc_i2c_set_timeout</a></li>
+            
+        
+    
     </ul>
 </div></div>
         <div class="col-md-9" role="main">
 
-</div>
+<h1 id="i2c">I2C</h1>
+<hr />
+<h2 id="functions">Functions</h2>
+<hr />
+<h3 id="libsoc_i2c_init">libsoc_i2c_init</h3>
+<pre><code class="c">i2c* libsoc_i2c_init (uint8_t i2c_bus, uint8_t i2c_address)
+</code></pre>
+
+<ul>
+<li>
+<p><em>uint8_t</em> <strong>i2c_bus</strong></p>
+<p>the linux enumerated bus number</p>
+</li>
+<li>
+<p><em>uint8_t</em> <strong>i2c_address</strong></p>
+<p>the peripherals address on the i2c bus</p>
+</li>
+</ul>
+<p>Initialises a new i2c instance at the specificed address. Returns a
+malloced i2c struct which must be freed with
+<a href="#libsoc_i2c_free">libsoc_i2c_free</a> when no longer needed.</p>
+<p>Returns <code>NULL</code> on failure.</p>
+<hr />
+<h3 id="libsoc_i2c_free">libsoc_i2c_free</h3>
+<pre><code class="c">int libsoc_i2c_free (i2c * i2c)
+</code></pre>
+
+<ul>
+<li>
+<p><em>i2c*</em> <strong>i2c</strong></p>
+<p>previously initialised i2c struct</p>
+</li>
+</ul>
+<p>Free the memory associated with a previously initialised i2c struct and release
+the hold on the i2c address.</p>
+<p>Returns <code>EXIT_SUCCESS</code> or <code>EXIT_FAILURE</code></p>
+<hr />
+<h3 id="libsoc_i2c_write">libsoc_i2c_write</h3>
+<pre><code class="c">int libsoc_i2c_write (i2c * i2c, uint8_t * buffer, uint16_t len)
+</code></pre>
+
+<ul>
+<li>
+<p><em>i2c*</em> <strong>i2c</strong></p>
+<p>previously initialised i2c struct</p>
+</li>
+<li>
+<p><em>uint8_t*</em> <strong>buffer</strong></p>
+<p>pointer to output data buffer</p>
+</li>
+<li>
+<p><em>uint16_t</em> <strong>len</strong></p>
+<p>length of data to write in bytes</p>
+</li>
+</ul>
+<p>Write <code>len</code> bytes starting from the <code>buffer</code> data pointer to the specified
+i2c device.</p>
+<p>Returns <code>EXIT_SUCCESS</code> or <code>EXIT_FAILURE</code></p>
+<hr />
+<h3 id="libsoc_i2c_read">libsoc_i2c_read</h3>
+<pre><code class="c">int libsoc_i2c_read (i2c * i2c, uint8_t * buffer, uint16_t len)
+</code></pre>
+
+<ul>
+<li>
+<p><em>i2c*</em> <strong>i2c</strong></p>
+<p>previously initialised i2c struct</p>
+</li>
+<li>
+<p><em>uint8_t*</em> <strong>buffer</strong></p>
+<p>pointer to input data buffer</p>
+</li>
+<li>
+<p><em>uint16_t</em> <strong>len</strong></p>
+<p>length of data to read in bytes</p>
+</li>
+</ul>
+<p>Read <code>len</code> bytes into the <code>buffer</code> data pointer from the specified
+i2c device.</p>
+<p>Returns <code>EXIT_SUCCESS</code> or <code>EXIT_FAILURE</code></p>
+<hr />
+<h3 id="libsoc_i2c_set_timeout">libsoc_i2c_set_timeout</h3>
+<pre><code class="c">int libsoc_i2c_set_timeout(i2c * i2c, int timeout)
+</code></pre>
+
+<ul>
+<li>
+<p><em>i2c*</em> <strong>i2c</strong></p>
+<p>previously initialised i2c struct</p>
+</li>
+<li>
+<p><em>int</em> <strong>timeout</strong></p>
+<p>i2c timeout in milliseconds/10</p>
+</li>
+</ul>
+<p>Set the timeout of a i2c device in milliseconds/10. For example if a timeout of
+20ms is requred, <code>timeout</code> would be set to 2.</p>
+<pre><code class="c">    // 20ms timeout, 2*10ms
+    libsoc_i2c_set_timeout(device, 2);
+</code></pre>
+
+<p>Returns <code>EXIT_SUCCESS</code> or <code>EXIT_FAILURE</code></p></div>
         
     </div>
 
