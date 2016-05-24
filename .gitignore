@@ -11,6 +11,7 @@ config.guess
 config.log
 config.status
 config.sub
+config/autoconf
 configure
 depcomp
 install-sh
