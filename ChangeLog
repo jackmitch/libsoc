@@ -1,3 +1,10 @@
+21/06/2016 - 0.8.2
+------------------
+
+- Added set_edge and set_direction to python GPIO bindings
+- Started markdown based written documentation
+- Build system cleanups
+
 05/05/2016 - 0.8.1
 ------------------
 
