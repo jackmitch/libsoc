@@ -3,6 +3,7 @@
 
 #include <poll.h>
 #include <pthread.h>
+#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {
