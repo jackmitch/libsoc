@@ -223,7 +223,7 @@ libsoc_spi_get_mode (spi * spi)
   if (spi == NULL)
     {
       libsoc_spi_debug (__func__, NULL, "spi was not valid");
-      return EXIT_FAILURE;
+      return MODE_ERROR;
     }
 
   int ret = ioctl (spi->fd, SPI_IOC_RD_MODE, &mode);
