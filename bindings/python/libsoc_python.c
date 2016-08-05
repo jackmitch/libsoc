@@ -1,6 +1,7 @@
 #include <Python.h>
 
 #include "libsoc_gpio.h"
+#include "libsoc_spi.h"
 
 static PyMethodDef functions[] = {
     {NULL, NULL, 0, NULL}        /* Sentinel */
@@ -28,6 +29,16 @@ _add_constants(PyObject *m)
   PyModule_AddIntConstant(m, "LS_SHARED", LS_SHARED);
   PyModule_AddIntConstant(m, "LS_GREEDY", LS_GREEDY);
   PyModule_AddIntConstant(m, "LS_WEAK", LS_WEAK);
+
+  PyModule_AddIntConstant(m, "BITS_8", BITS_8);
+  PyModule_AddIntConstant(m, "BITS_16", BITS_16);
+  PyModule_AddIntConstant(m, "BPW_ERROR", BPW_ERROR);
+
+  PyModule_AddIntConstant(m, "MODE_0", MODE_0);
+  PyModule_AddIntConstant(m, "MODE_1", MODE_1);
+  PyModule_AddIntConstant(m, "MODE_2", MODE_2);
+  PyModule_AddIntConstant(m, "MODE_3", MODE_3);
+  PyModule_AddIntConstant(m, "MODE_ERROR", MODE_ERROR);
 
   mod = PyImport_ImportModule("ctypes");
   func = PyObject_GetAttrString(mod, "CDLL");
