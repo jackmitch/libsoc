@@ -16,8 +16,8 @@
  * 
  */
  
- #define GPIO_OUTPUT  115
- #define GPIO_INPUT   7
+ #define GPIO_OUTPUT  139
+ #define GPIO_INPUT   409
 
 static int interrupt_count = 0;
 

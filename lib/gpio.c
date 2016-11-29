@@ -27,7 +27,7 @@ struct gpio_callback {
   int (*callback_fn) (void *);
   void *callback_arg;
   pthread_t *thread;
-  int ready;
+  pthread_mutex_t ready;
 };
 
 /**
@@ -519,11 +519,7 @@ __libsoc_new_interrupt_callback_thread (void *args)
 {
   gpio_imp *gpio = (gpio_imp*) args;
 
-  gpio->callback->ready = 1;
-
-  // There is an issue here when I believe a couple of interrupts are 
-  // missed in the test case, and they occur between ready = 1 and the 
-  // start of the poll. Any suggestions would be welcomed...
+  pthread_mutex_unlock(&gpio->callback->ready);
 
   while (1)
     {
@@ -565,7 +561,8 @@ libsoc_gpio_callback_interrupt (gpio * opaque, int (*callback_fn) (void *),
 
   gpio->callback = new_gpio_callback;
 
-  new_gpio_callback->ready = 0;
+  pthread_mutex_init(&new_gpio_callback->ready, NULL);
+  pthread_mutex_lock(&new_gpio_callback->ready);
 
   int ret = pthread_create (poll_thread, NULL,
 			    __libsoc_new_interrupt_callback_thread, gpio);
@@ -573,10 +570,7 @@ libsoc_gpio_callback_interrupt (gpio * opaque, int (*callback_fn) (void *),
   if (ret == 0)
     {
       // Wait for thread to be initialised and ready
-      while (new_gpio_callback->ready != 1)
-	{
-	  usleep (50);
-	}
+      pthread_mutex_lock(&new_gpio_callback->ready);
     }
   else
     {
