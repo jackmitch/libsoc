@@ -4,7 +4,6 @@ include_HEADERS = include/libsoc_gpio.h \
                   include/libsoc_i2c.h \
                   include/libsoc_pwm.h \
                   include/libsoc_board.h \
-                  include/libsoc_conffile.h \
                   include/libsoc_debug.h
 
 libsoc_la_SOURCES = gpio.c \

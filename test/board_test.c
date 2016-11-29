@@ -3,11 +3,14 @@
 #include <unistd.h>
 
 #include "libsoc_board.h"
+#include "libsoc_debug.h"
 
 #define _write(fd, buf) write(fd, buf, sizeof(buf)-1)
 
 int main(void)
 {
+  libsoc_set_debug(1);
+  
   int fails = 0;
   char template[] = "/tmp/fileXXXXXX";
   int fd = mkstemp(template);
@@ -22,7 +25,7 @@ int main(void)
   _write(fd, "GPIO_C =21 \n");
   close(fd);
 
-  setenv("LIBSOC_GPIO_CONF", template, 1);
+  setenv("LIBSOC_CONF", template, 1);
   config = libsoc_board_init();
 
 
