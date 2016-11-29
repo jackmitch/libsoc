@@ -7,6 +7,7 @@ extern "C" {
 
 void libsoc_debug(const char *func, char *format, ...) __attribute__((format(printf, 2, 3)));
 void libsoc_warn(const char *format, ...) __attribute__((format(printf, 1, 2)));
+void libsoc_error(const char *func, const char *format, ...) __attribute__((format(printf, 2, 3)));
 int libsoc_get_debug();
 void libsoc_set_debug(int level);
 
