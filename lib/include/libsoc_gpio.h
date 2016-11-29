@@ -23,7 +23,7 @@ struct gpio_callback {
 	int (*callback_fn) (void *);
 	void *callback_arg;
 	pthread_t *thread;
-	int ready;
+	pthread_mutex_t ready;
 };
 
 /**
