@@ -249,7 +249,10 @@ your distros version of libsoc through it's provided package manager. Depending
 on your distro this may be <code>apt-get</code>, <code>yum</code>, <code>pacman</code>, etc. Consult your distro
 documentation for more info.</p>
 <h3 id="manually-building">Manually Building</h3>
-<p>First clone libsoc from its git repository.</p>
+<p>First, make sure you have the prerequisites installed. Under Debian Jessie this
+means <code>build-essential</code>, <code>autoconf</code>, <code>libtool-bin</code> and <code>pkg-config</code>. You'll also
+need <code>python-dev</code> or <code>python3-dev</code>, if you wish to install the python-bindings.</p>
+<p>Then, clone libsoc from its git repository.</p>
 <pre><code>git clone https://github.com/jackmitch/libsoc.git libsoc.git
 </code></pre>
 <p>Enter the libsoc.git directory</p>
@@ -379,5 +382,5 @@ address <a href="mailto:jack@embed.me.uk">jack@embed.me.uk</a>.</p></div>
 
 <!--
 MkDocs version : 0.15.3
-Build Date UTC : 2016-05-24 14:58:22.733261
+Build Date UTC : 2016-12-12 15:55:15.403180
 -->
