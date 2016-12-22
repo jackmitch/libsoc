@@ -32,3 +32,4 @@ libsoc.pc
 *.o
 *.pyc
 *.swp
+*~

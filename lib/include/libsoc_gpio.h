@@ -1,50 +1,15 @@
 #ifndef _LIBSOC_GPIO_H_
 #define _LIBSOC_GPIO_H_
 
-#include <poll.h>
-#include <pthread.h>
-#include <stdlib.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /**
- * \struct gpio_callback
- * \brief representation of an interrupt callback
- * \param int (*callback_fn)(void*) - the function to callback on interrupt
- * \param void *callback_arg - the argument to pass to the callback function
- * \param pthread_t *thread - the pthread struct on which the poll and
- *  callback function runs
- * \param int ready - signal when the pthread is ready to accept interrupts
+ * Opaque GPIO descriptor
  */
-
-struct gpio_callback {
-	int (*callback_fn) (void *);
-	void *callback_arg;
-	pthread_t *thread;
-	int ready;
-};
-
-/**
- * \struct gpio
- * \brief representation of a single requested gpio
- * \param unsigned int gpio gpio id
- * \param int value_fd file descriptor to gpio value file
- * \param struct gpio_callback *callback - struct used to store interrupt
- *  callback data
- * \param int shared - set if the request flag was shared and the GPIO was
- *  exported on request
- */
-
-typedef struct {
-	unsigned int gpio;
-	int value_fd;
-	struct gpio_callback *callback;
-	struct pollfd pfd;
-	int shared;
-} gpio;
-
+typedef void gpio;
+  
 /**
  * \enum gpio_int_ret
  * \brief defined values for return type of blocked gpio interrupts

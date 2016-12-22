@@ -5,17 +5,10 @@
 extern "C" {
 #endif
 
-#include "libsoc_conffile.h"
-
 /**
- * \struct board_config
- * \brief a struct to hold board specific information
- * \param conf* - the board config file
+ * Opaque board data type
  */
-
-typedef struct {
-  conffile *conf;
-} board_config;
+typedef void board_config;
 
 /**
  * \fn board_config* libsoc_board_init()
@@ -35,14 +28,14 @@ board_config *libsoc_board_init();
 void libsoc_board_free(board_config *config);
 
 /**
- * \fn unsigned int libsoc_gpio_id(board_config* config, const char* pin)
+ * \fn int libsoc_gpio_id(board_config* config, const char* pin)
  * \brief find the gpio id of a given pin name
  * \param board_config* config - valid pointer to board_config
  * \param char* pin - a pin name for the board like "P49"
  * \return >=0 for gpio id or -1 on failure
  */
 
-unsigned int libsoc_board_gpio_id(board_config *config, const char* pin);
+int libsoc_board_gpio_id(board_config *config, const char* pin);
 
 #ifdef __cplusplus
 }

@@ -2,8 +2,10 @@
 #include <stdarg.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <poll.h>
+#include <pthread.h>
 #include <errno.h>
 #include <unistd.h>
 #include <string.h>
@@ -12,11 +14,50 @@
 #include "libsoc_debug.h"
 #include "libsoc_gpio.h"
 
+/**
+ * Internal representation of an interrupt callback
+ * int (*callback_fn)(void*) - the function to callback on interrupt
+ * void *callback_arg - the argument to pass to the callback function
+ * pthread_t *thread - the pthread struct on which the poll and
+ *  callback function runs
+ * int ready - signal when the pthread is ready to accept interrupts
+ */
+
+struct gpio_callback {
+  int (*callback_fn) (void *);
+  void *callback_arg;
+  pthread_t *thread;
+  pthread_mutex_t ready;
+};
+
+/**
+ * Internal (private) representation of a single requested gpio
+ * unsigned int gpio gpio id
+ * int value_fd file descriptor to gpio value file
+ * struct gpio_callback *callback - struct used to store interrupt callback data
+ * int shared - set if the request flag was shared and the GPIO was exported on request
+ */
+
+typedef struct {
+  uint32_t magic;
+  unsigned int gpio;
+  int value_fd;
+  struct gpio_callback *callback;
+  struct pollfd pfd;
+  int shared;
+} gpio_imp;
+
+/*
+ * Random (and probably) unique magic value
+ */
+#define MAGIC 0x63fc44f1 
+
+
 #define STR_BUF 256
 
-const char gpio_level_strings[2][STR_BUF] = { "0", "1" };
-const char gpio_direction_strings[2][STR_BUF] = { "in", "out" };
-const char gpio_edge_strings[4][STR_BUF] = { "rising", "falling", "none", "both" };
+const char gpio_level_strings[2][2] = { "0", "1" };
+const char gpio_direction_strings[2][4] = { "in", "out" };
+const char gpio_edge_strings[4][8] = { "rising", "falling", "none", "both" };
 
 void
 libsoc_gpio_debug (const char *func, int gpio, char *format, ...)
@@ -50,7 +91,7 @@ libsoc_gpio_debug (const char *func, int gpio, char *format, ...)
 gpio *
 libsoc_gpio_request (unsigned int gpio_id, gpio_mode mode)
 {
-  gpio *new_gpio;
+  gpio_imp *new_gpio;
   char tmp_str[STR_BUF];
   int shared = 0;
 
@@ -115,7 +156,7 @@ libsoc_gpio_request (unsigned int gpio_id, gpio_mode mode)
 	}
     }
 
-  new_gpio = malloc (sizeof (gpio));
+  new_gpio = malloc (sizeof (gpio_imp));
   if (new_gpio == NULL)
     return NULL;
 
@@ -138,16 +179,20 @@ libsoc_gpio_request (unsigned int gpio_id, gpio_mode mode)
   new_gpio->pfd.events = POLLPRI;
   new_gpio->pfd.revents = 0;
 
+  new_gpio->magic = MAGIC;
+  
   return new_gpio;
 }
 
 int
-libsoc_gpio_free (gpio * gpio)
+libsoc_gpio_free (gpio * opaque)
 {
+  gpio_imp *gpio = (gpio_imp*) opaque;
+  
   char tmp_str[STR_BUF];
   int fd;
 
-  if (gpio == NULL)
+  if (gpio == NULL || gpio->magic != MAGIC)
     {
       libsoc_gpio_debug (__func__, -1, "invalid gpio pointer");
       return EXIT_FAILURE;
@@ -198,12 +243,14 @@ libsoc_gpio_free (gpio * gpio)
 }
 
 int
-libsoc_gpio_set_direction (gpio * current_gpio, gpio_direction direction)
+libsoc_gpio_set_direction (gpio * opaque, gpio_direction direction)
 {
+  gpio_imp *current_gpio = (gpio_imp*) opaque;
+
   int fd;
   char path[STR_BUF];
 
-  if (current_gpio == NULL)
+  if (current_gpio == NULL || current_gpio->magic != MAGIC)
     {
       libsoc_gpio_debug (__func__, -1, "invalid gpio pointer");
       return EXIT_FAILURE;
@@ -230,12 +277,14 @@ libsoc_gpio_set_direction (gpio * current_gpio, gpio_direction direction)
 }
 
 gpio_direction
-libsoc_gpio_get_direction (gpio * current_gpio)
+libsoc_gpio_get_direction (gpio * opaque)
 {
+  gpio_imp *current_gpio = (gpio_imp*) opaque;
+
   int fd;
   char tmp_str[STR_BUF];
 
-  if (current_gpio == NULL)
+  if (current_gpio == NULL || current_gpio->magic != MAGIC)
     {
       libsoc_gpio_debug (__func__, -1, "invalid gpio pointer");
       return DIRECTION_ERROR;
@@ -271,9 +320,11 @@ libsoc_gpio_get_direction (gpio * current_gpio)
 }
 
 int
-libsoc_gpio_set_level (gpio * current_gpio, gpio_level level)
+libsoc_gpio_set_level (gpio * opaque, gpio_level level)
 {
-  if (current_gpio == NULL)
+  gpio_imp *current_gpio = (gpio_imp*) opaque;
+  
+  if (current_gpio == NULL || current_gpio->magic != MAGIC)
     {
       libsoc_gpio_debug (__func__, -1, "invalid gpio pointer");
       return EXIT_FAILURE;
@@ -289,11 +340,13 @@ libsoc_gpio_set_level (gpio * current_gpio, gpio_level level)
 }
 
 gpio_level
-libsoc_gpio_get_level (gpio * current_gpio)
+libsoc_gpio_get_level (gpio * opaque)
 {
+  gpio_imp *current_gpio = (gpio_imp*) opaque;
+
   char level[2];
 
-  if (current_gpio == NULL)
+  if (current_gpio == NULL || current_gpio->magic != MAGIC)
     {
       libsoc_gpio_debug (__func__, -1, "invalid gpio pointer");
       return LEVEL_ERROR;
@@ -321,12 +374,14 @@ libsoc_gpio_get_level (gpio * current_gpio)
 }
 
 int
-libsoc_gpio_set_edge (gpio * current_gpio, gpio_edge edge)
+libsoc_gpio_set_edge (gpio * opaque, gpio_edge edge)
 {
+  gpio_imp *current_gpio = (gpio_imp*) opaque;
+
   int fd;
   char path[STR_BUF];
 
-  if (current_gpio == NULL)
+  if (current_gpio == NULL || current_gpio->magic != MAGIC)
     {
       libsoc_gpio_debug (__func__, -1, "invalid gpio pointer");
       return EXIT_FAILURE;
@@ -352,12 +407,14 @@ libsoc_gpio_set_edge (gpio * current_gpio, gpio_edge edge)
 }
 
 gpio_edge
-libsoc_gpio_get_edge (gpio * current_gpio)
+libsoc_gpio_get_edge (gpio * opaque)
 {
+  gpio_imp *current_gpio = (gpio_imp*) opaque;
+
   int fd;
   char tmp_str[STR_BUF];
 
-  if (current_gpio == NULL)
+  if (current_gpio == NULL || current_gpio->magic != MAGIC)
     {
       libsoc_gpio_debug (__func__, -1, "invalid gpio pointer");
       return EDGE_ERROR;
@@ -402,8 +459,8 @@ libsoc_gpio_get_edge (gpio * current_gpio)
     }
 }
 
-int
-libsoc_gpio_poll (gpio * gpio, int timeout)
+static int
+libsoc_gpio_poll (gpio_imp * gpio, int timeout)
 {
   int rc;
   char c;
@@ -429,9 +486,11 @@ libsoc_gpio_poll (gpio * gpio, int timeout)
 }
 
 int
-libsoc_gpio_wait_interrupt (gpio * gpio, int timeout)
+libsoc_gpio_wait_interrupt (gpio * opaque, int timeout)
 {
-  if (gpio == NULL)
+  gpio_imp *gpio = (gpio_imp*) opaque;
+
+  if (gpio == NULL || gpio->magic != MAGIC)
     {
       libsoc_gpio_debug (__func__, -1, "invalid gpio pointer");
       return LS_INT_ERROR;
@@ -456,15 +515,11 @@ libsoc_gpio_wait_interrupt (gpio * gpio, int timeout)
 }
 
 void *
-__libsoc_new_interrupt_callback_thread (void *void_gpio)
+__libsoc_new_interrupt_callback_thread (void *args)
 {
-  gpio *gpio = void_gpio;
+  gpio_imp *gpio = (gpio_imp*) args;
 
-  gpio->callback->ready = 1;
-
-  // There is an issue here when I believe a couple of interrupts are 
-  // missed in the test case, and they occur between ready = 1 and the 
-  // start of the poll. Any suggestions would be welcomed...
+  pthread_mutex_unlock(&gpio->callback->ready);
 
   while (1)
     {
@@ -477,9 +532,17 @@ __libsoc_new_interrupt_callback_thread (void *void_gpio)
 }
 
 int
-libsoc_gpio_callback_interrupt (gpio * gpio, int (*callback_fn) (void *),
+libsoc_gpio_callback_interrupt (gpio * opaque, int (*callback_fn) (void *),
 				void *arg)
 {
+  gpio_imp *gpio = (gpio_imp*) opaque;
+
+  if (gpio == NULL || gpio->magic != MAGIC)
+    {
+      libsoc_gpio_debug (__func__, -1, "invalid gpio pointer");
+      return LS_INT_ERROR;
+    }
+
   pthread_t *poll_thread = malloc (sizeof (pthread_t));
   pthread_attr_t pthread_attr;
 
@@ -498,7 +561,8 @@ libsoc_gpio_callback_interrupt (gpio * gpio, int (*callback_fn) (void *),
 
   gpio->callback = new_gpio_callback;
 
-  new_gpio_callback->ready = 0;
+  pthread_mutex_init(&new_gpio_callback->ready, NULL);
+  pthread_mutex_lock(&new_gpio_callback->ready);
 
   int ret = pthread_create (poll_thread, NULL,
 			    __libsoc_new_interrupt_callback_thread, gpio);
@@ -506,10 +570,7 @@ libsoc_gpio_callback_interrupt (gpio * gpio, int (*callback_fn) (void *),
   if (ret == 0)
     {
       // Wait for thread to be initialised and ready
-      while (new_gpio_callback->ready != 1)
-	{
-	  usleep (50);
-	}
+      pthread_mutex_lock(&new_gpio_callback->ready);
     }
   else
     {
@@ -523,8 +584,16 @@ libsoc_gpio_callback_interrupt (gpio * gpio, int (*callback_fn) (void *),
 }
 
 int
-libsoc_gpio_callback_interrupt_cancel (gpio * gpio)
+libsoc_gpio_callback_interrupt_cancel (gpio * opaque)
 {
+  gpio_imp *gpio = (gpio_imp*) opaque;
+
+  if (gpio == NULL || gpio->magic != MAGIC)
+    {
+      libsoc_gpio_debug (__func__, -1, "invalid gpio pointer");
+      return LS_INT_ERROR;
+    }
+
   if (gpio->callback->thread == NULL)
   {
     libsoc_gpio_debug (__func__, gpio->gpio, "callback thread was NULL");
