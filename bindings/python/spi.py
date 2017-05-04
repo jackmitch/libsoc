@@ -56,6 +56,7 @@ class SPI(object):
             api.libsoc_spi_free(self._spi)
             self._spi = None
 
+    @staticmethod
     def set_debug(enabled):
         v = 0
         if enabled:
