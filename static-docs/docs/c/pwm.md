@@ -7,18 +7,18 @@
 Determines the way in which libsoc handles exporting and unexporting
 PWMs in the Linux subsystem.
 
-* **LS_SHARED**
+* **LS_PWM_SHARED**
 
 	if the pwm is already exported then it will not unexport
 	the pwm on free. If it is not exported, then it will
 	unexport on free.
 
-* **LS_GREEDY**
+* **LS_PWM_GREEDY**
 
 	will succeed if the pwm is already exported, but will
 	always unexport the pwm on free.
 
-* **LS_WEAK**
+* **LS_PWM_WEAK**
 
 	will fail if pwm is already exported, will always unexport
 	on free.
