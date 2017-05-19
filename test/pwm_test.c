@@ -28,7 +28,7 @@ int main(void)
 
   libsoc_set_debug(1);
 
-  pwm *pwm = libsoc_pwm_request(PWM_OUTPUT_CHIP, PWM_CHIP_OUTPUT, LS_SHARED);
+  pwm *pwm = libsoc_pwm_request(PWM_OUTPUT_CHIP, PWM_CHIP_OUTPUT, LS_PWM_SHARED);
 
   if (!pwm)
   {

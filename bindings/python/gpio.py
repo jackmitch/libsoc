@@ -6,7 +6,7 @@ import time
 from ._libsoc import (
     DIRECTION_INPUT, DIRECTION_OUTPUT,
     EDGE_BOTH, EDGE_FALLING, EDGE_NONE, EDGE_RISING,
-    LS_SHARED, LS_GREEDY, LS_WEAK, api
+    LS_GPIO_SHARED, LS_GPIO_GREEDY, LS_GPIO_WEAK, api
 )
 
 
@@ -30,11 +30,11 @@ class InterruptHandler(threading.Thread):
 class GPIO(object):
     _board_config = None
 
-    def __init__(self, id, direction, edge=EDGE_NONE, mode=LS_SHARED):
+    def __init__(self, id, direction, edge=EDGE_NONE, mode=LS_GPIO_SHARED):
         self.id = id
         if not isinstance(id, int):
             raise TypeError('Invalid gpio id must be an "int"')
-        if mode not in (LS_SHARED, LS_GREEDY, LS_WEAK):
+        if mode not in (LS_GPIO_SHARED, LS_GPIO_GREEDY, LS_GPIO_WEAK):
             raise ValueError('Invalid GPIO mode: %d' % mode)
         self._validate_direction(direction, edge)
         self.mode = mode
