@@ -3,8 +3,8 @@
 
     
     <url>
-     <loc>None/</loc>
-     <lastmod>2016-12-12</lastmod>
+     <loc>/</loc>
+     <lastmod>2017-05-19</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -12,32 +12,32 @@
     
         
     <url>
-     <loc>None/c/gpio/</loc>
-     <lastmod>2016-12-12</lastmod>
+     <loc>/c/gpio/</loc>
+     <lastmod>2017-05-19</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/c/spi/</loc>
-     <lastmod>2016-12-12</lastmod>
+     <loc>/c/spi/</loc>
+     <lastmod>2017-05-19</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/c/i2c/</loc>
-     <lastmod>2016-12-12</lastmod>
+     <loc>/c/i2c/</loc>
+     <lastmod>2017-05-19</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/c/pwm/</loc>
-     <lastmod>2016-12-12</lastmod>
+     <loc>/c/pwm/</loc>
+     <lastmod>2017-05-19</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/c/debug/</loc>
-     <lastmod>2016-12-12</lastmod>
+     <loc>/c/debug/</loc>
+     <lastmod>2017-05-19</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -45,8 +45,8 @@
 
     
     <url>
-     <loc>None/python/</loc>
-     <lastmod>2016-12-12</lastmod>
+     <loc>/python/</loc>
+     <lastmod>2017-05-19</lastmod>
      <changefreq>daily</changefreq>
     </url>
     

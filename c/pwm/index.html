@@ -203,18 +203,18 @@
 PWMs in the Linux subsystem.</p>
 <ul>
 <li>
-<p><strong>LS_SHARED</strong></p>
+<p><strong>LS_PWM_SHARED</strong></p>
 <p>if the pwm is already exported then it will not unexport
 the pwm on free. If it is not exported, then it will
 unexport on free.</p>
 </li>
 <li>
-<p><strong>LS_GREEDY</strong></p>
+<p><strong>LS_PWM_GREEDY</strong></p>
 <p>will succeed if the pwm is already exported, but will
 always unexport the pwm on free.</p>
 </li>
 <li>
-<p><strong>LS_WEAK</strong></p>
+<p><strong>LS_PWM_WEAK</strong></p>
 <p>will fail if pwm is already exported, will always unexport
 on free.</p>
 </li>
