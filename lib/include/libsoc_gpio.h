@@ -94,21 +94,21 @@ typedef enum {
 /**
  * \enum gpio_mode  
  * 
- * LS_SHARED - if the gpio is already exported then it will not unexport
+ * LS_GPIO_SHARED - if the gpio is already exported then it will not unexport
  *             the GPIO on free. If it is not exported, then it will
  *             unexport on free.
  * 
- * LS_GREEDY - will succeed if the GPIO is already exported, but will 
+ * LS_GPIO_GREEDY - will succeed if the GPIO is already exported, but will 
  *             always unexport the GPIO on free.
  * 
- * LS_WEAK   - will fail if GPIO is already exported, will always unexport
+ * LS_GPIO_WEAK   - will fail if GPIO is already exported, will always unexport
  *             on free.
  */
 
 typedef enum gpio_mode {
-	LS_SHARED,
-	LS_GREEDY,
-	LS_WEAK,
+	LS_GPIO_SHARED,
+	LS_GPIO_GREEDY,
+	LS_GPIO_WEAK,
 } gpio_mode;
 
 /**

@@ -43,12 +43,12 @@ pwm* libsoc_pwm_request (unsigned int chip, unsigned int pwm_num,
   char tmp_str[STR_BUF];
   int shared = 0;
 
-  if (mode != LS_SHARED && mode != LS_GREEDY && mode != LS_WEAK)
+  if (mode != LS_PWM_SHARED && mode != LS_PWM_GREEDY && mode != LS_PWM_WEAK)
   {
     libsoc_pwm_debug (__func__, chip, pwm_num,
-	    "mode was not set, or invalid, setting mode to LS_SHARED");
+	    "mode was not set, or invalid, setting mode to LS_PWM_SHARED");
 
-    mode = LS_SHARED;
+    mode = LS_PWM_SHARED;
   }
 
   libsoc_pwm_debug (__func__, chip, pwm_num, "requested PWM");
@@ -61,12 +61,12 @@ pwm* libsoc_pwm_request (unsigned int chip, unsigned int pwm_num,
 
     switch(mode)
 	  {
-	    case LS_WEAK:
+	    case LS_PWM_WEAK:
 	    {
 	      return NULL;
 	    }
 
-    	case LS_SHARED:
+	case LS_PWM_SHARED:
 	    {
 	      shared = 1;
   	    break;

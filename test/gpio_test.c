@@ -40,8 +40,8 @@ int main(void)
   libsoc_set_debug(1);
 
   // Request gpios
-  gpio_output = libsoc_gpio_request(GPIO_OUTPUT, LS_SHARED);
-  gpio_input = libsoc_gpio_request(GPIO_INPUT, LS_SHARED);
+  gpio_output = libsoc_gpio_request(GPIO_OUTPUT, LS_GPIO_SHARED);
+  gpio_input = libsoc_gpio_request(GPIO_INPUT, LS_GPIO_SHARED);
 
   // Ensure both gpio were successfully requested
   if (gpio_output == NULL || gpio_input == NULL)

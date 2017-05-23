@@ -51,21 +51,21 @@ typedef enum {
 /**
  * \enum shared_mode
  *
- * LS_SHARED - if the pwm is already exported then it will not unexport
+ * LS_PWM_SHARED - if the pwm is already exported then it will not unexport
  *             the PWM on free. If it is not exported, then it will
  *             unexport on free.
  *
- * LS_GREEDY - will succeed if the PWM is already exported, but will
+ * LS_PWM_GREEDY - will succeed if the PWM is already exported, but will
  *             always unexport the PWM on free.
  *
- * LS_WEAK   - will fail if PWM is already exported, will always unexport
+ * LS_PWM_WEAK   - will fail if PWM is already exported, will always unexport
  *             on free.
  */
 
 typedef enum {
-	LS_SHARED,
-	LS_GREEDY,
-	LS_WEAK,
+	LS_PWM_SHARED,
+	LS_PWM_GREEDY,
+	LS_PWM_WEAK,
 } shared_mode;
 
 /**

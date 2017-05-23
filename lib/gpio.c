@@ -54,12 +54,12 @@ libsoc_gpio_request (unsigned int gpio_id, gpio_mode mode)
   char tmp_str[STR_BUF];
   int shared = 0;
 
-  if (mode != LS_SHARED && mode != LS_GREEDY && mode != LS_WEAK)
+  if (mode != LS_GPIO_SHARED && mode != LS_GPIO_GREEDY && mode != LS_GPIO_WEAK)
     {
       libsoc_gpio_debug (__func__, gpio_id,
 			 "mode was not set, or invalid,"
-			 " setting mode to LS_SHARED");
-      mode = LS_SHARED;
+			 " setting mode to LS_GPIO_SHARED");
+      mode = LS_GPIO_SHARED;
     }
 
   libsoc_gpio_debug (__func__, gpio_id, "requested gpio");
@@ -72,12 +72,12 @@ libsoc_gpio_request (unsigned int gpio_id, gpio_mode mode)
 
       switch (mode)
 	{
-	case LS_WEAK:
+	case LS_GPIO_WEAK:
 	  {
 	    return NULL;
 	  }
 
-	case LS_SHARED:
+	case LS_GPIO_SHARED:
 	  {
 	    shared = 1;
 	    break;
