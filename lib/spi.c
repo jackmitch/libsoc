@@ -29,14 +29,14 @@ libsoc_spi_debug (const char *func, spi * spi, char *format, ...)
       va_end (args);
 
       if (spi == NULL)
-	{
-	  fprintf (stderr, " (NULL, %s)", func);
-	}
+  {
+    fprintf (stderr, " (NULL, %s)", func);
+  }
       else
-	{
-	  fprintf (stderr, " (spidev%d.%d, %s)", spi->spi_dev,
-		   spi->chip_select, func);
-	}
+  {
+    fprintf (stderr, " (spidev%d.%d, %s)", spi->spi_dev,
+       spi->chip_select, func);
+  }
 
       fprintf (stderr, "\n");
     }
@@ -44,12 +44,12 @@ libsoc_spi_debug (const char *func, spi * spi, char *format, ...)
 }
 
 spi *
-libsoc_spi_init (uint8_t spidev_device, uint8_t chip_select)
+libsoc_spi_init (uint16_t spidev_device, uint8_t chip_select)
 {
   spi *spi_dev;
 
   libsoc_spi_debug (__func__, NULL, "initialising spidev device %d.%d",
-		    spidev_device, chip_select);
+        spidev_device, chip_select);
 
   spi_dev = malloc (sizeof (spi));
 
@@ -59,7 +59,7 @@ libsoc_spi_init (uint8_t spidev_device, uint8_t chip_select)
       return NULL;
     }
 
-  char path[40];
+  char path[42];
 
   spi_dev->spi_dev = spidev_device;
   spi_dev->chip_select = chip_select;
@@ -95,7 +95,7 @@ libsoc_spi_set_bits_per_word (spi * spi, spi_bpw bpw)
   if (bpw != BITS_8 && bpw != BITS_16)
     {
       libsoc_spi_debug (__func__, spi, "bits per word was not BITS_8"
-			" or BITS_16", bpw);
+      " or BITS_16", bpw);
       return EXIT_FAILURE;
     }
 
@@ -258,7 +258,7 @@ int
 libsoc_spi_write (spi * spi, uint8_t * tx, uint32_t len)
 {
   libsoc_spi_debug (__func__, spi, "performing write transfer of %d bytes",
-		    len);
+        len);
 
   if (spi == NULL || tx == NULL)
     {
@@ -294,7 +294,7 @@ int
 libsoc_spi_read (spi * spi, uint8_t * rx, uint32_t len)
 {
   libsoc_spi_debug (__func__, spi, "performing read transfer of %d bytes",
-		    len);
+        len);
 
   if (spi == NULL || rx == NULL)
     {
@@ -302,7 +302,7 @@ libsoc_spi_read (spi * spi, uint8_t * rx, uint32_t len)
       return EXIT_FAILURE;
     }
 
-  if (len <= 0) 
+  if (len <= 0)
     {
       libsoc_spi_debug (__func__, spi, "length was less than zero");
       return EXIT_FAILURE;
@@ -330,7 +330,7 @@ int
 libsoc_spi_rw (spi * spi, uint8_t * tx, uint8_t * rx, uint32_t len)
 {
   libsoc_spi_debug (__func__, spi,
-		    "performing duplex rw transfer of %d bytes", len);
+        "performing duplex rw transfer of %d bytes", len);
 
   if (spi == NULL || rx == NULL || tx == NULL)
     {

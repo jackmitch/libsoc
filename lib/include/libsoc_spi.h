@@ -19,7 +19,7 @@ extern "C" {
 
 typedef struct {
   int fd;
-  uint8_t spi_dev;
+  uint16_t spi_dev;
   uint8_t chip_select;
 } spi;
 
@@ -69,7 +69,7 @@ int libsoc_spi_free(spi* spi);
  * \param spi* spi - valid spi struct pointer
  * \param enum spi_mode - valid modes are as follows:
  *   -MODE_0, MODE_1, MODE_2, MODE_3
- *  Essential Reading: 
+ *  Essential Reading:
  *  - https://www.kernel.org/doc/Documentation/spi/spi-summary
  *  - http://www.diolan.com/dln_doc/spi-transfer-modes.html
  *  - http://blackfin.uclinux.org/doku.php?id=spi
@@ -143,7 +143,7 @@ int libsoc_spi_read(spi* spi, uint8_t* rx, uint32_t len);
 
 /**
  * \fn int libsoc_spi_rw(spi* spi, uint8_t* tx, uint8_t* rx, uint32_t len)
- * \brief duplex read/write to the spi bus, allows writing data and then 
+ * \brief duplex read/write to the spi bus, allows writing data and then
  *  reading back in one single transaction, or writing and reading at the
  *  same time.
  * \param spi* spi - valid spi struct pointer
