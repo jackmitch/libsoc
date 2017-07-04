@@ -146,6 +146,12 @@ Install the library using make
 make install
 ```
 
+Run `ldconfig` to update library cache
+
+```text
+sudo ldconfig
+```
+
 ## Documentation
 
 Written documentation can be found at
