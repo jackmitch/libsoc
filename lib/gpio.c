@@ -409,6 +409,12 @@ libsoc_gpio_poll (gpio * gpio, int timeout)
   char c;
 
   // do an initial read to clear interrupt,
+  if (gpio == NULL)
+    {
+      libsoc_gpio_debug (__func__, -1, "invalid gpio pointer");
+      return LS_INT_ERROR;
+    }
+
   rc = lseek(gpio->value_fd, 0, SEEK_SET);
   rc = read(gpio->value_fd, &c, 1);
 

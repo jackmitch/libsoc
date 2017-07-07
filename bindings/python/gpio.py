@@ -64,6 +64,7 @@ class GPIO(object):
             self._gpio = None
 
     def set_direction(self, direction, edge):
+        assert self._gpio is not None
         self._validate_direction(direction, edge)
         api.libsoc_gpio_set_direction(self._gpio, self.direction)
         if self.direction == DIRECTION_INPUT:
@@ -71,11 +72,13 @@ class GPIO(object):
                 raise IOError('Error setting edge for GPIO_%d' % self.id)
 
     def set_edge(self, edge):
+        assert self._gpio is not None
         self._validate_direction(self.direction, edge)
         if api.libsoc_gpio_set_edge(self._gpio, self.edge) != 0:
             raise IOError('Error setting edge for GPIO_%d' % self.id)
 
     def get_direction(self):
+        assert self._gpio is not None
         d = api.libsoc_gpio_get_direction(self._gpio)
         if d == -1:
             raise IOError('Error reading GPIO_%d direction: %d' % self.id)
@@ -100,26 +103,31 @@ class GPIO(object):
         api.libsoc_set_debug(v)
 
     def set_high(self):
+        assert self._gpio is not None
         assert self.direction == DIRECTION_OUTPUT
         api.libsoc_gpio_set_level(self._gpio, 1)
 
     def set_low(self):
+        assert self._gpio is not None
         assert self.direction == DIRECTION_OUTPUT
         api.libsoc_gpio_set_level(self._gpio, 0)
 
     def is_high(self):
+        assert self._gpio is not None
         l = api.libsoc_gpio_get_level(self._gpio)
         if l == -1:
             raise IOError('Error reading GPIO_%d level' % self.id)
         return l == 1
 
     def wait_for_interrupt(self, timeout):
+        assert self._gpio is not None
         assert self.direction == DIRECTION_INPUT
         if api.libsoc_gpio_wait_interrupt(self._gpio, timeout) != 0:
             raise IOError('Error waiting for interrupt on GPIO_%d' % self.id)
 
     def get_edge(self):
         '''Return the edge the GPIO is configured with.'''
+        assert self._gpio is not None
         assert self.direction == DIRECTION_INPUT
         e = api.libsoc_gpio_get_edge(self._gpio)
         if e == -1:
@@ -132,6 +140,7 @@ class GPIO(object):
         polling. Returns True if an interrupt occurred, False on an error or
         timeout
         '''
+        assert self._gpio is not None
         return api.libsoc_gpio_poll(self._gpio, timeout_ms) == 0
 
     def start_interrupt_handler(self, interrupt_callback):
@@ -139,6 +148,7 @@ class GPIO(object):
            encountered, the interrupt_callback function will be run. This
            thread can be stopped by calling interrupt_handler.stop()
         '''
+        assert self._gpio is not None
         ih = InterruptHandler(self, interrupt_callback)
         ih.start()
         while not ih.running:
