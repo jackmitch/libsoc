@@ -10,7 +10,7 @@ installdirs-local:
 	install -d $(DESTDIR)$(sysconfdir)
 
 install-data-hook: installdirs-local
-	ln -srf $(DESTDIR)$(pkgdatadir)/@board@.conf $(DESTDIR)$(sysconfdir)/libsoc.conf
+	ln -srf $(DESTDIR)$(pkgdatadir)/@board@.conf $(DESTDIR)$(sysconfdir)/libsoc.conf || ln -sf $(DESTDIR)$(pkgdatadir)/@board@.conf $(DESTDIR)$(sysconfdir)/libsoc.conf
 endif
 
 uninstall-local:
