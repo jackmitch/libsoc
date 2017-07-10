@@ -55,7 +55,7 @@ conffile_load(const char *path)
       while(fgets(line, sizeof(line), fp))
         {
           if (*line == '#' || *line == '\0' || *line == '\n')
-	    continue;
+            continue;
           if (line[0] == '[')
             {
               // new section
