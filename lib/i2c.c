@@ -27,14 +27,14 @@ libsoc_i2c_debug (const char *func, i2c * i2c, char *format, ...)
       va_end (args);
 
       if (i2c == NULL)
-	{
-	  fprintf (stderr, " (NULL, %s)", func);
-	}
+        {
+          fprintf (stderr, " (NULL, %s)", func);
+        }
       else
-	{
-	  fprintf (stderr, " (i2c-%d, %d, %s)", i2c->bus,
-		   i2c->address, func);
-	}
+        {
+          fprintf (stderr, " (i2c-%d, %d, %s)", i2c->bus,
+                   i2c->address, func);
+        }
 
       fprintf (stderr, "\n");
     }

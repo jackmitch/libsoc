@@ -29,7 +29,7 @@ void libsoc_pwm_debug (const char *func, unsigned int chip,
     vfprintf (stderr, format, args);
     va_end (args);
 
-	  fprintf (stderr, " ((%d,%d), %s)", chip, pwm, func);
+    fprintf (stderr, " ((%d,%d), %s)", chip, pwm, func);
 
     fprintf (stderr, "\n");
   }
@@ -46,7 +46,7 @@ pwm* libsoc_pwm_request (unsigned int chip, unsigned int pwm_num,
   if (mode != LS_PWM_SHARED && mode != LS_PWM_GREEDY && mode != LS_PWM_WEAK)
   {
     libsoc_pwm_debug (__func__, chip, pwm_num,
-	    "mode was not set, or invalid, setting mode to LS_PWM_SHARED");
+      "mode was not set, or invalid, setting mode to LS_PWM_SHARED");
 
     mode = LS_PWM_SHARED;
   }
@@ -60,23 +60,23 @@ pwm* libsoc_pwm_request (unsigned int chip, unsigned int pwm_num,
     libsoc_pwm_debug(__func__, chip, pwm_num, "PWM already exported");
 
     switch(mode)
-	  {
-	    case LS_PWM_WEAK:
-	    {
-	      return NULL;
-	    }
+    {
+    case LS_PWM_WEAK:
+      {
+        return NULL;
+      }
 
-	case LS_PWM_SHARED:
-	    {
-	      shared = 1;
-  	    break;
-	    }
+    case LS_PWM_SHARED:
+      {
+        shared = 1;
+        break;
+      }
 
-	    default:
-	    {
-	      break;
-	    }
-	  }
+    default:
+      {
+        break;
+      }
+    }
   }
   else
   {
@@ -91,13 +91,12 @@ pwm* libsoc_pwm_request (unsigned int chip, unsigned int pwm_num,
     sprintf(tmp_str, "/sys/class/pwm/pwmchip%d/pwm%d/enable", chip, pwm_num);
 
     if (!file_valid(tmp_str))
-	  {
-	    libsoc_pwm_debug(__func__, chip, pwm_num,
-			  "failed to export PWM");
+    {
+      libsoc_pwm_debug(__func__, chip, pwm_num, "failed to export PWM");
 
       perror("libsoc-pwm-debug");
-	    return NULL;
-	  }
+      return NULL;
+    }
   }
 
   new_pwm = malloc(sizeof(pwm));
@@ -114,7 +113,8 @@ pwm* libsoc_pwm_request (unsigned int chip, unsigned int pwm_num,
   if (new_pwm->enable_fd < 0 || new_pwm->period_fd < 0 || new_pwm->duty_fd < 0)
   {
     free(new_pwm);
-	  libsoc_pwm_debug(__func__, chip, pwm_num, "Failed to open pwm sysfs file: %d", new_pwm->enable_fd);
+    libsoc_pwm_debug(__func__, chip, pwm_num,
+      "Failed to open pwm sysfs file: %d", new_pwm->enable_fd);
     return NULL;
   }
 
@@ -215,8 +215,7 @@ pwm_enabled libsoc_pwm_get_enabled(pwm *pwm)
 
   if(val == 1)
   {
-    libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm,
-		  "read as enabled");
+    libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm, "read as enabled");
     return ENABLED;
   }
   else if (val == 0)

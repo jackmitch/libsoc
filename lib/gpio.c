@@ -34,13 +34,13 @@ libsoc_gpio_debug (const char *func, int gpio, char *format, ...)
       va_end (args);
 
       if (gpio >= 0)
-	{
-	  fprintf (stderr, " (%d, %s)", gpio, func);
-	}
+        {
+          fprintf (stderr, " (%d, %s)", gpio, func);
+        }
       else
-	{
-	  fprintf (stderr, " (NULL, %s)", func);
-	}
+        {
+          fprintf (stderr, " (NULL, %s)", func);
+        }
 
       fprintf (stderr, "\n");
     }
@@ -57,8 +57,8 @@ libsoc_gpio_request (unsigned int gpio_id, gpio_mode mode)
   if (mode != LS_GPIO_SHARED && mode != LS_GPIO_GREEDY && mode != LS_GPIO_WEAK)
     {
       libsoc_gpio_debug (__func__, gpio_id,
-			 "mode was not set, or invalid,"
-			 " setting mode to LS_GPIO_SHARED");
+        "mode was not set, or invalid,"
+        " setting mode to LS_GPIO_SHARED");
       mode = LS_GPIO_SHARED;
     }
 
@@ -71,30 +71,30 @@ libsoc_gpio_request (unsigned int gpio_id, gpio_mode mode)
       libsoc_gpio_debug (__func__, gpio_id, "GPIO already exported");
 
       switch (mode)
-	{
-	case LS_GPIO_WEAK:
-	  {
-	    return NULL;
-	  }
+        {
+        case LS_GPIO_WEAK:
+          {
+            return NULL;
+          }
 
-	case LS_GPIO_SHARED:
-	  {
-	    shared = 1;
-	    break;
-	  }
+        case LS_GPIO_SHARED:
+          {
+            shared = 1;
+            break;
+          }
 
-	default:
-	  {
-	    break;
-	  }
-	}
+        default:
+          {
+            break;
+          }
+        }
     }
   else
     {
       int fd = file_open ("/sys/class/gpio/export", O_SYNC | O_WRONLY);
 
       if (fd < 0)
-	return NULL;
+        return NULL;
 
       sprintf (tmp_str, "%d", gpio_id);
 
@@ -210,8 +210,8 @@ libsoc_gpio_set_direction (gpio * current_gpio, gpio_direction direction)
     }
 
   libsoc_gpio_debug (__func__, current_gpio->gpio,
-		     "setting direction to %s",
-		     gpio_direction_strings[direction]);
+                     "setting direction to %s",
+                     gpio_direction_strings[direction]);
 
   sprintf (path, "/sys/class/gpio/gpio%d/direction", current_gpio->gpio);
 
