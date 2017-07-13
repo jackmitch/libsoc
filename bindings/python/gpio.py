@@ -2,6 +2,7 @@ import atexit
 import contextlib
 import threading
 import time
+import logging
 
 from ._libsoc import (
     DIRECTION_INPUT, DIRECTION_OUTPUT,
@@ -57,11 +58,24 @@ class GPIO(object):
             raise IOError('Unable to open GPIO_%d' % self.id)
         self.set_direction(self.direction, self.edge)
 
+    def __enter__(self):
+        '''
+        Allows `with` statement to open the GPIO
+        '''
+        self.open()
+        return self
+
     def close(self):
         '''Cleans up the memory and resources allocated by the open method.'''
         if self._gpio:
             api.libsoc_gpio_free(self._gpio)
             self._gpio = None
+
+    def __exit__(self, *exception):
+        '''
+        Called automatically at end of `with` block
+        '''
+        self.close()
 
     def set_direction(self, direction, edge):
         assert self._gpio is not None
