@@ -30,7 +30,7 @@ NAMES = {   # edit for your board, or set to empty dict
     38: 'LED401',
 }
 
-def switchtest(*gpios):
+def switchtest(gpios):
     '''
     Run the switched LED test with given GPIO numbers.
     '''
@@ -40,11 +40,13 @@ def switchtest(*gpios):
         switch_signal = gpio.GPIO(
             switch, gpio.DIRECTION_INPUT, gpio.EDGE_BOTH)
         led_signal = gpio.GPIO(led, gpio.DIRECTION_OUTPUT)
-        led_signal.set_low()  # start with all LEDs off
+        with led_signal as signal:
+            signal.set_low()  # start with all LEDs off
         PAIRS[switch_signal] = led_signal
     # now the pairs are established, we can enable interrupts
+    logging.debug('PAIRS: %s', PAIRS)
     try:
-        with gpio.request_gpios([g.id for g in PAIRS.keys() + PAIRS.values()]):
+        with gpio.request_gpios(PAIRS.keys() + PAIRS.values()):
             for switch_signal in PAIRS:
                 switch_signal.start_interrupt_handler(
                     activator, args=(switch_signal,))
