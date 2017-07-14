@@ -21,7 +21,7 @@ class InterruptHandler(threading.Thread):
         self.gpio = gpio
         self.isr_cb = interrupt_callback
         self.running = False
-        self.callback_args = kwargs.get('args') or (,)
+        self.callback_args = kwargs.get('args') or ()
         self.callback_kwargs = kwargs.get('kwargs') or {}
 
     def run(self):
