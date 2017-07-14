@@ -12,8 +12,12 @@ from ._libsoc import (
 
 
 class InterruptHandler(threading.Thread):
-    def __init__(self, gpio, interrupt_callback):
-        super(InterruptHandler, self).__init__()
+    def __init__(self, gpio, interrupt_callback, **kwargs):
+        '''
+        Some of the kwargs you might want to supply are `name`, `args`
+        (to be passed to the handler) and `kwargs` (also for the handler)
+        '''
+        super(InterruptHandler, self).__init__(**kwargs)
         self.gpio = gpio
         self.isr_cb = interrupt_callback
         self.running = False
@@ -22,10 +26,11 @@ class InterruptHandler(threading.Thread):
         self.running = True
         while self.running:
             if self.gpio.poll(1000):
-                self.isr_cb()
+                self.isr_cb(*self.args, **self.kwargs)
 
     def stop(self):
         self.running = False
+        self.gpio.handler = None
 
 
 class GPIO(object):
@@ -40,6 +45,7 @@ class GPIO(object):
         self._validate_direction(direction, edge)
         self.mode = mode
         self._gpio = None
+        self.handler = None
 
     def _validate_direction(self, direction, edge=EDGE_NONE):
         if direction not in (DIRECTION_INPUT, DIRECTION_OUTPUT):
@@ -157,18 +163,21 @@ class GPIO(object):
         assert self._gpio is not None
         return api.libsoc_gpio_poll(self._gpio, timeout_ms) == 0
 
-    def start_interrupt_handler(self, interrupt_callback):
-        '''Returns a thread that continuosly polls the GPIO. If an interrupt is
-           encountered, the interrupt_callback function will be run. This
-           thread can be stopped by calling interrupt_handler.stop()
+    def start_interrupt_handler(self, interrupt_callback, **kwargs):
+        '''
+        Returns a thread that continuosly polls the GPIO. If an interrupt is
+        encountered, the interrupt_callback function will be run. This
+        thread can be stopped by calling interrupt_handler.stop()
+
+        The handler points to the GPIO and vice versa, so that the handler
+        thread can easily access its state.
         '''
         assert self._gpio is not None
-        ih = InterruptHandler(self, interrupt_callback)
-        ih.start()
-        while not ih.running:
-            time.sleep(0.01)
-        return ih
-
+        self.handler = InterruptHandler(self, interrupt_callback, **kwargs)
+        self.handler.start()
+        while not self.handler.running:
+            time.sleep(0.001)
+        return self.handler
 
 @contextlib.contextmanager
 def request_gpios(gpios):
