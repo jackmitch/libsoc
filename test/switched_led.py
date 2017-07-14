@@ -63,11 +63,11 @@ def activator(signal):
 
     We turn LED on or off depending on whether the switch is down or up.
     '''
-    logging.debug('Switch %d activated', NAMES.get(signal.id, signal.id))
-    if signal.is_low():
-        PAIRS[signal].set_high()
-    else:
+    logging.debug('Switch %s activated', NAMES.get(signal.id, signal.id))
+    if signal.is_high():
         PAIRS[signal].set_low()
+    else:
+        PAIRS[signal].set_high()
 
 if __name__ == '__main__':
     gpios = map(int, sys.argv[1:]) or [30, 28, 32, 38]
