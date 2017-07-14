@@ -21,12 +21,14 @@ class InterruptHandler(threading.Thread):
         self.gpio = gpio
         self.isr_cb = interrupt_callback
         self.running = False
+        self.callback_args = kwargs.get('args') or (,)
+        self.callback_kwargs = kwargs.get('kwargs') or {}
 
     def run(self):
         self.running = True
         while self.running:
             if self.gpio.poll(1000):
-                self.isr_cb(*self.__args, **self.__kwargs)  # from Thread
+                self.isr_cb(*self.callback_args, **self.callback_kwargs)
 
     def stop(self):
         self.running = False
