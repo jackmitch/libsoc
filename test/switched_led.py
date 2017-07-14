@@ -17,6 +17,7 @@ LED400           GPIO 28           Red LED
 LED401           GPIO 38           Blue LED
 '''
 import sys
+import time
 import logging
 from libsoc import gpio
 # run as `python switched_led.py` for verbose logging
@@ -49,6 +50,8 @@ def switchtest(*gpios):
                     activator, args=(switch_signal,))
             logging.info('Push a switch to see its LED light; '
                          'Control-C to exit.')
+            while True:
+                time.sleep(60)  # wait until user gets bored
     except KeyboardInterrupt:
         sys.exit
 
