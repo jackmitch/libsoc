@@ -26,7 +26,7 @@ class InterruptHandler(threading.Thread):
         self.running = True
         while self.running:
             if self.gpio.poll(1000):
-                self.isr_cb(*self.args, **self.kwargs)
+                self.isr_cb(*self.__args, **self.__kwargs)  # from Thread
 
     def stop(self):
         self.running = False
