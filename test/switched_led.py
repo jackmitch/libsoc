@@ -54,8 +54,10 @@ def switchtest(gpios):
                          'Control-C to exit.')
             while True:
                 time.sleep(60)  # wait until user gets bored
-    except KeyboardInterrupt:
-        sys.exit
+    except (KeyboardInterrupt, SystemExit):
+        logging.info('It may take a few seconds for handlers to stop.')
+        for switch in PAIRS:
+            switch.handler.stop()
 
 def activator(signal):
     '''
