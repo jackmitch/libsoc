@@ -1,5 +1,5 @@
 libsocdir = $(pyexecdir)/libsoc
-libsoc_PYTHON = __init__.py gpio.py i2c.py spi.py
+libsoc_PYTHON = __init__.py gpio.py i2c.py spi.py adc.py
 
 AM_CPPFLAGS = $(PYTHON_CFLAGS) -I${top_srcdir}/lib/include -DLIBSOC_SO=\"libsoc.so\"
 
