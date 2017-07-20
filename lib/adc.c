@@ -41,7 +41,7 @@ adc* libsoc_adc_request (unsigned int chip, unsigned int adc_num)
   char chip_str[STR_BUF];
   char adc_str[STR_BUF];
   int i, j;
-  size_t result;
+  int result;
 
   libsoc_adc_debug (__func__, chip, adc_num, "requested ADC");
 
@@ -68,9 +68,9 @@ adc* libsoc_adc_request (unsigned int chip, unsigned int adc_num)
         libsoc_adc_debug (__func__, chip, adc_num,
                           "trying pin format string %d", j);
         strncpy(adc_str, chip_str, STR_BUF);
-        strncpy(adc_str + strlen(adc_str), ADC_READ_FORMAT[j],
-                STR_BUF - strlen(adc_str));
-        if (strlen(adc_str) > STR_BUF)
+        result = snprintf(adc_str + strlen(adc_str), STR_BUF - strlen(adc_str),
+                 ADC_READ_FORMAT[j], adc_num);
+        if (result < 0 || strlen(adc_str) > STR_BUF)
         {
           perror("Failed formatting device string");
           return NULL;
