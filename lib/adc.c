@@ -75,6 +75,7 @@ adc* libsoc_adc_request (unsigned int chip, unsigned int adc_num)
           perror("Failed formatting device string");
           return NULL;
         }
+        libsoc_adc_debug(__func__, chip, adc_num, "Checking path %s", adc_str);
         if (file_valid(adc_str))
         {
           libsoc_adc_debug(__func__, chip, adc_num, "Found requested ADC");
