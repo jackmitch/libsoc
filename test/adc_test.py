@@ -3,6 +3,7 @@
 Test for ADC module
 '''
 from libsoc import ADC
+ADC.set_debug(__debug__)
 
 def test_adc():
     '''
