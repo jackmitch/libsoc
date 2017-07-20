@@ -11,12 +11,15 @@ MODE = {
     'weak': LS_PWM_WEAK
 }
 
+MODE.update({v: k for k, v in MODE.items()})
+
 POLARITY = {
-    'normal': 'n',
-    'inverse': 'i',
-    'n': 'normal',
-    'i': 'inverse'
+    'normal': 0,
+    'inversed': 1,
+    'error': -1,
 }
+
+POLARITY.update({v: k for k, v in POLARITY.items()})
 
 class PWM(object):
     '''
