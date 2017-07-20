@@ -387,6 +387,7 @@ pkgconfig_DATA = libsoc.pc
 EXTRA_DIST = libsoc.pc.in
 CLEANFILES = libsoc.pc
 SUBDIRS = lib contrib/board_files $(am__append_1)
+export
 all: all-recursive
 
 .SUFFIXES:
@@ -884,3 +885,5 @@ uninstall-am: uninstall-pkgconfigDATA
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
+env:
+	env

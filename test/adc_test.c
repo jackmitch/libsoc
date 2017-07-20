@@ -29,7 +29,7 @@ int main(void)
 
   libsoc_set_debug(1);
 
-  adc *adc = libsoc_adc_request(ADC_OUTPUT_CHIP, ADC_PIN);
+  adc = libsoc_adc_request(ADC_OUTPUT_CHIP, ADC_PIN);
 
   if (!adc)
   {

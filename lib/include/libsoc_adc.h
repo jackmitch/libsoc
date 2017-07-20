@@ -42,6 +42,16 @@ typedef struct {
 adc* libsoc_adc_request(unsigned int adc_chip, unsigned int adc_num);
 
 /**
+ * \fn int libsoc_adc_get_value(adc *adc)
+ * \brief read value from ADC
+ * \param pointer to adc*
+ * \return int positive value read on success -1 on fail
+ *
+ */
+
+int libsoc_adc_get_value (adc *adc);
+
+/**
  * \fn int libsoc_adc_free(adc* adc)
  * \brief free a previously requested adc
  * \param adc* adc - valid pointer to a requested adc
