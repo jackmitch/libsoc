@@ -1,13 +1,13 @@
 #!/usr/bin/python -OO
 import sys
-from ._libsoc import api
+from ._libsoc import api, LS_PWM_SHARED, LS_PWM_GREEDY, LS_PWM_WEAK
 
 PY3 = sys.version_info >= (3, 0)
 
 MODE = {
-    'shared': api.LS_PWM_SHARED,
-    'greedy': api.LS_PWM_GREEDY,
-    'weak': api.LS_PWM_WEAK
+    'shared': LS_PWM_SHARED,
+    'greedy': LS_PWM_GREEDY,
+    'weak': LS_PWM_WEAK
 }
 
 POLARITY = {
