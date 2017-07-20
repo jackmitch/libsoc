@@ -5,13 +5,13 @@
 extern "C" {
 #endif
 
-static const char ADC_DEVICE_FORMAT[][] = {
+static const char ADC_DEVICE_FORMAT[][64] = {
 	"/sys/devices/12d10000.adc/iio:device%d",  // ARTIK 1020
 	"/sys/devices/platform/c0000000.soc/c0053000.adc/iio:device%d", // 710
 	"/sys/devices/126c0000.adc/iio:device%d"  // ARTIK 520
 };
 
-static const char ADC_READ_FORMAT[][] = {
+static const char ADC_READ_FORMAT[][32] = {
 	"/in_voltage%d_raw"
 };
 

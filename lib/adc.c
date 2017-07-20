@@ -33,7 +33,7 @@ void libsoc_adc_debug (const char *func, unsigned int chip,
 #endif
 }
 
-adc* libsoc_adc_request (unsigned int chip, unsigned int adc_num);
+adc* libsoc_adc_request (unsigned int chip, unsigned int adc_num)
 {
   adc *new_adc;
   char chip_str[STR_BUF];
@@ -60,7 +60,7 @@ adc* libsoc_adc_request (unsigned int chip, unsigned int adc_num);
     if (file_valid(chip_str))
     {
       libsoc_adc_debug(__func__, chip, adc_num, "Found requested chip");
-      for (j = 0; j < sizeof(ADC_READ_FORMAT), j++)
+      for (j = 0; j < sizeof(ADC_READ_FORMAT); j++)
       {
         strncpy(adc_str, chip_str, STR_BUF);
         strncpy(adc_str + result, ADC_READ_FORMAT[j],
@@ -72,15 +72,15 @@ adc* libsoc_adc_request (unsigned int chip, unsigned int adc_num);
         }
         if (file_valid(adc_str))
         {
-          libsoc_adc_debug(__func__, chip, adc_num, "Found requested ADC pin");
+          libsoc_adc_debug(__func__, chip, adc_num, "Found requested ADC");
           new_adc = malloc(sizeof(adc));
           new_adc->fd = file_open(adc_str, O_RDONLY);
 	}
         if (new_adc->fd < 0)
         {
-          free(new_pwm);
-          libsoc_pwm_debug(__func__, chip, adc_num,
-            "Failed to open adc sysfs file: %d", new_adc->fd);
+          free(new_adc);
+          libsoc_adc_debug(__func__, chip, adc_num,
+                           "Failed to open adc sysfs file: %d", new_adc->fd);
           return NULL;
         }
         new_adc->chip = chip;
@@ -89,6 +89,8 @@ adc* libsoc_adc_request (unsigned int chip, unsigned int adc_num);
       }
     }
   }
+  libsoc_adc_debug(__func__, chip, adc_num, "Found no such ADC available");
+  return NULL;
 }
 
 int libsoc_adc_free(adc *adc)
