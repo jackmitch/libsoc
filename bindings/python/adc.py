@@ -1,7 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/python -OO
 import sys
-from ctypes import create_string_buffer
-
 from ._libsoc import api
 
 PY3 = sys.version_info >= (3, 0)
