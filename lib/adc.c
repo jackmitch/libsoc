@@ -114,7 +114,7 @@ int libsoc_adc_get_value (adc *adc)
     libsoc_adc_debug(__func__, adc->chip, adc->adc, "ADC read failure");
     return -1;
   }
-  if (value[strlen(value)] == '\n') value[strlen(value)] = '\0';
+  if (value[strlen(value) - 1] == '\n') value[strlen(value) - 1] = '\0';
   libsoc_adc_debug(__func__, adc->chip, adc->adc, "ADC value: \"%s\"", value);
   return atoi(value);
 }
