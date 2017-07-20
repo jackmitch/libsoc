@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <limits.h>
 #include <stdarg.h>
 #include <sys/stat.h>
 #include <fcntl.h>

@@ -1,7 +1,8 @@
 CPATH += ../lib/include
 LIBRARY_PATH := ../lib/.libs $(LIBRARY_PATH)
 export
-test: adc_test adc_test.test
+test: adc_test adc_test.test adc_test.py.test \
+	pwm_test pwm_test.test pwm_test.py.test
 %: %.c
 	gcc -o $@ $< -lsoc
 %.test: %
