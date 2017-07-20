@@ -7,6 +7,14 @@ from ._libsoc import api
 PY3 = sys.version_info >= (3, 0)
 
 class ADC(object):
+    '''
+    Represents an ADC pin.
+
+    Example of use:
+
+        with ADC(0, 0) as adc:
+            print adc.read()
+    '''
     def __init__(self, chip, pin):
         if not isinstance(chip, int):
             raise TypeError('Invalid chip id must be an "int"')

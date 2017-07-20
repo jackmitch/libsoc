@@ -19,7 +19,7 @@
  */
 
 #define ADC_OUTPUT_CHIP 0
-#define ADC_PIN 1
+#define ADC_PIN 0
 
 int main(void)
 {

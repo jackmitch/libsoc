@@ -105,7 +105,7 @@ int libsoc_adc_get_value (adc *adc)
   int result;
   if (adc == NULL)
   {
-    libsoc_adc_debug(__func__, -1, -1, "invalid adc pointer");
+    libsoc_adc_debug(__func__, -1, -1, "invalid adc pointer NULL");
     return -1;
   }
   result = file_read(adc->fd, value, 64);
@@ -123,7 +123,7 @@ int libsoc_adc_free(adc *adc)
 {
   if (adc == NULL)
   {
-    libsoc_adc_debug(__func__, -1, -1, "invalid adc pointer");
+    libsoc_adc_debug(__func__, -1, -1, "invalid adc pointer NULL");
     return EXIT_FAILURE;
   }
 
