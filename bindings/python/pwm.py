@@ -1,6 +1,7 @@
 #!/usr/bin/python -OO
-import sys
+import sys, logging
 from ._libsoc import api, LS_PWM_SHARED, LS_PWM_GREEDY, LS_PWM_WEAK
+logging.basicConfig(level=logging.DEBUG if __debug__ else logging.INFO)
 
 PY3 = sys.version_info >= (3, 0)
 
@@ -30,7 +31,7 @@ class PWM(object):
         '''
         Initialize a PWM output.
 
-        mode can be LS_PWM_SHARED (default), LS_PWM_GREEDY, or LS_PWM_WEAK.
+        mode can be 'shared' (default), 'greedy', or 'weak'
         '''
         if not isinstance(chip, int):
             raise TypeError('Invalid chip id must be an "int"')
@@ -38,30 +39,41 @@ class PWM(object):
             raise TypeError('Invalid adc pin must be an "int"')
         self.chip = chip
         self.pin = pin
-        self.mode = MODE[mode]
-        self.period = kwargs.get('period')
-        self.duty_cycle = kwargs.get('duty_cycle')
-        self.polarity = kwargs.get('polarity')
+        logging.debug("locals(): %s", locals())
+        self.mode = mode
+        self.period = kwargs.get('period', None)
+        self.duty_cycle = kwargs.get('duty_cycle', None)
+        self.polarity = kwargs.get('polarity', None)
+        self.enabled = kwargs.get('enabled', None)
         self._pwm = None
 
-    period = property(
-        lambda self: api.libsoc_pwm_get_period(self),
-        lambda self, value: api.libsoc_pwm_set_period(self, value))
+    pwm_period = property(
+        lambda self: api.libsoc_pwm_get_period(self._pwm),
+        lambda self, value: api.libsoc_pwm_set_period(self._pwm, value))
 
-    duty_cycle = property(
-        lambda self: api.libsoc_pwm_get_duty_cycle(self),
-        lambda self, value: api.libsoc_pwm_set_duty_cycle(self, value))
+    pwm_duty_cycle = property(
+        lambda self: api.libsoc_pwm_get_duty_cycle(self._pwm),
+        lambda self, value: api.libsoc_pwm_set_duty_cycle(self._pwm, value))
 
-    polarity = property(
-        lambda self: POLARITY[api.libsoc_pwm_get_polarity(self)],
-        lambda self, value: api.libsoc_pwm_set_polarity(self, POLARITY[value]))
+    pwm_polarity = property(
+        lambda self: POLARITY[api.libsoc_pwm_get_polarity(self._pwm)],
+        lambda self, value: api.libsoc_pwm_set_polarity(self._pwm,
+                                                        POLARITY[value])) 
 
-    enabled = property(
-        lambda self: api.libsoc_pwm_get_enabled(self),
-        lambda self, value: api.libsoc_pwm_set_enabled(self, value))
+    pwm_enabled = property(
+        lambda self: api.libsoc_pwm_get_enabled(self._pwm),
+        lambda self, value: api.libsoc_pwm_set_enabled(self._pwm, value))
 
     def __enter__(self):
         self.open()
+        if self.period is not None:
+            self.pwm_period = self.period
+        if self.duty_cycle is not None:
+            self.pwm_duty_cycle = self.duty_cycle
+        if self.polarity is not None:
+            self.pwm_polarity = POLARITY[self.polarity]
+        if self.enabled is not None:
+            self.pwm_enabled = self.enabled
         return self
 
     def __exit__(self, type, value, traceback):
@@ -72,7 +84,7 @@ class PWM(object):
         Opens a file descriptor to the GPIO and configures it.
         '''
         assert self._pwm is None
-        self._pwm = api.libsoc_pwm_request(self.chip, self.pin, self.mode)
+        self._pwm = api.libsoc_pwm_request(self.chip, self.pin, MODE[self.mode])
         if self._pwm == 0:  # NULL from native code
             raise IOError(
                 'Unable to open pwm chip(%d) pin(%d)' % (self.chip, self.pin))

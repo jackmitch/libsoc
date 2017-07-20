@@ -53,5 +53,7 @@ class ADC(object):
         api.libsoc_set_debug(v)
 
     def read(self):
-        if api.libsoc_adc_get_value(self._adc) == -1:
+        value = api.libsoc_adc_get_value(self._adc)
+        if value == -1:
             raise IOError('Error reading adc value')
+        return value
