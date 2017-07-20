@@ -93,6 +93,24 @@ adc* libsoc_adc_request (unsigned int chip, unsigned int adc_num)
   return NULL;
 }
 
+int libsoc_adc_get_value (adc *adc)
+{
+  char value[64] = "";  // only 12 bit number but anticipating future needs
+  char *result;
+  if (adc == NULL)
+  {
+    libsoc_adc_debug(__func__, -1, -1, "invalid adc pointer");
+    return -1;
+  }
+  result = fgets(value, 64, adc->fd);
+  if (result != value || strlen(value) < 1)
+  {
+    libsoc_adc_debug(__func__, adc->chip, adc->adc, "ADC read failure");
+    return -1;
+  }
+  return atoi(value);
+}
+
 int libsoc_adc_free(adc *adc)
 {
   if (adc == NULL)
