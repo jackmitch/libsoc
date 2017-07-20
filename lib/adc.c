@@ -102,7 +102,7 @@ adc* libsoc_adc_request (unsigned int chip, unsigned int adc_num)
 int libsoc_adc_get_value (adc *adc)
 {
   char value[64] = "";  // only 12 bit number but anticipating future needs
-  int result;
+  long result;
   if (adc == NULL)
   {
     libsoc_adc_debug(__func__, -1, -1, "invalid adc pointer NULL");
@@ -115,8 +115,12 @@ int libsoc_adc_get_value (adc *adc)
     return -1;
   }
   if (value[strlen(value) - 1] == '\n') value[strlen(value) - 1] = '\0';
-  libsoc_adc_debug(__func__, adc->chip, adc->adc, "ADC value: \"%s\"", value);
-  return atoi(value);
+  libsoc_adc_debug(__func__, adc->chip, adc->adc, "ADC string: \"%s\"", value);
+  result = strtol(value, NULL, 10);
+  if (result == LONG_MAX) libsoc_adc_debug(__func__, adc->chip, adc->adc,
+                                           "Failed conversion to long integer");
+  libsoc_adc_debug(__func__, adc->chip, adc->adc, "ADC value: %d", result);
+  return result;
 }
 
 int libsoc_adc_free(adc *adc)
