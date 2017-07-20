@@ -11,6 +11,8 @@
 #include "libsoc_adc.h"
 
 #define STR_BUF 256
+/* https://stackoverflow.com/a/34135270/493161 */
+#define LENGTH(array) ((int) (sizeof (array) / sizeof(array)[0]))
 
 void libsoc_adc_debug (const char *func, unsigned int chip,
   unsigned int adc, char *format, ...)
@@ -43,8 +45,9 @@ adc* libsoc_adc_request (unsigned int chip, unsigned int adc_num)
 
   libsoc_adc_debug (__func__, chip, adc_num, "requested ADC");
 
-  for (i = 0; i < sizeof(ADC_DEVICE_FORMAT); i++)
+  for (i = 0; i < LENGTH(ADC_DEVICE_FORMAT); i++)
   {
+    libsoc_adc_debug (__func__, chip, adc_num, "trying format string %d", i);
     result = snprintf(chip_str, STR_BUF, ADC_DEVICE_FORMAT[i], chip);
     if (result < 0)
     {
