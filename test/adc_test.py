@@ -9,8 +9,13 @@ def test_adc():
     built-in test routine
     '''
     for index in range(8):
-        adc = ADC(0, index)
-        print('Value read at ADC(%d, %d): %d' % (adc.chip, adc.pin, adc.read()))
+        value = None
+        try:
+            adc = ADC(0, index)
+            value = adc.read()
+        except IOError:
+            pass
+        print('Value read at ADC(%d, %d): %s' % (adc.chip, adc.pin, value))
 
 if __name__ == '__main__':
     test_adc()
