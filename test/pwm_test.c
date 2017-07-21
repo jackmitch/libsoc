@@ -28,8 +28,8 @@ int main(int argc, char **argv)
   long period, duty_cycle;
   chip = argc > 1 ? atoi(argv[1]) : PWM_OUTPUT_CHIP;
   output = argc > 2 ? atoi(argv[2]) : PWM_CHIP_OUTPUT;
-  period = argc > 3 ? atol(argv[3]) : 10;
-  duty_cycle = argc > 4 ? atol(argv[4]) : 5;
+  period = argc > 3 ? atoi(argv[3]) : 10;
+  duty_cycle = argc > 4 ? atoi(argv[4]) : 5;
   libsoc_set_debug(1);
   fprintf(stderr, "Initializing PWM with parameters %d, %d, %d, %d\n",
           chip, output, period, duty_cycle);
