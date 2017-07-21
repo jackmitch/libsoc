@@ -4,10 +4,11 @@ Simple test of the PWM API
 
 Should duplicate function of pwm_test.c (q.v.)
 '''
-import sys, os
+import sys, os, logging
 from ast import literal_eval
 from libsoc import PWM
 PWM.set_debug(__debug__)
+logging.basicConfig(level=logging.DEBUG if __debug__ else logging.INFO)
 
 def test_pwm(chip=0, pin=1, mode='shared', polarity='normal', period=10,
              duty_cycle=5, enabled=False):
@@ -20,17 +21,18 @@ def test_pwm(chip=0, pin=1, mode='shared', polarity='normal', period=10,
         value = getattr(pwm, key)
         if value != kwargs[key]:
             sys.stderr.write('Wrong value %s for pwm.%s\n' % (value, key))
-    try:
-        pwm.duty_cycle = pwm.period + 5
-        raise SystemError('The system allowed a duty cycle over 100%')
-    except ValueError:
+    pwm.duty_cycle = pwm.period + 5
+    if pwm.duty_cycle == pwm.period + 5:
+        logging.error('PWM allowed a duty cycle > 100%')
+    else:
+        logging.debug('PWM properly rejected >100% duty cycle')
         pass
     pwm.on()
     if not pwm.enabled:
-        raise SystemError('The PWM would not turn on')
+        logging.error('The PWM would not turn on')
     pwm.off()
     if pwm.enabled:
-        raise SystemError('The PWM would not shut off')
+        logging.error('The PWM would not shut off')
 
 def safe_int(string):
     '''

@@ -42,41 +42,37 @@ class PWM(object):
             raise TypeError('Invalid adc pin must be an "int"')
         self.chip = chip
         self.pin = pin
-        logging.debug("locals(): %s", locals())
         self.mode = mode
-        self.period = kwargs.get('period', None)
-        self.duty_cycle = kwargs.get('duty_cycle', None)
-        self.polarity = kwargs.get('polarity', None)
-        self.enabled = kwargs.get('enabled', None)
+        self.args = locals()
         self._pwm = None
 
-    pwm_period = property(
+    period = property(
         lambda self: api.libsoc_pwm_get_period(self._pwm),
         lambda self, value: api.libsoc_pwm_set_period(self._pwm, value))
 
-    pwm_duty_cycle = property(
+    duty_cycle = property(
         lambda self: api.libsoc_pwm_get_duty_cycle(self._pwm),
         lambda self, value: api.libsoc_pwm_set_duty_cycle(self._pwm, value))
 
-    pwm_polarity = property(
+    polarity = property(
         lambda self: POLARITY[api.libsoc_pwm_get_polarity(self._pwm)],
         lambda self, value: api.libsoc_pwm_set_polarity(self._pwm,
                                                         POLARITY[value])) 
 
-    pwm_enabled = property(
+    enabled = property(
         lambda self: api.libsoc_pwm_get_enabled(self._pwm),
         lambda self, value: api.libsoc_pwm_set_enabled(self._pwm, value))
 
     def __enter__(self):
         self.open()
-        if self.period is not None:
-            self.pwm_period = self.period
-        if self.duty_cycle is not None:
-            self.pwm_duty_cycle = self.duty_cycle
-        if self.polarity is not None:
-            self.pwm_polarity = POLARITY[self.polarity]
-        if self.enabled is not None:
-            self.pwm_enabled = self.enabled
+        if self.args['period'] is not None:
+            self.period = self.args['period']
+        if self.args['duty_cycle'] is not None:
+            self.duty_cycle = self.args['duty_cycle']
+        if self.args['polarity'] is not None:
+            self.polarity = POLARITY[self.args['polarity']]
+        if self.args['enabled'] is not None:
+            self.enabled = self.args['enabled']
         return self
 
     def __exit__(self, type, value, traceback):
@@ -106,7 +102,7 @@ class PWM(object):
         api.libsoc_set_debug(v)
 
     def on(self):
-        self.enabled = ENABLED
+        self.enabled = 1
 
     def off(self):
-        self.enabled = DISABLED
+        self.enabled = 0
