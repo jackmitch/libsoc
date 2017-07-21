@@ -15,6 +15,7 @@ def test_pwm(chip=0, pin=1, period=10, duty_cycle=5,
     '''
     Duplicate pwm_test.c
     '''
+    logging.debug('locals(): %s', locals())
     kwargs = {k: safe_int(v) for k, v in locals().items()}
     logging.debug('kwargs: %s', kwargs)
     with PWM(**kwargs) as pwm:
@@ -38,6 +39,8 @@ def safe_int(string):
     '''
     Returns an int if it parses as one, otherwise a string
     '''
+    if isinstance(string, int):
+        return string
     try:
         number = literal_eval(string)
         if isinstance(number, int):
