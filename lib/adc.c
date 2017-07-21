@@ -82,17 +82,17 @@ adc* libsoc_adc_request (unsigned int chip, unsigned int adc_num)
           libsoc_adc_debug(__func__, chip, adc_num, "Found requested ADC");
           new_adc = malloc(sizeof(adc));
           new_adc->fd = file_open(adc_str, O_RDONLY);
-	}
-        if (new_adc->fd < 0)
-        {
-          free(new_adc);
-          libsoc_adc_debug(__func__, chip, adc_num,
-                           "Failed to open adc sysfs file: %d", new_adc->fd);
-          return NULL;
+          if (new_adc->fd < 0)
+          {
+            free(new_adc);
+            libsoc_adc_debug(__func__, chip, adc_num,
+                             "Failed to open adc sysfs file: %d", new_adc->fd);
+            return NULL;
+          }
+          new_adc->chip = chip;
+          new_adc->adc = adc_num;
+          return new_adc;
         }
-        new_adc->chip = chip;
-        new_adc->adc = adc_num;
-        return new_adc;
       }
     }
   }
