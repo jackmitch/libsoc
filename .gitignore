@@ -25,6 +25,7 @@ test/gpio_test
 test/spi_test
 test/i2c_test
 test/pwm_test
+test/adc_test
 libtool
 libsoc.pc
 *.la
