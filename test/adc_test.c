@@ -18,18 +18,18 @@
  *   developer-guide/gpio/kernel-gpio.html
  */
 
-#define ADC_OUTPUT_CHIP 0
-#define ADC_PIN 0
-
-int main(void)
+int main(int argc, char *argv[])
 {
   int ret = EXIT_FAILURE;
   adc *adc;
-  int value;
+  int chip = 0, pin = 0, value;
+
+  if (argc > 1) chip = atoi(argv[1]);
+  if (argc > 2) pin = atoi(argv[2]);
 
   libsoc_set_debug(1);
 
-  adc = libsoc_adc_request(ADC_OUTPUT_CHIP, ADC_PIN);
+  adc = libsoc_adc_request(chip, pin);
 
   if (!adc)
   {
