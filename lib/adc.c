@@ -64,7 +64,7 @@ adc* libsoc_adc_request (unsigned int chip, unsigned int adc_num)
     if (file_valid(chip_str))
     {
       libsoc_adc_debug(__func__, chip, adc_num, "Found requested chip");
-      for (j = 0; j < sizeof(ADC_READ_FORMAT); j++)
+      for (j = 0; j < LENGTH(ADC_READ_FORMAT); j++)
       {
         libsoc_adc_debug (__func__, chip, adc_num,
                           "trying pin format string %d", j);
