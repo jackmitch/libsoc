@@ -20,7 +20,7 @@ def test_pwm(chip=0, pin=1, mode='shared', polarity='normal', period=1000,
     with PWM(**kwargs) as pwm:
         for key in kwargs:
             value = getattr(pwm, key)
-            logging.debug('Check value %s for pwm.%s\n' % (value, key))
+            logging.debug('Check value %s for pwm.%s', value, key)
         pwm.duty_cycle = pwm.period + pwm.duty_cycle
         if pwm.duty_cycle != pwm.duty_cycle:
             logging.error('PWM allowed a duty cycle > 100%')
