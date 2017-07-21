@@ -28,7 +28,7 @@ class PWM(object):
     Example of use:
 
         with PWM(0, 0) as pwm:
-            pwm.write(.25)
+            pwm.enable = 1
     '''
     def __init__(self, chip, pin, mode='shared', **kwargs):
         '''
@@ -76,10 +76,12 @@ class PWM(object):
         Opens a file descriptor to the GPIO and configures it.
         '''
         assert self._pwm is None
+        logging.debug('Opening PWM for use')
         self._pwm = api.libsoc_pwm_request(self.chip, self.pin, MODE[self.mode])
         if self._pwm == 0:  # NULL from native code
             raise IOError(
                 'Unable to open pwm chip(%d) pin(%d)' % (self.chip, self.pin))
+        logging.debug('Setting values: %s', self.kwargs)
         if self.kwargs.get('period') is not None:
             logging.debug('setting period to %s', self.kwargs['period'])
             self.period = self.kwargs['period']
@@ -94,7 +96,12 @@ class PWM(object):
             self.enabled = self.kwargs['enabled']
 
     def close(self):
-        '''Cleans up the memory and resources allocated by the open method.'''
+        '''
+        Cleans up the memory and resources allocated by the open method.
+
+        Note that in "shared" mode it does not unexport the pin: see
+        lib/pwm.c.
+        '''
         if self._pwm:
             api.libsoc_pwm_free(self._pwm)
             self._pwm = None
