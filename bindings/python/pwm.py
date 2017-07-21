@@ -66,14 +66,6 @@ class PWM(object):
 
     def __enter__(self):
         self.open()
-        if self.kwargs.get('period') is not None:
-            self.period = self.kwargs['period']
-        if self.kwargs.get('duty_cycle') is not None:
-            self.duty_cycle = self.kwargs['duty_cycle']
-        if self.kwargs.get('polarity') is not None:
-            self.polarity = POLARITY[self.kwargs['polarity']]
-        if self.kwargs.get('enabled') is not None:
-            self.enabled = self.kwargs['enabled']
         return self
 
     def __exit__(self, type, value, traceback):
@@ -88,6 +80,18 @@ class PWM(object):
         if self._pwm == 0:  # NULL from native code
             raise IOError(
                 'Unable to open pwm chip(%d) pin(%d)' % (self.chip, self.pin))
+        if self.kwargs.get('period') is not None:
+            logging.debug('setting period to %s', self.kwargs['period'])
+            self.period = self.kwargs['period']
+        if self.kwargs.get('duty_cycle') is not None:
+            logging.debug('setting duty cycle to %s', self.kwargs['duty_cycle'])
+            self.duty_cycle = self.kwargs['duty_cycle']
+        if self.kwargs.get('polarity') is not None:
+            logging.debug('setting polarity to %s', self.kwargs['polarity'])
+            self.polarity = POLARITY[self.kwargs['polarity']]
+        if self.kwargs.get('enabled') is not None:
+            logging.debug('setting enabled to %s', self.kwargs['enabled'])
+            self.enabled = self.kwargs['enabled']
 
     def close(self):
         '''Cleans up the memory and resources allocated by the open method.'''

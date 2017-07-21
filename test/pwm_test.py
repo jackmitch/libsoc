@@ -10,8 +10,8 @@ from libsoc import PWM
 PWM.set_debug(__debug__)
 logging.basicConfig(level=logging.DEBUG if __debug__ else logging.INFO)
 
-def test_pwm(chip=0, pin=1, mode='shared', polarity='normal', period=10,
-             duty_cycle=5, enabled=False):
+def test_pwm(chip=0, pin=1, mode='shared', polarity='normal', period=1000,
+             duty_cycle=500, enabled=False):
     '''
     Duplicate pwm_test.c
     '''
@@ -20,10 +20,9 @@ def test_pwm(chip=0, pin=1, mode='shared', polarity='normal', period=10,
     with PWM(**kwargs) as pwm:
         for key in kwargs:
             value = getattr(pwm, key)
-            if value != kwargs[key]:
-                sys.stderr.write('Wrong value %s for pwm.%s\n' % (value, key))
-        pwm.duty_cycle = pwm.period + 5
-        if pwm.duty_cycle == pwm.period + 5:
+            logging.debug('Check value %s for pwm.%s\n' % (value, key))
+        pwm.duty_cycle = pwm.period + pwm.duty_cycle
+        if pwm.duty_cycle != pwm.duty_cycle:
             logging.error('PWM allowed a duty cycle > 100%')
         else:
             logging.debug('PWM properly rejected >100% duty cycle')
@@ -46,7 +45,7 @@ def safe_int(string):
         else:
             raise TypeError('Not a number')
     except ValueError, TypeError:
-        return string
+        return string or None
 
 if __name__ == '__main__':
     '''
