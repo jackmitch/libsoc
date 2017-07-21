@@ -16,6 +16,7 @@ def test_pwm(chip=0, pin=1, mode='shared', polarity='normal', period=10,
     Duplicate pwm_test.c
     '''
     kwargs = {k: safe_int(v) for k, v in locals().items()}
+    logging.debug('kwargs: %s', kwargs)
     with PWM(**kwargs) as pwm:
         for key in kwargs:
             value = getattr(pwm, key)

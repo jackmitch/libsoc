@@ -43,7 +43,8 @@ class PWM(object):
         self.chip = chip
         self.pin = pin
         self.mode = mode
-        self.args = locals()
+        self.kwargs = locals()
+        logging.debug('self.kwargs: %s', self.kwargs)
         self._pwm = None
 
     period = property(
@@ -65,14 +66,14 @@ class PWM(object):
 
     def __enter__(self):
         self.open()
-        if self.args['period'] is not None:
-            self.period = self.args['period']
-        if self.args['duty_cycle'] is not None:
-            self.duty_cycle = self.args['duty_cycle']
-        if self.args['polarity'] is not None:
-            self.polarity = POLARITY[self.args['polarity']]
-        if self.args['enabled'] is not None:
-            self.enabled = self.args['enabled']
+        if self.kwargs.get('period') is not None:
+            self.period = self.kwargs['period']
+        if self.kwargs.get('duty_cycle') is not None:
+            self.duty_cycle = self.kwargs['duty_cycle']
+        if self.kwargs.get('polarity') is not None:
+            self.polarity = POLARITY[self.kwargs['polarity']]
+        if self.kwargs.get('enabled') is not None:
+            self.enabled = self.kwargs['enabled']
         return self
 
     def __exit__(self, type, value, traceback):
