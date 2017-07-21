@@ -22,13 +22,15 @@
 #define PWM_OUTPUT_CHIP 0
 #define PWM_CHIP_OUTPUT 1
 
-int main(void)
+int main(int argc, char **argv)
 {
-  int ret = EXIT_SUCCESS;
+  int ret = EXIT_SUCCESS, chip, output;
+  chip = argc > 1 ? atoi(argv[1]) : PWM_OUTPUT_CHIP;
+  output = argc > 2 ? atoi(argv[2]) : PWM_CHIP_OUTPUT;
 
   libsoc_set_debug(1);
 
-  pwm *pwm = libsoc_pwm_request(PWM_OUTPUT_CHIP, PWM_CHIP_OUTPUT, LS_PWM_SHARED);
+  pwm *pwm = libsoc_pwm_request(chip, output, LS_PWM_SHARED);
 
   if (!pwm)
   {
