@@ -43,7 +43,7 @@ class PWM(object):
         self.chip = chip
         self.pin = pin
         self.mode = mode
-        self.kwargs = locals()
+        self.kwargs = kwargs
         logging.debug('self.kwargs: %s', self.kwargs)
         self._pwm = None
 

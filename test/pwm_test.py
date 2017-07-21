@@ -10,8 +10,8 @@ from libsoc import PWM
 PWM.set_debug(__debug__)
 logging.basicConfig(level=logging.DEBUG if __debug__ else logging.INFO)
 
-def test_pwm(chip=0, pin=1, mode='shared', polarity='normal', period=1000,
-             duty_cycle=500, enabled=False):
+def test_pwm(chip=0, pin=1, period=10, duty_cycle=5, 
+             mode='shared', polarity='normal', enabled=False):
     '''
     Duplicate pwm_test.c
     '''
@@ -52,10 +52,10 @@ if __name__ == '__main__':
     You can set chip and pin number on the command line
     
     Also other properties in this order:
-        mode: 'shared', 'greedy', or 'weak'
-        polarity: 'normal' or 'inverse'
         period: an integer up to hardware limit (1000000000 for ARTIK7)
         duty_cycle: an integer up to `period`
+        mode: 'shared', 'greedy', or 'weak'
+        polarity: 'normal' or 'inverse'
         enabled: 1 (on) or 0 (off)
     '''
     test_pwm(*sys.argv[1:])
