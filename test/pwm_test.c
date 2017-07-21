@@ -31,6 +31,8 @@ int main(int argc, char **argv)
   period = argc > 3 ? atol(argv[3]) : 10;
   duty_cycle = argc > 4 ? atol(argv[4]) : 5;
   libsoc_set_debug(1);
+  fprintf(stderr, "Initializing PWM with parameters %d, %d, %d, %d\n",
+          chip, output, period, duty_cycle);
 
   pwm *pwm = libsoc_pwm_request(chip, output, LS_PWM_SHARED);
 
