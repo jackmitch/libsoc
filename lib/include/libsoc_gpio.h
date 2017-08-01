@@ -49,10 +49,15 @@ typedef struct {
  * \enum gpio_int_ret
  * \brief defined values for return type of blocked gpio interrupts
  */
-
+#define FAIL_LT_SUCCESS     (EXIT_FAILURE < EXIT_SUCCESS)
 typedef enum {
+    #if FAIL_LT_SUCCESS
 	LS_INT_ERROR = EXIT_FAILURE,
 	LS_INT_TRIGGERED = EXIT_SUCCESS,
+    #else
+	LS_INT_TRIGGERED = EXIT_SUCCESS,
+	LS_INT_ERROR = EXIT_FAILURE,
+    #endif
 	LS_INT_TIMEOUT,
 } gpio_int_ret;
 

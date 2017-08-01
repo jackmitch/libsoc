@@ -70,7 +70,7 @@ documentation for more info.
 ### Manually Building
 
 First, make sure you have the prerequisites installed. Under Debian Jessie this
-means `build-essential`, `autoconf`, `libtool-bin` and `pkg-config`. You'll also
+means `build-essential`, `autoconf`, `automake`, `libtool-bin` and `pkg-config`. You'll also
 need `python-dev` or `python3-dev`, if you wish to install the python-bindings.
 
 Then, clone libsoc from its git repository.
