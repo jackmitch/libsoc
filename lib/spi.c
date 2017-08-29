@@ -373,6 +373,9 @@ libsoc_spi_free (spi * spi)
     }
 
   libsoc_spi_debug (__func__, spi, "freeing spi device");
+  
+  if (file_close (spi->fd) < 0)
+    return EXIT_FAILURE;
 
   free (spi);
 
