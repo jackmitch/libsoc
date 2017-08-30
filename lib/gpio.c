@@ -519,6 +519,9 @@ libsoc_gpio_callback_interrupt (gpio * gpio, int (*callback_fn) (void *),
 int
 libsoc_gpio_callback_interrupt_cancel (gpio * gpio)
 {
+  if (gpio->callback == NULL)
+    return EXIT_SUCCESS;
+
   if (gpio->callback->thread == NULL)
   {
     libsoc_gpio_debug (__func__, gpio->gpio, "callback thread was NULL");
