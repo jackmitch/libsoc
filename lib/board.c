@@ -122,7 +122,7 @@ libsoc_board_free(board_config *config)
     }
 }
 
-unsigned int
+int
 libsoc_board_gpio_id(board_config *config, const char* pin)
 {
   return conffile_get_int(config->conf, "GPIO", pin, -1);
