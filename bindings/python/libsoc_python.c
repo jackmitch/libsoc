@@ -41,12 +41,30 @@ _add_constants(PyObject *m)
   PyModule_AddIntConstant(m, "MODE_ERROR", MODE_ERROR);
 
   mod = PyImport_ImportModule("ctypes");
+  if (mod == NULL) {
+      printf("ERROR importing 'ctypes' module:\n");
+      PyErr_Print();
+      exit(-1);
+  }
   func = PyObject_GetAttrString(mod, "CDLL");
-  if (!PyCallable_Check(func))
-    PyErr_Print();
+  if (func == NULL) {
+      printf("ERROR getting 'CDLL' function:\n");
+      PyErr_Print();
+      exit(-1);
+  }
+  if (!PyCallable_Check(func)) {
+	  printf("'CDLL' function is not callable:\n");
+      PyErr_Print();
+      exit(-1);
+  }
 
   args = Py_BuildValue("(s)", LIBSOC_SO);
   api = PyObject_CallObject(func, args);
+  if (api == NULL) {
+      printf("'CDLL' function call to load '%s' failed:\n", LIBSOC_SO);
+      PyErr_Print();
+      exit(-1);
+  }
   Py_DECREF(args);
   PyModule_AddObject(m, "api", api);
 }

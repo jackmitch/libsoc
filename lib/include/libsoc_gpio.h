@@ -51,8 +51,8 @@ typedef struct {
  */
 
 typedef enum {
-	LS_INT_ERROR = EXIT_FAILURE,
 	LS_INT_TRIGGERED = EXIT_SUCCESS,
+	LS_INT_ERROR = EXIT_FAILURE,
 	LS_INT_TIMEOUT,
 } gpio_int_ret;
 

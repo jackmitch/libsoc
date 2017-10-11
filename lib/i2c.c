@@ -97,6 +97,9 @@ libsoc_i2c_free (i2c * i2c)
     }
 
   libsoc_i2c_debug (__func__, i2c, "freeing i2c device");
+  
+  if (file_close (i2c->fd) < 0)
+    return EXIT_FAILURE;
 
   free (i2c);
 
