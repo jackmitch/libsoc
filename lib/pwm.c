@@ -88,6 +88,9 @@ pwm* libsoc_pwm_request (unsigned int chip, unsigned int pwm_num,
       return NULL;
     }
 
+    /* Give udev some time to execute the rules of the exported PWM */
+    usleep(200000);
+
     sprintf(tmp_str, "/sys/class/pwm/pwmchip%d/pwm%d/enable", chip, pwm_num);
 
     if (!file_valid(tmp_str))

@@ -104,6 +104,9 @@ libsoc_gpio_request (unsigned int gpio_id, gpio_mode mode)
       if (file_close (fd))
 	return NULL;
 
+      /* Give udev some time to execute the rules of the exported GPIO */
+      usleep(200000);
+
       sprintf (tmp_str, "/sys/class/gpio/gpio%d", gpio_id);
 
       if (!file_valid (tmp_str))
