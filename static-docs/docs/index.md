@@ -64,14 +64,31 @@ follows the traditional linux methodology of autoreconf, configure, make.
 
 First, check if your distro packages libsoc. If it does it is easiest to install
 your distro's version of libsoc through its provided package manager. Depending
-on your distro this may be `apt-get`, `yum`, `pacman`, etc. Consult your distro
-documentation for more info.
+on your distro this may be `apt-get`, `dnf`, `yum`, `pacman`, etc. Consult your
+distro documentation for more info.
 
 ### Manually Building
 
 First, make sure you have the prerequisites installed. Under Debian Jessie this
-means `build-essential`, `autoconf`, `libtool-bin` and `pkg-config`. You'll also
-need `python-dev` or `python3-dev`, if you wish to install the python-bindings.
+means:
+
+ * `autoconf`
+ * `build-essential`
+ * `libtool-bin`
+ * `pkg-config`
+ * `python-dev` *
+ * `python3-dev` **
+
+Under Fedora this would instead be:
+
+ * `autconf`
+ * `automake`
+ * `libtool`
+ * `python2-devel` *
+ * `python3-devel` **
+
+\* Optional, only required if Python 2 bindings are desired.<br>
+\*\* Optional, only required if Python 3 bindings are desired.
 
 Then, clone libsoc from its git repository.
 
