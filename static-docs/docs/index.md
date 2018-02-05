@@ -81,7 +81,7 @@ means:
 
 Under Fedora this would instead be:
 
- * `autconf`
+ * `autoconf`
  * `automake`
  * `libtool`
  * `python2-devel` *
