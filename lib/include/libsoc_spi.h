@@ -13,13 +13,13 @@ extern "C" {
  * \param int fd - file descriptor to open spidev character device
  * \param struct gpio_callback *callback - struct used to store interrupt
  *  callback data
- * \param uint8_t spi_dev - major number of spi device
+ * \param uint16_t spi_dev - major number of spi device
  * \param uint8_t spi_dev - minor number of spi device
  */
 
 typedef struct {
   int fd;
-  uint8_t spi_dev;
+  uint16_t spi_dev;
   uint8_t chip_select;
 } spi;
 
@@ -46,14 +46,14 @@ typedef enum {
 } spi_mode;
 
 /**
- * \fn spi* libsoc_spi_init (uint8_t spidev_device, uint8_t chip_select)
+ * \fn spi* libsoc_spi_init (uint16_t spidev_device, uint8_t chip_select)
  * \brief opens the spidev character device and intitialises a new spi
  *  struct
- * \param uint8_t spidev_device - the major spidev number
+ * \param uint16_t spidev_device - the major spidev number
  * \param uint8_t spidev_device - the minor spidev number
  * \return spi* struct pointer or NULL on failure
  */
-spi* libsoc_spi_init (uint8_t spidev_device, uint8_t chip_select);
+spi* libsoc_spi_init (uint16_t spidev_device, uint8_t chip_select);
 
 /**
  * \fn int libsoc_spi_free(spi* spi)

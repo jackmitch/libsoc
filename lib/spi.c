@@ -44,7 +44,7 @@ libsoc_spi_debug (const char *func, spi * spi, char *format, ...)
 }
 
 spi *
-libsoc_spi_init (uint8_t spidev_device, uint8_t chip_select)
+libsoc_spi_init (uint16_t spidev_device, uint8_t chip_select)
 {
   spi *spi_dev;
 
