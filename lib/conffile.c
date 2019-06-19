@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: LGPL-2.1-only */
+
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>

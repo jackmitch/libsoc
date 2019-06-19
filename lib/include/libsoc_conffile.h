@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: LGPL-2.1-only */
+
 #ifndef _LIBSOC_CONFFILE_H_
 #define _LIBSOC_CONFFILE_H_
 
