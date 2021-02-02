@@ -350,7 +350,7 @@ int libsoc_pwm_get_polarity(pwm *pwm)
     polarity = POLARITY_ERROR;
   }
 
-  if (polarity > 0)
+  if (polarity >= 0)
   {
     libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm, "got polarity as %s", pwm_polarity_strings[polarity]);
   }
