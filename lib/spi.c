@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: LGPL-2.1-only */
+
 #include <unistd.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -44,7 +46,7 @@ libsoc_spi_debug (const char *func, spi * spi, char *format, ...)
 }
 
 spi *
-libsoc_spi_init (uint8_t spidev_device, uint8_t chip_select)
+libsoc_spi_init (uint16_t spidev_device, uint8_t chip_select)
 {
   spi *spi_dev;
 
@@ -373,6 +375,9 @@ libsoc_spi_free (spi * spi)
     }
 
   libsoc_spi_debug (__func__, spi, "freeing spi device");
+  
+  if (file_close (spi->fd) < 0)
+    return EXIT_FAILURE;
 
   free (spi);
 

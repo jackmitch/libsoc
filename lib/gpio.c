@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: LGPL-2.1-only */
+
 #include <stdlib.h>
 #include <stdarg.h>
 #include <sys/stat.h>
@@ -513,6 +515,8 @@ libsoc_gpio_callback_interrupt (gpio * gpio, int (*callback_fn) (void *),
     }
   else
     {
+      pthread_mutex_unlock(&gpio->callback->ready);
+      pthread_mutex_destroy(&gpio->callback->ready);
       free (gpio->callback->thread);
       free (gpio->callback);
 
@@ -525,6 +529,9 @@ libsoc_gpio_callback_interrupt (gpio * gpio, int (*callback_fn) (void *),
 int
 libsoc_gpio_callback_interrupt_cancel (gpio * gpio)
 {
+  if (gpio->callback == NULL)
+    return EXIT_SUCCESS;
+
   if (gpio->callback->thread == NULL)
   {
     libsoc_gpio_debug (__func__, gpio->gpio, "callback thread was NULL");
@@ -534,6 +541,9 @@ libsoc_gpio_callback_interrupt_cancel (gpio * gpio)
   pthread_cancel (*gpio->callback->thread);
 
   pthread_join (*gpio->callback->thread, NULL);
+
+  pthread_mutex_unlock(&gpio->callback->ready);
+  pthread_mutex_destroy(&gpio->callback->ready);
 
   free (gpio->callback->thread);
   free (gpio->callback);

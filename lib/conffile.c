@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: LGPL-2.1-only */
+
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>
@@ -164,6 +166,7 @@ conffile_get_int(conffile *conf, const char *sectname, const char *key, int defv
   if (strval)
     {
       char *endptr;
+      errno = 0;
       val = strtol(strval, &endptr, 10);
       if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
             || (errno != 0 && val == 0) || endptr == strval || *endptr != '\0'

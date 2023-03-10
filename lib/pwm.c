@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: LGPL-2.1-only */
+
 #include <stdlib.h>
 #include <stdarg.h>
 #include <sys/stat.h>
@@ -347,7 +349,7 @@ int libsoc_pwm_get_polarity(pwm *pwm)
     polarity = POLARITY_ERROR;
   }
 
-  if (polarity > -1)
+  if (polarity >= 0)
   {
     libsoc_pwm_debug(__func__, pwm->chip, pwm->pwm, "got polarity as %s", pwm_polarity_strings[polarity]);
   }

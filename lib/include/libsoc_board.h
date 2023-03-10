@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: LGPL-2.1-only */
+
 #ifndef _LIBSOC_GPIO_ID_H_
 #define _LIBSOC_GPIO_ID_H_
 
@@ -35,14 +37,14 @@ board_config *libsoc_board_init();
 void libsoc_board_free(board_config *config);
 
 /**
- * \fn unsigned int libsoc_gpio_id(board_config* config, const char* pin)
+ * \fn int libsoc_gpio_id(board_config* config, const char* pin)
  * \brief find the gpio id of a given pin name
  * \param board_config* config - valid pointer to board_config
  * \param char* pin - a pin name for the board like "P49"
  * \return >=0 for gpio id or -1 on failure
  */
 
-unsigned int libsoc_board_gpio_id(board_config *config, const char* pin);
+int libsoc_board_gpio_id(board_config *config, const char* pin);
 
 #ifdef __cplusplus
 }

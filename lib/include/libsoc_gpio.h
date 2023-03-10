@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: LGPL-2.1-only */
+
 #ifndef _LIBSOC_GPIO_H_
 #define _LIBSOC_GPIO_H_
 
@@ -51,8 +53,8 @@ typedef struct {
  */
 
 typedef enum {
-	LS_INT_ERROR = EXIT_FAILURE,
 	LS_INT_TRIGGERED = EXIT_SUCCESS,
+	LS_INT_ERROR = EXIT_FAILURE,
 	LS_INT_TIMEOUT,
 } gpio_int_ret;
 

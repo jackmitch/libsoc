@@ -10,7 +10,7 @@ System on Chips (SoC) through generic Linux Kernel interfaces.
 It is aimed at new Linux users, and intends to be a stepping stone to
 enable a user to get started quickly. It is optimised for reliability
 rather than speed. While the library should be fast, no guarantees are
-made on it's determinism and it should not be used in time critical
+made on its determinism and it should not be used in time critical
 routines.
 
 ### Why libsoc
@@ -30,7 +30,7 @@ exposing the correct interfaces for the defined peripheral.
 
 ### SoC Support
 
-If your SoC exposes it's I/O subsystems using the generic Linux kernel
+If your SoC exposes its I/O subsystems using the generic Linux kernel
 interfaces then yes, libsoc supports your SoC!
 
 ### Language Support
@@ -63,15 +63,32 @@ libsoc is built and installed using the autotools build system. This means it
 follows the traditional linux methodology of autoreconf, configure, make.
 
 First, check if your distro packages libsoc. If it does it is easiest to install
-your distros version of libsoc through it's provided package manager. Depending
-on your distro this may be `apt-get`, `yum`, `pacman`, etc. Consult your distro
-documentation for more info.
+your distro's version of libsoc through its provided package manager. Depending
+on your distro this may be `apt-get`, `dnf`, `yum`, `pacman`, etc. Consult your
+distro documentation for more info.
 
 ### Manually Building
 
 First, make sure you have the prerequisites installed. Under Debian Jessie this
-means `build-essential`, `autoconf`, `libtool-bin` and `pkg-config`. You'll also
-need `python-dev` or `python3-dev`, if you wish to install the python-bindings.
+means:
+
+ * `autoconf`
+ * `build-essential`
+ * `libtool-bin`
+ * `pkg-config`
+ * `python-dev` *
+ * `python3-dev` **
+
+Under Fedora this would instead be:
+
+ * `autoconf`
+ * `automake`
+ * `libtool`
+ * `python2-devel` *
+ * `python3-devel` **
+
+\* Optional, only required if Python 2 bindings are desired.<br>
+\*\* Optional, only required if Python 3 bindings are desired.
 
 Then, clone libsoc from its git repository.
 
