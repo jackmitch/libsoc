@@ -1,4 +1,4 @@
-#! /bin/sh -e
+#! /bin/bash -e
 
 python2=1
 python3=1

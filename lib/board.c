@@ -30,8 +30,8 @@ _probe_config(conffile *conf)
       if (probed)
         {
           int rc = strcmp(probed, match);
-	  free(probed);
-	  return !rc;
+          free(probed);
+          return !rc;
         }
     }
   else
@@ -60,22 +60,23 @@ _probe()
               char *ext = strrchr(dp->d_name, '.');
               if (ext && !strcmp(ext, ".conf"))
                 {
-		  strcpy(tmp, confs_dir);
-		  strcat(tmp, "/");
-		  strcat(tmp, dp->d_name);
-		  conf = conffile_load(tmp);
-		  if (conf)
-		    {
-		      libsoc_debug(__func__, "probing %s for board support", tmp);
+                  strcpy(tmp, confs_dir);
+                  strcat(tmp, "/");
+                  strcat(tmp, dp->d_name);
+                  conf = conffile_load(tmp);
+                  if (conf)
+                    {
+                      libsoc_debug(__func__,
+                                   "probing %s for board support", tmp);
                       if(_probe_config(conf))
-		        {
-			  libsoc_debug(__func__, "probing match for %s", tmp);
+                        {
+                          libsoc_debug(__func__, "probing match for %s", tmp);
                           bc = calloc(1, sizeof(board_config));
                           bc->conf = conf;
-			}
-		      else
-		        conffile_free(conf);
-		    }
+                        }
+                      else
+                        conffile_free(conf);
+                    }
                 }
             }
         } while (dp != NULL && bc == NULL);

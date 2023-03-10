@@ -22,13 +22,19 @@
 #define PWM_OUTPUT_CHIP 0
 #define PWM_CHIP_OUTPUT 1
 
-int main(void)
+int main(int argc, char **argv)
 {
-  int ret = EXIT_SUCCESS;
-
+  int ret = EXIT_SUCCESS, chip, output;
+  long period, duty_cycle;
+  chip = argc > 1 ? atoi(argv[1]) : PWM_OUTPUT_CHIP;
+  output = argc > 2 ? atoi(argv[2]) : PWM_CHIP_OUTPUT;
+  period = argc > 3 ? atoi(argv[3]) : 10;
+  duty_cycle = argc > 4 ? atoi(argv[4]) : 5;
   libsoc_set_debug(1);
+  fprintf(stderr, "Initializing PWM with parameters %d, %d, %d, %d\n",
+          chip, output, period, duty_cycle);
 
-  pwm *pwm = libsoc_pwm_request(PWM_OUTPUT_CHIP, PWM_CHIP_OUTPUT, LS_PWM_SHARED);
+  pwm *pwm = libsoc_pwm_request(chip, output, LS_PWM_SHARED);
 
   if (!pwm)
   {
@@ -58,21 +64,21 @@ int main(void)
     goto fail;
   }
 
-  libsoc_pwm_set_period(pwm, 10);
+  libsoc_pwm_set_period(pwm, period);
 
   int current_period = libsoc_pwm_get_period(pwm);
 
-  if (current_period != 10)
+  if (current_period != period)
   {
     printf("Failed period test\n");
     goto fail;
   }
 
-  libsoc_pwm_set_duty_cycle(pwm, 5);
+  libsoc_pwm_set_duty_cycle(pwm, duty_cycle);
 
   int current_duty = libsoc_pwm_get_duty_cycle(pwm);
 
-  if (current_duty != 5)
+  if (current_duty != duty_cycle)
   {
     printf("Failed duty test\n");
     goto fail;
@@ -80,11 +86,11 @@ int main(void)
 
   // This command should fail as the duty should not
   // be allowed to be greater than the period
-  libsoc_pwm_set_duty_cycle(pwm, 15);
+  libsoc_pwm_set_duty_cycle(pwm, period + duty_cycle);
 
   current_duty = libsoc_pwm_get_duty_cycle(pwm);
 
-  if (current_duty != 5)
+  if (current_duty != duty_cycle)
   {
     printf("Failed duty test, this may be a problem with the kernel driver, continuing...\n");
   }

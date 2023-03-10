@@ -36,13 +36,13 @@ libsoc_gpio_debug (const char *func, int gpio, char *format, ...)
       va_end (args);
 
       if (gpio >= 0)
-	{
-	  fprintf (stderr, " (%d, %s)", gpio, func);
-	}
+        {
+          fprintf (stderr, " (%d, %s)", gpio, func);
+        }
       else
-	{
-	  fprintf (stderr, " (NULL, %s)", func);
-	}
+        {
+          fprintf (stderr, " (NULL, %s)", func);
+        }
 
       fprintf (stderr, "\n");
     }
@@ -59,8 +59,8 @@ libsoc_gpio_request (unsigned int gpio_id, gpio_mode mode)
   if (mode != LS_GPIO_SHARED && mode != LS_GPIO_GREEDY && mode != LS_GPIO_WEAK)
     {
       libsoc_gpio_debug (__func__, gpio_id,
-			 "mode was not set, or invalid,"
-			 " setting mode to LS_GPIO_SHARED");
+        "mode was not set, or invalid,"
+        " setting mode to LS_GPIO_SHARED");
       mode = LS_GPIO_SHARED;
     }
 
@@ -73,48 +73,48 @@ libsoc_gpio_request (unsigned int gpio_id, gpio_mode mode)
       libsoc_gpio_debug (__func__, gpio_id, "GPIO already exported");
 
       switch (mode)
-	{
-	case LS_GPIO_WEAK:
-	  {
-	    return NULL;
-	  }
+        {
+        case LS_GPIO_WEAK:
+          {
+            return NULL;
+          }
 
-	case LS_GPIO_SHARED:
-	  {
-	    shared = 1;
-	    break;
-	  }
+        case LS_GPIO_SHARED:
+          {
+            shared = 1;
+            break;
+          }
 
-	default:
-	  {
-	    break;
-	  }
-	}
+        default:
+          {
+            break;
+          }
+        }
     }
   else
     {
       int fd = file_open ("/sys/class/gpio/export", O_SYNC | O_WRONLY);
 
       if (fd < 0)
-	return NULL;
+        return NULL;
 
       sprintf (tmp_str, "%d", gpio_id);
 
       if (file_write (fd, tmp_str, STR_BUF) < 0)
-	return NULL;
+        return NULL;
 
       if (file_close (fd))
-	return NULL;
+        return NULL;
 
       sprintf (tmp_str, "/sys/class/gpio/gpio%d", gpio_id);
 
       if (!file_valid (tmp_str))
-	{
-	  libsoc_gpio_debug (__func__, gpio_id,
-			     "gpio did not export correctly");
-	  perror ("libsoc-gpio-debug");
-	  return NULL;
-	}
+        {
+          libsoc_gpio_debug (__func__, gpio_id,
+                             "gpio did not export correctly");
+          perror ("libsoc-gpio-debug");
+          return NULL;
+        }
     }
 
   new_gpio = malloc (sizeof (gpio));
@@ -212,8 +212,8 @@ libsoc_gpio_set_direction (gpio * current_gpio, gpio_direction direction)
     }
 
   libsoc_gpio_debug (__func__, current_gpio->gpio,
-		     "setting direction to %s",
-		     gpio_direction_strings[direction]);
+                     "setting direction to %s",
+                     gpio_direction_strings[direction]);
 
   sprintf (path, "/sys/class/gpio/gpio%d/direction", current_gpio->gpio);
 
@@ -261,13 +261,13 @@ libsoc_gpio_get_direction (gpio * current_gpio)
   if (strncmp (tmp_str, "in", 2) <= 0)
     {
       libsoc_gpio_debug (__func__, current_gpio->gpio,
-			 "read direction as input");
+                         "read direction as input");
       return INPUT;
     }
   else
     {
       libsoc_gpio_debug (__func__, current_gpio->gpio,
-			 "read direction as output");
+                         "read direction as output");
       return OUTPUT;
     }
 }
@@ -282,7 +282,7 @@ libsoc_gpio_set_level (gpio * current_gpio, gpio_level level)
     }
 
   libsoc_gpio_debug (__func__, current_gpio->gpio, "setting level to %d",
-		     level);
+                     level);
 
   if (file_write (current_gpio->value_fd, gpio_level_strings[level], 1) < 0)
     return EXIT_FAILURE;
@@ -335,7 +335,7 @@ libsoc_gpio_set_edge (gpio * current_gpio, gpio_edge edge)
     }
 
   libsoc_gpio_debug (__func__, current_gpio->gpio, "setting edge to %s",
-		     gpio_edge_strings[edge]);
+                     gpio_edge_strings[edge]);
 
   sprintf (path, "/sys/class/gpio/gpio%d/edge", current_gpio->gpio);
 
@@ -388,13 +388,13 @@ libsoc_gpio_get_edge (gpio * current_gpio)
   else if (strncmp (tmp_str, "f", 1) == 0)
     {
       libsoc_gpio_debug (__func__, current_gpio->gpio,
-			 "read edge as falling");
+                         "read edge as falling");
       return FALLING;
     }
   else if (strncmp (tmp_str, "b", 1) == 0)
     {
       libsoc_gpio_debug (__func__, current_gpio->gpio,
-			 "read edge as both");
+                         "read edge as both");
       return BOTH;
     }
   else
@@ -411,6 +411,12 @@ libsoc_gpio_poll (gpio * gpio, int timeout)
   char c;
 
   // do an initial read to clear interrupt,
+  if (gpio == NULL)
+    {
+      libsoc_gpio_debug (__func__, -1, "invalid gpio pointer");
+      return LS_INT_ERROR;
+    }
+
   rc = lseek(gpio->value_fd, 0, SEEK_SET);
   rc = read(gpio->value_fd, &c, 1);
 
@@ -450,7 +456,7 @@ libsoc_gpio_wait_interrupt (gpio * gpio, int timeout)
   if (test_edge == EDGE_ERROR || test_edge == NONE)
     {
       libsoc_gpio_debug (__func__, gpio->gpio,
-			 "edge must be FALLING, RISING or BOTH");
+                         "edge must be FALLING, RISING or BOTH");
       return LS_INT_ERROR;
     }
 
@@ -476,7 +482,7 @@ __libsoc_new_interrupt_callback_thread (void *void_gpio)
 
 int
 libsoc_gpio_callback_interrupt (gpio * gpio, int (*callback_fn) (void *),
-				void *arg)
+                                void *arg)
 {
   pthread_t *poll_thread = malloc (sizeof (pthread_t));
   pthread_attr_t pthread_attr;
@@ -500,7 +506,7 @@ libsoc_gpio_callback_interrupt (gpio * gpio, int (*callback_fn) (void *),
   pthread_mutex_lock(&new_gpio_callback->ready);
 
   int ret = pthread_create (poll_thread, NULL,
-			    __libsoc_new_interrupt_callback_thread, gpio);
+                            __libsoc_new_interrupt_callback_thread, gpio);
 
   if (ret == 0)
     {

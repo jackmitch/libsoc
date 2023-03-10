@@ -2,6 +2,7 @@
 
 #include "libsoc_gpio.h"
 #include "libsoc_spi.h"
+#include "libsoc_pwm.h"
 
 static PyMethodDef functions[] = {
     {NULL, NULL, 0, NULL}        /* Sentinel */
@@ -29,6 +30,10 @@ _add_constants(PyObject *m)
   PyModule_AddIntConstant(m, "LS_GPIO_SHARED", LS_GPIO_SHARED);
   PyModule_AddIntConstant(m, "LS_GPIO_GREEDY", LS_GPIO_GREEDY);
   PyModule_AddIntConstant(m, "LS_GPIO_WEAK", LS_GPIO_WEAK);
+
+  PyModule_AddIntConstant(m, "LS_PWM_SHARED", LS_GPIO_SHARED);
+  PyModule_AddIntConstant(m, "LS_PWM_GREEDY", LS_GPIO_GREEDY);
+  PyModule_AddIntConstant(m, "LS_PWM_WEAK", LS_GPIO_WEAK);
 
   PyModule_AddIntConstant(m, "BITS_8", BITS_8);
   PyModule_AddIntConstant(m, "BITS_16", BITS_16);
